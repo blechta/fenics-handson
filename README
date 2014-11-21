@@ -1,0 +1,12 @@
+To build the tutorial you need Sphinx. Install by
+
+ $ sudo apt-get install python-sphinx
+
+on Debian. For PDF output LaTeX is needed.
+
+Execute
+
+ $ make latexpdf
+ $ make latexpdf SPHINXOPTS='-t solution' # with solution
+
+You find the output in _build/latex/FEniCStutorial.pdf.
