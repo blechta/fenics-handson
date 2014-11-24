@@ -12,11 +12,8 @@ Let's have wave equation with special right-hand side
                                                                 \times[0,T], \\
 
 with :math:`f \in L^2(\Omega)`. Such a problem has a solution (in some proper
-sense; being unique when enriched by initial conditions), see [Evans].
-
-.. todo::
-
-   Look for specific chapter in [Evans].
+sense; being unique when enriched by initial conditions), see [Evans]_,
+chapter 7.2.
 
 ..
 
@@ -63,7 +60,7 @@ non-trivial :math:`v\in E_{\omega^2}` one can see that
 :math:`f\perp E_{\omega^2}` is required (**check it!**), otherwise the problem
 is ill-posed. Hence the assumed ansatz is generally wrong. In fact, the
 condition :math:`f\perp E_{\omega^2}` is sufficient condition for well-posedness
-of the problem, see [Evans].
+of the problem, see [Evans]_, chapter 6.2.3.
 
 The resolution is to seek for a particular solution for :math:`f^\parallel` and
 :math:`f^\perp` (:math:`L^2`-projections of :math:`f` to :math:`E_{\omega^2}`
@@ -139,3 +136,7 @@ latter part.
 
    .. literalinclude:: impl.py
       :start-after: # Begin code
+
+
+.. [Evans] Lawrence C. Evans. *Partial Differential Equations.* Second edition.
+           1998, 2010 AMS, Rhode Island.
