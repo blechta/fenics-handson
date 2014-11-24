@@ -1,4 +1,5 @@
-To build the tutorial you need Sphinx. Install by
+To build the tutorial you need Sphinx. (Version >= 1.2 handles correctly
+headings inside of 'only' block.) Install by
 
  $ sudo apt-get install python-sphinx
 
@@ -6,7 +7,7 @@ on Debian. For PDF output LaTeX is needed.
 
 Execute
 
- $ make latexpdf
- $ make latexpdf SPHINXOPTS='-t solution' # with solution
+ $ make latexpdf # release
+ $ make latexpdf SPHINXOPTS='-t solution -D todo_include_todos=1' # dev version
 
 You find the output in _build/latex/FEniCStutorial.pdf.

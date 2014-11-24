@@ -7,11 +7,18 @@ Wave equation with harmonic forcing
 Let's have wave equation with special right-hand side
 
 .. math::
-   w_{tt} - \Delta w &= f\, e^{i\omega t} \quad {\rm in} \Omega, \\
-                   w &= 0                 \quad {\rm on} \partial\Omega, \\
+   w_{tt} - \Delta w &= f\, e^{i\omega t} \quad\text{ in }\Omega\times[0,T], \\
+                   w &= 0                 \quad\text{ on }\partial\Omega
+                                                                \times[0,T], \\
 
 with :math:`f \in L^2(\Omega)`. Such a problem has a solution (in some proper
 sense; being unique when enriched by initial conditions), see [Evans].
+
+.. todo::
+
+   Look for specific chapter in [Evans].
+
+..
 
    **Task 1.** Try seeking for a particular solution of this equation while
    taking advantage of special structure of right-hand side. Assuming ansatz
@@ -26,8 +33,8 @@ sense; being unique when enriched by initial conditions), see [Evans].
    * :math:`\omega = \sqrt{5}\pi`,
    * :math:`f = x + y`.
 
-   **Task 2 - what can go wrong.** Plot solution energies against number of
-   degrees of freedom.
+
+   **Task 2.** Plot solution energies against number of degrees of freedom.
 
       *Hint.* Having list of number of degrees of freedom ``ndofs`` and list of
       energies ``energies`` do
@@ -38,7 +45,7 @@ sense; being unique when enriched by initial conditions), see [Evans].
          plt.plot(ndofs, energies, 'o-')
          plt.show()
 
-   What does it mean? **Is the problem well-posed?**
+   What does it mean? Is the problem well-posed?
 
 
 Helmholtz equation and eigenspaces of Laplacian
@@ -47,14 +54,16 @@ Helmholtz equation and eigenspaces of Laplacian
 Define eigenspace of Laplacian (with zero BC) corresponding to :math:`\omega^2`
 
 .. math::
-   
-   E_{\omega^2} = {u\in H_0^1(\Omega): -\Delta u = \omega^2 u}.
+
+   E_{\omega^2} = \{ u\in H_0^1(\Omega): -\Delta u = \omega^2 u \}.
 
 If :math:`E_{\omega^2}\neq{0}` then :math:`\omega^2` is eigenvalue. Then by
 testing the non-homogeneous Helmholtz equation (derived in previous section) by
 non-trivial :math:`v\in E_{\omega^2}` one can see that
 :math:`f\perp E_{\omega^2}` is required (**check it!**), otherwise the problem
-is ill-posed. Hence the assumed ansatz is generally wrong.
+is ill-posed. Hence the assumed ansatz is generally wrong. In fact, the
+condition :math:`f\perp E_{\omega^2}` is sufficient condition for well-posedness
+of the problem, see [Evans].
 
 The resolution is to seek for a particular solution for :math:`f^\parallel` and
 :math:`f^\perp` (:math:`L^2`-projections of :math:`f` to :math:`E_{\omega^2}`
@@ -65,12 +74,18 @@ solving forced harmonic oscillator equation which is easily done in hand (once
 :math:`w = u\, t\, e^{i t\omega},\, u\in H_0^1(\Omega)`. So let's focus to the
 latter part.
 
+.. todo::
+
+   Make the exposition above simpler.
+
+..
+
    **Task 3.** Use SLEPc eigensolver to find :math:`E_{\omega^2}`.
 
       *Hint.* Having assembled matrices ``A``, ``B``, the eigenvectors solving
 
       .. math::
-         
+
          A x = \lambda B x
 
       with :math:`\lambda` close to target ``lambd`` can be found by
@@ -95,7 +110,7 @@ latter part.
             plot(eig, 'Eigenvector to eigenvalue %d'%r)
             interative()
 
-   **Task 4.** Write function which takes a tuple of functions and 
+   **Task 4.** Write function which takes a tuple of functions and
    :math:`L^2`-orthogonalizes them using Gramm-Schmidt algorithm.
 
    **Task 5.** Compute :math:`f^\perp` for :math:`f` from Task 1 and solve the
@@ -103,10 +118,10 @@ latter part.
    energies of solutions against number of degrees of freedom.
 
 .. only:: solution
-   
+
       .. note::
 
-         *Lecturer\'s note.* Student must not include eigenvectors corresponding
+         *Lecturer note.* Student must not include eigenvectors corresponding
          to other eigenvalues. SLEPc returns these after last targeted one. For
          this case the dimension of :math:`E_{\omega^2}` is 2. Let\'s denote
          this bunch of vectors by ``E``.
