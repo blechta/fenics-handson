@@ -54,7 +54,8 @@ def helmholtz_wellposed(n):
     A, _ = assemble_system(a, L, bc)
     B = assemble(m)
 
-    # Search for eigenspace for eigenvalue around 5*pi*pi
+    # Search for eigenspace for eigenvalue close to 5*pi*pi
+    # NOTE: A x = lambda B x is proper FE discretization of the eigenproblem
     eigensolver = SLEPcEigenSolver(as_backend_type(A), as_backend_type(B))
     eigensolver.parameters['problem_type'] = 'gen_hermitian'
     eigensolver.parameters['spectrum'] = 'target real'
@@ -62,40 +63,32 @@ def helmholtz_wellposed(n):
     eigensolver.parameters['spectral_transform'] = 'shift-and-invert'
     eigensolver.parameters['tolerance'] = 1e-6
     #eigensolver.parameters['verbose'] = True
-    eigensolver.solve(5)
-    print eigensolver.get_iteration_number(), V.dim(), eigensolver.get_number_converged()
+    eigensolver.solve(5) # Find 5 eigenpairs close to target
     eig = Function(V)
-    temp = eig.vector()
+    eig_vec = eig.vector()
     space = []
     for j in range(eigensolver.get_number_converged()):
         r, c, rx, cx = eigensolver.get_eigenpair(j)
         assert near(c/r, 0.0, 1e-6)
         assert near(cx.norm('linf')/rx.norm('linf'), 0.0, 1e-6)
-        temp[:] = rx
         if near(r, 5*pi*pi, 0.5*pi*pi):
+            eig_vec[:] = rx
             space.append(eig.copy(deepcopy=True))
     # Check that we got whole eigenspace - last eigenvalue is different one
-    assert not near(r, 5*pi*pi, 0.5*pi*pi)
+    assert not near(r, 5*pi*pi, 0.5*pi*pi), \
+            "Possibly don't have whole eigenspace!"
     print 'Eigenspace for 5*pi^2 has dimension', len(space)
 
     # Orthogonalize right-hand side to 5*pi^2 eigenspace
     f = Expression('x[0] + x[1]')
     f = project(f, V)
     orthogonalize(space+[f])
-    L = f*v*dx
-
-    # Assemble Helmholtz system
-    a = (inner(grad(u), grad(v)) - Constant(5.0*pi*pi)*u*v)*dx
-    A, b = assemble_system(a, L, bc)
 
     # Solve well-posed resonant Helmoltz system
+    a = (inner(grad(u), grad(v)) - Constant(5.0*pi*pi)*u*v)*dx
+    L = f*v*dx
     u = Function(V)
-    x = u.vector()
-    solver = PETScLUSolver('mumps')
-    solver.set_operator(A)
-    solver.parameters['symmetric'] = True
-    solver.parameters['reuse_factorization'] = True
-    solver.solve(x, b)
+    solve(a == L, u, bc)
 
     energy_error = assemble(action(Constant(1.0)*action(a, u) - L, u))
     energy       = assemble(action(Constant(0.5)*action(a, u) - L, u))
