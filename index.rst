@@ -5,4 +5,5 @@ FEniCS tutorial
 
 .. toctree::
 
+   p_laplace/doc
    helmholtz/doc
