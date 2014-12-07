@@ -5,5 +5,6 @@ FEniCS tutorial
 
 .. toctree::
 
+   python/doc
    p_laplace/doc
    helmholtz/doc
