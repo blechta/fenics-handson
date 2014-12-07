@@ -124,9 +124,10 @@ Flow control and functions
 
 ..
 
-   **Task 3.** Write function taking dictionary with keys of beverage type
-   and values of number of glasses drunk and returning total volume of
-   alcohol drunk.
+   **Task 3.** Exploiting ``glass_volume`` and ``ethanol_concentation``
+   variables defined above write function taking dictionary with keys of
+   beverage type and values of number of glasses drunk and returning total
+   volume of alcohol drunk.
 
 What is variable, mutabulity and imutability
 ---------------------------------------------
@@ -195,11 +196,15 @@ objects (classes, see below) are mutable.
 
 Concluding, assignment operator everytime bounds a name on lhs to an object on
 rhs so that nothing is mutated. Member methods (like ``list.append`` in the
-example above) may mutate the object. Operators like ``+=`` may mutate mutable
-object. It is depending on implementation. In fact, line
+example above) may mutate a mutable object. Operators like ``+=`` may mutate a
+mutable object. It is depending on implementation. In fact, line
 ``drinks += ['last small cognac']`` is interpreted as
 ``drinks.__iadd__(['last small cognac'])`` which mutates the object. On the
 other hand ``a = 42; a += 1`` is interpreted as
 ``a = 42; a = a.__add__(1)`` because ``int`` object has not ``__iadd__``
 method (as it is imutable and cannot be incremented in-place) so that
 ``__add__`` method returning a new ``int`` object is called.
+
+.. todo::
+
+   Introduction to classes is needed to understand DOLFIN code.
