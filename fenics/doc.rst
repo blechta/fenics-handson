@@ -78,3 +78,12 @@ shell. Try also running it in parallel using ``mpirun`` command.
 (Write linear form depending non-linearly on unknown ``Function`` and provide
 ``F == 0`` instead of ``a == L`` to ``solve`` function. Use ``Constant`` class
 for ``k`` to avoid form recompilation when changing ``k``.)
+
+
+.. only:: solution
+
+   Reference solution
+   ------------------
+
+   .. literalinclude:: impl.py
+      :start-after: # Begin code

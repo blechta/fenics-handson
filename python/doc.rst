@@ -149,11 +149,12 @@ is crucial thing! Consider following snippet
 In this example ``a`` is a name for the integer object (with value 42). On the
 second line name ``b`` was bound to the same object. Then name ``b`` was bound
 to the other int object (with value 666). This cannot change the value of the
-original object (which ``a`` bound to). This holds for object of any type.
+original object (which ``a`` bounds to). This holds for object of any type.
 
 **The statement** ``name = object`` **causes that** ``name`` **afterwards has no
 connection to the prior object it was referring to and the prior object is
-not changed in any way.**
+not changed in any way.** (With the exception that original object may be
+garbage-collected if referenced nowhere else.)
 
 On the other hand there are of course ways to change (mutate) objects (which
 are mutable). The basic numeric types like ``int``, ``float`` etc. are imutable.
