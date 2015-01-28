@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'FEniCS tutorial'
-copyright = u'2014, Jan Blechta'
+copyright = u'2014, Jan Blechta, Jaroslav Hron'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -188,7 +188,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'FEniCStutorial.tex', u'FEniCS tutorial',
-   u'Jan Blechta', 'manual'),
+   u'Jan Blechta, Anne Elk, Jaroslav Hron', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -218,7 +218,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'fenicstutorial', u'FEniCS tutorial',
-     [u'Jan Blechta'], 1)
+     [u'Jan Blechta, Anne Elk, Jaroslav Hron'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -232,8 +232,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'FEniCStutorial', u'FEniCS tutorial',
-   u'Jan Blechta', 'FEniCStutorial', 'One line description of project.',
-   'Miscellaneous'),
+   u'Jan Blechta, Anne Elk, Jaroslav Hron', 'FEniCStutorial',
+   'One line description of project.', 'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
