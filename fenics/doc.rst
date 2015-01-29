@@ -1,6 +1,91 @@
 Very short introduction to FEniCS
 =================================
 
+.. image:: fenics_banner.png
+   :align: center
+   :width: 100%
+   :target: http://fenicsproject.org
+
+* started in 2003, collaboration between University of Chicago and
+  Chalmers University of Technology
+
+* 2011 - version 1.0 released
+
+* 2012 - `the book <http://fenicsproject.org/book>`_ with main
+  contribution by 5 institutions (Simula Research Laboratory, University of
+  Cambridge, University of Chicago, Texas Tech University, KTH Royal
+  Institute of Technology)
+
+     **A. Logg, K.-A. Mardal, G. N. Wells et al. (2012).**
+     *Automated Solution of Differential Equations by the Finite Element Method.*
+     Springer, 2012.
+     `Download from Launchpad. <http://launchpad.net/fenics-book/trunk/final/+download/fenics-book-2011-10-27-final.pdf>`_
+
+* 2015 - version 1.5 released
+
+* open source license (GNU LGPL v3), open source developement on
+  `bitbucket <https://bitbucket.org/fenics-project>`_
+
+* good `support <http://fenicsproject.org/support>`_ with
+  mailing-list and `Q&A forum <http://fenicsproject.org/qa>`_
+
+
+FEniCS components
+-----------------
+
+..  outdated component map
+    .. image:: fenics-map.png
+       :align: center
+       :target: http://fenicsproject.org/about
+
+Core components
+^^^^^^^^^^^^^^^
+
+* **DOLFIN** C++/Python interface of FEniCS, providing a consistent
+  PSE (Problem Solving Environment).
+
+* **UFL** (*Unified Form Language*) is a specific language for
+  declaration of finite element discretizations of variational
+  forms.
+
+* **FFC** (*FEniCS Form Compiler*) from UFL code generates C++ code
+  for assembling element tensors.
+
+* **Instant** Python module that allows for instant inlining and JIT
+  (Just-In-Time) compilation of C++ code in Python.
+
+* **FIAT** (*FInite element Automatic Tabulator*) generates finite elements
+  of arbitrary order on lines, triangles and tetrahedra.
+
+* **UFLACS** (*UFL Analyser and Compiler System*) optimizing frontend for FFC.
+
+* **mshr** is FEniCS mesh generator. Uses CGAL and Tetgen as backends for
+  generating meshing geometries described by CSG (Constructive Solid Geometry).
+
+External libraries
+^^^^^^^^^^^^^^^^^^
+
+* **MPI**, **OpenMP** parallel programming frameworks.
+
+* **PETSc** (*Portable, Extensible Toolkit for Scientific Computation*)
+  parallel linear algebra backend. Provides data structeres for
+  holding vectors and matrices and lots of linear and non-linear
+  solvers and preconditioners.
+
+* **SLEPc** (*the Scalable Library for Eigenvalue Problem Computations*)
+  extension of PETSc for solution of eigen-problems.
+
+* **SCOTCH**, **ParMETIS** mesh partitioning and graph coloring backends.
+
+* **VTK**, **HDF5**, **XDMF** visualization and IO backends.
+
+.. todo::
+
+   Add a review of variational formulation of PDE, finite element method.
+
+And now ...
+-----------
+
 **Task 1.** Start interactive Python session and type in following code.
 
 .. code-block:: python
@@ -78,6 +163,11 @@ shell. Try also running it in parallel using ``mpirun`` command.
 (Write linear form depending non-linearly on unknown ``Function`` and provide
 ``F == 0`` instead of ``a == L`` to ``solve`` function. Use ``Constant`` class
 for ``k`` to avoid form recompilation when changing ``k``.)
+
+.. todo::
+
+   Integrate convergence example (maybe - already present in Helmholtz task).
+   Add time*error minimization challenge.
 
 
 .. only:: solution
