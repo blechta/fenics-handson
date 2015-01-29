@@ -53,6 +53,9 @@ plot(u, interactive=True)
 
 
 # And now for non-linear elliptic operator
+# TODO: This implementation does not stress that linear form (without
+#       TrialFunction) with non-linearity in Function is needed. But
+#       attendees will probably encounter this when modifying the code.
 k = 1e6
 F = ( (1.0 + Constant(k)*u*u)*inner(grad(u), grad(v)) - f*v )*dx
 solve(F == 0, u, bc)
