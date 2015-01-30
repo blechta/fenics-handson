@@ -7,5 +7,6 @@ FEniCS tutorial
 
    python/doc
    fenics/doc
+   heat/doc
    p_laplace/doc
    helmholtz/doc
