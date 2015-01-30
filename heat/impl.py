@@ -49,7 +49,7 @@ dsN = Measure("ds", subdomain_id=1, subdomain_data=boundary_parts)
 
 # Define steady part of the equation
 def operator(u, v):
-    return ( K*inner(grad(u), grad(v)) - f*v )*dx - g*v*dsN
+    return ( K*inner(grad(u), grad(v)) - f*v + dot(b, grad(u))*v )*dx - g*v*dsN
 
 # Define trial and test function and solution at previous time-step
 u = TrialFunction(V)
