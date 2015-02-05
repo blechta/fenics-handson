@@ -8,5 +8,6 @@ FEniCS tutorial
    python/doc
    fenics/doc
    heat/doc
+   elasticity/doc
    p_laplace/doc
    helmholtz/doc
