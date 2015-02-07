@@ -5,6 +5,7 @@ FEniCS tutorial
 
 .. toctree::
 
+   bash/doc
    python/doc
    fenics/doc
    heat/doc
