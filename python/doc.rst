@@ -19,7 +19,7 @@ Basic datatypes
 
 ..
 
-   **Task 2.** Try using Python as interactive calculator. Play with basic
+   **Task 2.** Try using Python as an interactive calculator. Play with basic
    arithmetic operations; check the distinction of ``int`` and ``float``
    datatypes. Complex numbers are written as ``1.0 + 2.0j``. Power is written
    using double asterisk. Elementary functions are available in ``math``
@@ -187,7 +187,7 @@ objects (classes, see below) are mutable.
    (['tea', 'wine', 'wine', 'wine', 'cognac', 'wine', 'last small congnac', 'last
    small congnac', 'last small congnac', 'last small congnac'], 140457968276184)
 
-   >>> # On the other hand imutable object cannot be mutated in no way
+   >>> # On the other hand imutable object cannot be mutated in any way
    >>> a = 42
    >>> id(a)
    41239880
