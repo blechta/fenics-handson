@@ -4,6 +4,7 @@ FEniCS tutorial
 .. todolist::
 
 .. toctree::
+   :maxdepth: 2
 
    bash/doc
    python/doc
