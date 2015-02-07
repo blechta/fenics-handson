@@ -1,8 +1,8 @@
 Equation of elasticity
-=============
+======================
 
 Deformation of elastic material
------------------------------
+-------------------------------
 
 Find approximate solution to following non-linear system of PDEs
 
@@ -74,3 +74,12 @@ is Euclidian distance between points :math:`\mathbf{p}`, :math:`\mathbf{q}`.
     every time-step while nothing else is touched excepted updating value
     of solution from previous time-step figuring in variational form. You
     can use for instance ``Function.assign`` method to do that.
+
+
+.. only:: solution
+
+   Reference solution
+   ------------------
+
+   .. literalinclude:: elast.py
+      :start-after: # Begin code
