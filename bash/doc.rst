@@ -40,22 +40,56 @@ Basic shell commands
 ``mv``
 
 
-
 If the command is not recognized as shell command, then the folders in
 the enviroment variable ``PATH`` are searched for an executable with
 that name.
 
 
+**Hint.** Help can be obtained using commands ``man``, ``info``,
+``apropos``. Try for instance
+
+.. code-block:: bash
+
+   $ man man
+   $ apropos math
+
+
+**Hint.** Further help can be obtained using commands ``fortune``,
+``cowsay``.
+
+.. code-block:: bash
+
+   $ fortune | cowsay -f sodomized-sheep 
+    ________________________________________
+    / You will be married within a year, and \
+    \ divorced within two.                   /
+     ----------------------------------------
+      \                 __ 
+       \               (oo)
+        \              (  )
+         \             /--\
+           __         / \  \ 
+          UooU\.'@@@@@@`.\  )
+          \__/(@@@@@@@@@@) /
+               (@@@@@@@@)(( 
+               `YY~~~~YY' \\
+                ||    ||   >> 
+
+
+.. todo::
+
+   ``r0> sudo apt-get fortune cowsay``
+
+
+
 Remote connection - ssh
 -----------------------
 
-some text
-
    **Task 2.** Use ``ssh`` utility to connect to a remote system.
  
-   .. code-block: bash
+   .. code-block:: bash
 
-   machine:~> ssh -C -Y your_login@r0.karlin.mff.cuni.cz
+      machine:~> ssh -C -Y your_login@r0.karlin.mff.cuni.cz
 
 
 
@@ -82,8 +116,8 @@ Pressing following control keys will send signal to the foreground job
 | ``^D``           end of input signal
 
 Cluster job queues usage
-----------------------------------
+------------------------
 
 .. todo::
 
-   Introduction to classes is needed to understand DOLFIN code.
+   Add job queueing intro.
