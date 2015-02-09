@@ -107,11 +107,11 @@ Flow control and functions
       >>> # Find divisible by 3
       >>> a_3 = []
       >>> for n in a:
-      ...     if a%3 == 0:
+      ...     if n%3 == 0:
       ...         a_3.append(n)
 
       >>> # The same can be achieved by list comprehension
-      >>> a_3 = [n for n in a if a%3 == 0]
+      >>> a_3 = [n for n in a if n%3 == 0]
 
       >>> def heaviside(x):
       ...     if x > 0.0:
@@ -128,6 +128,26 @@ Flow control and functions
    variables defined above write function taking dictionary with keys of
    beverage type and values of number of glasses drunk and returning total
    volume of alcohol drunk.
+
+    .. only:: solution
+
+       Reference solution
+       ^^^^^^^^^^^^^^^^^^
+
+       .. code-block:: python
+
+          def methanol_enrichment_factor():
+              from datetime import date
+              today = date.today()
+              return 1.5 if today.year == 2012 and today.month >= 9 else 1.0
+
+          def alcohol(glasses):
+              # Let's do it by list comprehension
+              ethanol = sum([glasses[d]*glass_volume[d]*ethanol_concentration[d]
+                             for d in glasses])
+              alcohol = ethanol*methanol_enrichment_factor()
+              return alcohol
+
 
 What is variable, mutabulity and imutability
 ---------------------------------------------
