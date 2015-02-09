@@ -8,13 +8,13 @@ Find approximate solution to following linear PDE
 
 .. math::
    u_t + \mathbf{b}\cdot\nabla{u} - \operatorname{div}(K \nabla u) &= f
-        \quad\text{ in }\Omega\times[0, T], \\
+        &\quad\text{ in }\Omega\times[0, T], \\
    u &= u_\mathrm{D}
-        \quad\text{ in }\Omega_\mathrm{D}\times[0, T], \\
+        &\quad\text{ in }\Omega_\mathrm{D}\times[0, T], \\
    \tfrac{\partial u}{\partial\mathbf{n}} &= g
-        \quad\text{ on }\Gamma_\mathrm{N}\times[0, T], \\
+        &\quad\text{ on }\Gamma_\mathrm{N}\times[0, T], \\
    u &= u_0
-        \quad\text{ on }\Omega\times{0} \\
+        &\quad\text{ on }\Omega\times{0} \\
 
 using :math:`\theta`-scheme discretization in time and arbitrary discretization
 in space with data
