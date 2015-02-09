@@ -59,21 +59,16 @@ that name.
 
 .. code-block:: bash
 
-   $ fortune | cowsay -f sodomized-sheep 
-    _______________________________________
-   / You will be singled out for promotion \
-   \ in your work.                         /
-    ---------------------------------------
-     \                 __ 
-      \               (oo)
-       \              (  )
-        \             /--\
-          __         / \  \ 
-         UooU\.'@@@@@@`.\  )
-         \__/(@@@@@@@@@@) /
-              (@@@@@@@@)(( 
-              `YY~~~~YY' \\
-               ||    ||   >> 
+   $ fortune | cowsay
+   ________________________________________
+  / Tuesday After Lunch is the cosmic time \
+  \ of the week.                           /
+   ----------------------------------------
+          \   ^__^
+           \  (oo)\_______
+              (__)\       )\/\
+                  ||----w |
+                  ||     ||
 
 
 .. todo::
