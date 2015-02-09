@@ -103,7 +103,7 @@ cached in ``~/.instant``.
 
 .. code-block:: python
 
-   >>> f = Expression("sin(6.0*pi*x[0])*sin(2.0*pi*x[1]")
+   >>> f = Expression("sin(6.0*pi*x[0])*sin(2.0*pi*x[1])")
    Calling DOLFIN just-in-time (JIT) compiler, this may take some time.
 
 This is compiled C++ expression which is evaluated very quickly when evaluated
@@ -148,7 +148,7 @@ process can be controlled in a much detailed way.)
 
 .. code-block:: python
 
-   >>> plot(u, interactive=True))
+   >>> plot(u, interactive=True)
 
 .. image:: poisson_0.png
    :scale: 75 %

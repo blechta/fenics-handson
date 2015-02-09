@@ -107,11 +107,11 @@ Flow control and functions
       >>> # Find divisible by 3
       >>> a_3 = []
       >>> for n in a:
-      ...     if a%3 == 0:
+      ...     if n%3 == 0:
       ...         a_3.append(n)
 
       >>> # The same can be achieved by list comprehension
-      >>> a_3 = [n for n in a if a%3 == 0]
+      >>> a_3 = [n for n in a if n%3 == 0]
 
       >>> def heaviside(x):
       ...     if x > 0.0:
