@@ -41,7 +41,7 @@ f = Expression("""pow(x[0] - 0.75, 2) + pow(x[1] - 0.75, 2) < 0.2*0.2
 
 # Equation coefficients
 K = Constant(1e-2) # thermal conductivity
-g = Constant(0.1) # Neumann heat flux
+g = Constant(0.01) # Neumann heat flux
 b = Expression(("-(x[1] - 0.5)", "x[0] - 0.5")) # convecting velocity
 
 # Define boundary measure on Neumann part of boundary
@@ -62,26 +62,30 @@ dt = 0.1
 theta = Constant(0.5) # Crank-Nicolson scheme
 
 # Define time discretized equation
-F = (1.0/dt)*inner(u-u0, v)*dx \
-  + theta*operator(u, v) \
-  + (1.0-theta)*operator(u0, v)
+F = (1.0/dt)*inner(u-u0, v)*dx + theta*operator(u, v) + (1.0-theta)*operator(u0, v)
 
 # Define boundary condition
 bc = DirichletBC(V, Constant(0.0), boundary_parts, 2)
-
-# Create file for storing results
-f = File("results/u.xdmf")
-
-# Prepare initial condition
-u0.interpolate(ic)
 
 # Prepare solution function and solver
 u = Function(V)
 problem = LinearVariationalProblem(lhs(F), rhs(F), u, bc)
 solver  = LinearVariationalSolver(problem)
 
+# Prepare initial condition
+u0.interpolate(ic)
+
+# Create file for storing results
+f = File("results/u.xdmf")
+
 # Time-stepping
 t = 0.0
+u.rename("u", "temperature")
+u.interpolate(ic)
+
+# save initial solution
+f << u
+
 while t < t_end:
 
     # Solve the problem
