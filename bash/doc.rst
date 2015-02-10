@@ -118,6 +118,9 @@ Pressing following control keys will send signal to the foreground job
 Cluster job queues usage
 ------------------------
 
-.. todo::
+``qstat``
+     status of the computational queue
+``qsub -I -q queue1 -l nodes=1:ppn=1``
+     open an interactive session with 1 cpu
 
-   Add job queueing intro.
+More details on `snehurka web <http://cluster.karlin.mff.cuni.cz/pouziti-clusteru/spravce-uloh-pbs/>`_
