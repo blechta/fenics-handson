@@ -28,6 +28,7 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
 
     # Get mesh and prepare boundary measure
     mesh = facet_function.mesh()
+    gdim = mesh.geometry().dim()
     ds = Measure("ds", subdomain_data=facet_function)
 
     # Build function space
@@ -139,6 +140,7 @@ def geometry_2d():
     right = AutoSubDomain(lambda x: near(x[0], x1))
     left .mark(boundary_parts, 1)
     right.mark(boundary_parts, 2)
+    boundary_parts._mesh = mesh # Workaround memory corruption bug
     return boundary_parts
 
 
@@ -152,6 +154,7 @@ def geometry_3d():
     right = AutoSubDomain(lambda x: near(x[0], x1))
     left .mark(boundary_parts, 1)
     right.mark(boundary_parts, 2)
+    boundary_parts._mesh = mesh # Workaround memory corruption bug
     return boundary_parts
 
 
