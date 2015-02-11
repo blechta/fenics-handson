@@ -157,6 +157,6 @@ def geometry_3d():
 
 if __name__ == '__main__':
 
-    solve_elasticity(geometry_2d(), 1e3, 0.3, 0.1, 20.0)
-    solve_elasticity(geometry_2d(), 1e3, 0.5, 0.1, 20.0)
-    solve_elasticity(geometry_3d(), 1e3, 0.3, 0.1, 20.0)
+    solve_elasticity(geometry_2d(), 1e3, 0.3, 0.1, 20.0, 'results_0')
+    solve_elasticity(geometry_2d(), 1e3, 0.5, 0.1, 20.0, 'results_1')
+    solve_elasticity(geometry_3d(), 1e3, 0.3, 0.1, 20.0, 'results_2')
