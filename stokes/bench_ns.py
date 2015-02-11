@@ -30,6 +30,9 @@ geometry = mshr.Rectangle(Point(0.0,0.0), Point(L, W)) \
 # Build mesh
 mesh = mshr.generate_mesh(geometry, 50)
 
+# Material parameters
+nu = Constant(0.001)
+
 # Construct facet markers
 bndry = FacetFunction("size_t", mesh)
 for f in facets(mesh):
@@ -43,7 +46,10 @@ for f in facets(mesh):
     elif mp.distance(center) <= radius: # cylinder
         bndry[f] = 5
 
-# Build function spaces (Taylor-Hood)
+ds = Measure("ds")[bndry]
+
+
+# Define function spaces (Taylor-Hood)
 V = VectorFunctionSpace(mesh, "CG", 2)
 P = FunctionSpace(mesh, "CG", 1)
 W = MixedFunctionSpace([V, P])
@@ -62,30 +68,38 @@ bcs = [bc_cylinder, bc_walls, bc_in]
 
 # Define unknown and test function(s)
 (_v, _p) = TestFunctions(W)
-(v, p) = TrialFunctions(W)
-
-# Define variational form for Stokes
-def a(u,v):
-    return inner(grad(u), grad(v))*dx
-def b(p,v):
-    return p*div(v)*dx
-def L(v):
-    return inner(Constant((0.0,0.0)), v)*dx
-
-F = a(v,_v) + b(p,_v) + b(_p,v) - L(_v)
-
 w = Function(W)
-solve(lhs(F)==rhs(F),w,bcs)
+(v, p) = split(w)
 
-# Extract solutions
-(v, p) = w.split()
-
-# Report in,out fluxes
 n = FacetNormal(mesh)
-ds = Measure("ds", subdomain_data=bndry)
+I = Identity(v.geometric_dimension())    # Identity tensor
 
-print "Inflow flux:  %e" % assemble(inner(v, n)*ds(1))
-print "Outflow flux: %e" % assemble(inner(v, n)*ds(2))
+D = 0.5*(grad(v)+grad(v).T)
+S = 2*nu*D
+T = -p*I + S
+
+# Define variational forms
+F = inner(T, grad(_v))*dx + _p*div(v)*dx + inner(grad(v)*v, _v)*dx 
+
+J = derivative(F, w)
+problem=NonlinearVariationalProblem(F,w,bcs,J)
+solver=NonlinearVariationalSolver(problem)
+
+# Solve
+solver.solve()
+
+# Extract solutions:
+(v, p) = w.split(True)
+
+force = T*n
+D=(force[0]/0.002)*ds(5)
+L=(force[1]/0.002)*ds(5)
+
+# Assemble functionals
+drag = assemble(D)
+lift = assemble(L)
+
+print "drag= %e    lift= %e" % (drag , lift)
 
 # Save solution
 vfile = File("results/v.xdmf")

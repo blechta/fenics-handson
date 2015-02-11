@@ -11,8 +11,10 @@ Solve the following linear system of PDEs
         \quad\text{ in }\Omega, \\
    \operatorname{div} u &= 0
         \quad\text{ in }\Omega, \\
-   u &= u_\mathrm{D}
-        \quad\text{ in }\Omega_\mathrm{D}, \\
+   u &= 0
+        \quad\text{ on }\Gamma_\mathrm{D}, \\
+   u &= u_\mathrm{IN}
+        \quad\text{ on }\Gamma_\mathrm{IN}, \\
    \tfrac{\partial u}{\partial\mathbf{n}} &= g
         \quad\text{ on }\Gamma_\mathrm{N}, \\
 
@@ -20,119 +22,164 @@ using FE discretization with data
 
 * :math:`\Omega = [0, 2.2]x[0, 0.41] - B_{0.05}\left([0.2,0.2]\right)`
 * :math:`\Gamma_\mathrm{N} = \left\{ x = 2.2 \right\}`
-* :math:`\Gamma_\mathrm{D} = ` otherwise
+* :math:`\Gamma_\mathrm{IN} = \left\{ x = 0.0 \right\}` 
+* :math:`\Gamma_\mathrm{D} = \Gamma_\mathrm{W} \cup \Gamma_\mathrm{S}` 
+* :math:`u_\mathrm{IN} = \left( 0.3 \frac{4}{0.41^2} y (0.41-y) , 0 \right)`
 
-where :math:`B_R(\mathbf{z})` is a ball of radius :math:`R` and center
+where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
 :math:`\mathbf{z}` 
 
+.. image:: geometry.png
+   :align: center
+   :width: 70%
+   :target: http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark1_re20.html
+      
 ..
 
-  **Task 1.** Discretize the equation in time and write variational formulation
-  of the problem.
+  **Task 1.** Write the variational formulation of the problem and
+  discretize the equation by mixed finite element method.
 
   **Task 2.** Build mesh, prepare facet function marking
   :math:`\Gamma_\mathrm{N}` and :math:`\Gamma_\mathrm{D}` and plot it to
   check its correctness.
 
-      *Hint.* Use the mshr component of fenics `subdomains-poisson demo
-      <http://fenicsproject.org/documentation/dolfin/1.5.0/python/demo/
-      documented/subdomains-poisson/python/documentation.html#implementation>`_.
-      (Follow a construction of ``boundaries`` object therein.)
+      *Hint.* Use the mshr component of fenics - see `mshr documentation
+      <https://bitbucket.org/benjamik/mshr/wiki/API>`_
+      
+      .. code-block:: python
+
+         import mshr
+
+         # Define domain
+         center = Point(0.2, 0.2)
+         radius = 0.05
+         L = 2.2
+         W = 0.41
+         geometry =  mshr.Rectangle(Point(0.0,0.0), Point(L, W)) \
+                    -mshr.Circle(center, radius, 10)
+
+         # Build mesh
+         mesh = mshr.generate_mesh(geometry, 50)
+
+
+      *Hint.* Try yet another way to mark the boundaries by direct
+      access to the mesh entities by ``facets(mehs)``,
+      ``vertices(mesh)``, ``cells(mesh)``
+      
+      .. code-block:: python
+
+         # Construct facet markers
+         bndry = FacetFunction("size_t", mesh)
+         for f in facets(mesh):
+              mp = f.midpoint()
+              if near(mp[0], 0.0): bndry[f] = 1  # inflow
+              elif near(mp[0], L): bndry[f] = 2  # outflow
+              elif near(mp[1], 0.0) or near(mp[1], W): bndry[f] = 3  # walls
+              elif mp.distance(center) <= radius:      bndry[f] = 5  # cylinder
+         
+         plot(boundary_parts, interactive=True)
+
+                                                          
+  **Task 3.** Construct the mixed finite element space and the
+  bilinear and linear forms together with the ``DirichletBC`` object.
+
+      *Hint.* Use for example the stable Taylor-Hood finite elements.
+      
+      .. code-block:: python
+
+         # Build function spaces (Taylor-Hood)
+         V = VectorFunctionSpace(mesh, "Lagrange", 2)
+         P = FunctionSpace(mesh, "Lagrange", 1)
+         W = MixedFunctionSpace([V, P])
+
+      *Hint.* To define Dirichlet BC on subspace use the ``W.sub`` method.
+
+      .. code-block:: python
+                      
+         noslip = Constant((0, 0))
+         bc_walls = DirichletBC( W.sub(0) , noslip , bndry , 3 )
+
+      *Hint.* To build the forms use the ``split`` method or function
+      to access the components of the mixed space.
+
+      .. code-block:: python
+         
+         # Define unknown and test function(s)
+         (v_, p_) = TestFunctions(W)
+         (v , p)  = TrialFunctions(W)
+
+
+      Then you can define the forms for example as:
 
       .. code-block:: python
 
-         mesh = UnitSquareMesh(10, 10, 'crossed')
+          def a(u,v): return inner(grad(u), grad(v))*dx
+          def b(p,v): return p*div(v)*dx
+          def L(v):   return inner(f, v)*dx
 
-         # Create boundary markers
-         boundary_parts = FacetFunction('size_t', mesh)
-         left   = AutoSubDomain(lambda x: near(x[0], 0.0))
-         right  = AutoSubDomain(lambda x: near(x[0], 1.0))
-         bottom = AutoSubDomain(lambda x: near(x[1], 0.0))
-         left  .mark(boundary_parts, 1)
-         right .mark(boundary_parts, 2)
-         bottom.mark(boundary_parts, 2)
-         plot(boundary_parts, interactive=True)
+          F = a(v,v_) + b(p,v_) + b(p_,v) - L(v_)
 
-                      
-  **Task 3.** Define expressions :math:`\mathbf{b}`, :math:`f`, :math:`u_0`
-  and plot them.
 
-        *Hint.*
-        According to your personal taste, get hint at `Expression class documentation
-        <http://fenicsproject.org/documentation/dolfin/1.5.0/python/
-        programmers-reference/functions/expression/Expression.html>`_ or any
-        `documented demo <http://fenicsproject.org/documentation/dolfin/1.5.0/
-        python/demo/index.html>`_. Use any kind of expression you wish (subclassing
-        Python ``Expression``, oneline C++, subclassing C++ ``Expression``).
+      And solve by:
 
-        .. code-block:: python
+      .. code-block:: python
 
-           # python Expression subclass
-           class b_Expression(Expression):
-               def eval(self, value, x):
-                   vx = x[0] - 0.5
-                   vy = x[1] - 0.5
-                   value[0] = -vy
-                   value[1] =  vx
-               def value_shape(self):
-                   return (2,)
-
-           b = b_Expression()
-
-        .. code-block:: python
-
-           # oneline C++
-           b = Expression(("-(x[1] - 0.5)", "x[0] - 0.5"))
-           
-                                                        
-  **Task 4.** Use facet markers from Task 2 to define ``DirichletBC`` object
-  and ``Measure`` for integration along :math:`\Gamma_\mathrm{N}`.
-
-     *Hint* See `UFL class Measure <http://fenicsproject.org/documentation/ufl/1.5.0/ufl.html#ufl.classes.Measure>`_ 
-
-     .. code-block:: python
-
-        dsN = Measure("ds", subdomain_id=1, subdomain_data=boundary_parts)
-             
+          w = Function(W)
+          solve(lhs(F)==rhs(F), w, bcs)
+          (v,p)=w.split(w)
+            
                           
-  **Task 5.** Now proceed to variational formulation and time-stepping loop.
-  Write bilinear and linear form representing PDE. How is solution at previous
-  time-step represented therein?
+  **Task 4.** Now modify the problem to the Navier-Stokes equations
+  and compute the `DFG-flow around cylinder benchmark
+  <http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark1_re20.html>`_
 
-    *Hint.* Use ``LinearVariationalProblem`` and ``LinearVariationalSolver``
-    classes so that ``solve`` method of an instance of the latter is called
-    every time-step while nothing else is touched excepted updating value
-    of solution from previous time-step figuring in variational form. You
-    can use for instance ``Function.assign`` method to do that.
+    *Hint.* You can use generic ``solve`` function or
+    ``NonlinearVariationalProblem`` and ``NonlinearVariationalSolver``
+    classes. 
 
+    .. code-block:: python
 
-  **Task 6.** Add solution output for external visualisation, like
-  Paraview.
+       (_v, _p) = TestFunctions(W)
+       w = Function(W)
+       (v, p) = split(w)
 
-     *Hint* See `Poisson demo <http://fenicsproject.org/documentation/dolfin/1.5.0/python/demo/documented/poisson/python/documentation.html#index-0>`_
+       I = Identity(v.geometric_dimension())    # Identity tensor
 
-     .. code-block:: python
-                             
-        # Create file for storing results
-        f = File("results/u.xdmf")
+       D = 0.5*(grad(v)+grad(v).T)  # or D=sym(grad(v))
+       T = -p*I + 2*nu*D
 
-        u.rename("u", "temperature")
-        f << u
+       # Define variational forms
+       F = inner(T, grad(_v))*dx + _p*div(v)*dx + inner(grad(v)*v,_v)*dx
+
+       
+    
+    *Hint.* Use ``Assemble`` function to evaluate the lift and drag functionals.
+
+    .. code-block:: python
+
+       (v, p) = w.split(True)
+
+       force = T*n
+       D=(force[0]/0.002)*ds(5)
+       L=(force[1]/0.002)*ds(5)
+
+       drag = assemble(D)
+       lift = assemble(L)
+
+       print "drag= %e    lift= %e" % (drag , lift)
 
                         
 .. only:: solution
 
-   Reference solution
-   ------------------
+   Reference solution - Stokes problem
+   -----------------------------------
 
-   .. literalinclude:: impl.py
+   .. literalinclude:: stokes.py
       :start-after: # Begin code
 
 
-.. only:: solution
+   Reference solution - benchmark problem
+   --------------------------------------
 
-   Reference solution
-   ------------------
-
-   .. literalinclude:: stokes.py
+   .. literalinclude:: bench_ns.py
       :start-after: # Begin code
