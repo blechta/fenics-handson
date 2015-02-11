@@ -31,6 +31,7 @@ in space with data
   \operatorname{dist}\left(\mathbf{x}, \left[\frac{1}{4}, \frac{1}{4}\right]\right)
   \right)
   \chi_{ B_{1/5}\left(\left[\frac{1}{4}, \frac{1}{4}\right]\right) }`
+* :math:`u_\mathrm{D} = 0`
 
 where :math:`\chi_X` is a characteristic function of set :math:`X`,
 :math:`B_R(\mathbf{z})` is a ball of radius :math:`R` and center
