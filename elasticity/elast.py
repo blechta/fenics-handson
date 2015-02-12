@@ -46,9 +46,9 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
            for i in [0, 1]]
 
     # Define constitutive law
-    mu = Constant(E/(2.0*(1.0 + nu)))
     def stress(u, p):
         """Returns Cauchy stress and (local) mass balance for given u, p."""
+        mu = Constant(E/(2.0*(1.0 + nu)))
         F = I + grad(u)
         J = det(F)
         B = F * F.T
@@ -81,8 +81,8 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
     T0, pp0 = stress(u0, p0)
     F1 = (1.0/dt)*inner(u-u0, _u)*dx \
        - ( q*inner(v, _u)*dx + (1.0-q)*inner(v0, _u)*dx )
-    F2a = mu*inner(T, grad(_v))*dx + pp*_p*dx
-    F2b = mu*inner(T0, grad(_v))*dx + pp0*_p*dx
+    F2a = inner(T, grad(_v))*dx + pp*_p*dx
+    F2b = inner(T0, grad(_v))*dx + pp0*_p*dx
     F2 = (1.0/dt)*inner(v-v0, _v)*dx + q*F2a + (1.0-q)*F2b
 
     # Traction at boundary
@@ -172,8 +172,8 @@ def geometry_3d():
 
 if __name__ == '__main__':
 
-    solve_elasticity(geometry_2d(20.0), 1e3, 0.3, 0.25, 10.0, 'results_2d_comp')
-    solve_elasticity(geometry_2d(20.0), 1e3, 0.5, 0.25, 10.0, 'results_2d_incomp')
-    solve_elasticity(geometry_2d(80.0), 1e3, 0.3, 0.25,  5.0, 'results_2d_long_comp')
-    solve_elasticity(geometry_3d(), 1e3, 0.3, 0.50, 10.0, 'results_3d_comp')
+    solve_elasticity(geometry_2d(20.0), 1e5, 0.3, 0.25, 5.0, 'results_2d_comp')
+    solve_elasticity(geometry_2d(20.0), 1e5, 0.5, 0.25, 5.0, 'results_2d_incomp')
+    solve_elasticity(geometry_2d(80.0), 1e5, 0.3, 0.25, 5.0, 'results_2d_long_comp')
+    solve_elasticity(geometry_3d(),     1e5, 0.3, 0.50, 5.0, 'results_3d_comp')
     interactive()
