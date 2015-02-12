@@ -25,6 +25,10 @@ parameters['form_compiler']['quadrature_degree'] = 4
 
 
 def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
+    """Solves elasticity problem with Young modulus E, Poisson ration nu,
+    timestep dt, until T_end and with output data going to output_dir.
+    Geometry is defined by facet_function which also defines rest boundary
+    by marker 1 and traction boundary by marker 2."""
 
     # Get mesh and prepare boundary measure
     mesh = facet_function.mesh()
@@ -44,6 +48,7 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
     # Define constitutive law
     mu = Constant(E/(2.0*(1.0 + nu)))
     def stress(u, p):
+        """Returns Cauchy stress and (local) mass balance for given u, p."""
         F = I + grad(u)
         J = det(F)
         B = F * F.T
@@ -130,6 +135,8 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
 
 
 def geometry_2d():
+    """Prepares 2D geometry. Returns facet function with 1, 2 on parts of
+    the boundary."""
     n = 4
     x0 = 0.0
     x1 = 20.0
@@ -146,6 +153,8 @@ def geometry_2d():
 
 
 def geometry_3d():
+    """Prepares 3D geometry. Returns facet function with 1, 2 on parts of
+    the boundary."""
     mesh = Mesh('lego_beam.xml')
     gdim = mesh.geometry().dim()
     x0 = mesh.coordinates()[:, 0].min()

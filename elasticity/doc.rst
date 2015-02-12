@@ -7,35 +7,76 @@ Deformation of elastic material
 Find approximate solution to following non-linear system of PDEs
 
 .. math::
-   \vec{u}_t  &= \vec{v}  \quad\text{ in }\Omega\times[0, T], \\
-   \vec{v}_t  &= \operatorname{div} T + \vec{f}  \quad\text{ in }\Omega\times[0, T], \\
-   u &= u_\mathrm{D}
-        \quad\text{ in }\Omega_\mathrm{D}\times[0, T], \\
-   \tfrac{\partial u}{\partial\mathbf{n}} &= g
+   \vec{u}_t  &= \vec{v}
+        \quad\text{ in }\Omega\times[0, T], \\
+   \vec{v}_t  &= \operatorname{div}\mathbb{T}
+        \quad\text{ in }\Omega\times[0, T], \\
+   J^2 - 1 &= \left\{\begin{array}{ll}
+             0         && \text{incompressible case} \\
+            -p/\lambda && \text{compressible case}
+        \end{array}\right.
+        \quad\text{ in }\Omega\times[0, T], \\
+   \vec{u} = \vec{v} &= 0
+        \quad\text{ on }\Gamma_\mathrm{D}\times[0, T], \\
+   \mathbb{T}\vec{n} &= \vec{g}
         \quad\text{ on }\Gamma_\mathrm{N}\times[0, T], \\
-   u &= u_0
+   \mathbb{T}\vec{n} &= 0
+        \quad\text{ on }\Omega\backslash\Gamma_\mathrm{D}\cup\Gamma_\mathrm{N}\times[0, T], \\
+   \vec{u} = \vec{v} &= 0
         \quad\text{ on }\Omega\times{0} \\
+
+where
+
+.. math::
+   \mathbb{F} &= \mathbb{I} + \nabla\vec{u}, \\
+   J &= \det{\mathbb{F}}, \\
+   \mathbb{B} &= \mathbb{F}\,\mathbb{F}^\top, \\
+   T &= -p\mathbb{I} + \mu (\mathbb{B-I})
 
 using :math:`\theta`-scheme discretization in time and arbitrary discretization
 in space with data
 
-* :math:`\Omega = [0, 1]^2`
-* :math:`T = 10`
-* :math:`\Gamma_\mathrm{N} = \left\{ x = 0 \right\}`
-* :math:`\Gamma_\mathrm{D} = \left\{ x = 1 \right\} \cup \left\{ y = 0 \right\}`
-* :math:`g = 0.1`
-* :math:`K = 0.01`
-* :math:`\mathbf{b} = \left( -y-\tfrac{1}{2}, x-\tfrac{1}{2} \right)`
-* :math:`f = \chi_{ B_{1/5}\left(\left[\frac{3}{4}, \frac{3}{4}\right]\right) }`
-* :math:`u_0(\mathbf{x}) = \left( 1 - 25
-  \operatorname{dist}\left(\mathbf{x}, \left[\frac{1}{4}, \frac{1}{4}\right]\right)
-  \right)
-  \chi_{ B_{1/5}\left(\left[\frac{1}{4}, \frac{1}{4}\right]\right) }`
+.. math::
+   \Omega &= \left\{\begin{array}{ll}
+               [0, 20] \times [0, 1]
+               && \text{in 2D} \\
+               \text{lego brick } 10 \times 2 \times 1H
+               && \text{in 3D}
+        \end{array}\right. \\
+   \Gamma_\mathrm{D} &= \left\{\begin{array}{ll}
+               \left\{ x=0 \right\}
+               && \text{in 2D} \\
+               \left\{ x = \inf_{\vec{x}\in\Omega}{x} \right\}
+               && \text{in 3D}
+        \end{array}\right. \\
+   \Gamma_\mathrm{N} &= \left\{\begin{array}{ll}
+               \left\{ x=20 \right\}
+               && \text{in 2D} \\
+               \left\{ x = \sup_{\vec{x}\in\Omega}{x} \right\}
+               && \text{in 3D}
+        \end{array}\right. \\
+   T &= 10, \\
+   \vec{g} &= \left\{\begin{array}{ll}
+             J \mathbb{F}^{-\top}
+               \Bigl[\negthinspace\begin{smallmatrix}0\\100t\end{smallmatrix}\Bigr]
+               && \text{in 2D} \\
+             J \mathbb{F}^{-\top}
+               \Bigl[\negthinspace\begin{smallmatrix}0\\0\\100t\end{smallmatrix}\Bigr]
+               && \text{in 3D}
+        \end{array}\right. \\
+   \mu &= \frac{E}{2(1+\nu)}, \\
+   \lambda &= \left\{\begin{array}{ll}
+             \infty && \text{incompressible case} \\
+             \frac{E\nu}{(1+\nu)(1-2\nu)} && \text{compressible case}
+        \end{array}\right. \\
+   E &= 1000, \\
+   \nu &= \left\{\begin{array}{ll}
+             1/2 && \text{incompressible case} \\
+             0.3 && \text{compressible case}
+        \end{array}\right.
 
-where :math:`\chi_X` is a characteristic function of set :math:`X`,
-:math:`B_R(\mathbf{z})` is a ball of radius :math:`R` and center
-:math:`\mathbf{z}` and :math:`\operatorname{dist}(\mathbf{p}, \mathbf{q})`
-is Euclidian distance between points :math:`\mathbf{p}`, :math:`\mathbf{q}`.
+Mesh file of lego brick :download:`lego_beam.xml`.
+
 
 ..
 
@@ -46,34 +87,57 @@ is Euclidian distance between points :math:`\mathbf{p}`, :math:`\mathbf{q}`.
    :math:`\Gamma_\mathrm{N}` and :math:`\Gamma_\mathrm{D}` and plot it to
    check its correctness.
 
-      *Hint.* You can follow the procedure from `subdomains-poisson demo
-      <http://fenicsproject.org/documentation/dolfin/1.5.0/python/demo/
-      documented/subdomains-poisson/python/documentation.html#implementation>`_.
-      (Follow a construction of ``boundaries`` object therein.)
+     *Hint.*
+     You can get coordinates of :math:`\Gamma_\mathrm{D}` by something like
+     ``x0 = mesh.coordinates()[:, 0].min()`` for lego mesh. Analogically
+     for :math:`\Gamma_\mathrm{N}`.
 
-   **Task 3.** Define expressions :math:`\mathbf{b}`, :math:`f`, :math:`u_0`
-   and plot them.
+   **Task 3.** Define Cauchy stress and variational formulation of the problem.
 
      *Hint.*
-     According to your personal taste, get hint at `Expression class documentation
-     <http://fenicsproject.org/documentation/dolfin/1.5.0/python/
-     programmers-reference/functions/expression/Expression.html>`_ or any
-     `documented demo <http://fenicsproject.org/documentation/dolfin/1.5.0/
-     python/demo/index.html>`_. Use any kind of expression you wish (subclassing
-     Python ``Expression``, oneline C++, subclassing C++ ``Expression``).
+     Get geometric dimension by ``gdim = mesh.geometry().dim()`` to be able
+     to write the code independently of the dimension.
 
-  **Task 4.** Use facet markers from Task 2 to define ``DirichletBC`` object
-  and ``Measure`` for integration along :math:`\Gamma_\mathrm{N}`.
+   **Task 4.** Prepare a solver and
+   write simple time-stepping loop.
 
-  **Task 5.** Now proceed to variational formulation and time-stepping loop.
-  Write bilinear and linear form representing PDE. How is solution at previous
-  time-step represented therein?
+     Prepare a solver by
 
-    *Hint.* Use ``LinearVariationalProblem`` and ``LinearVariationalSolver``
-    classes so that ``solve`` method of an instance of the latter is called
-    every time-step while nothing else is touched excepted updating value
-    of solution from previous time-step figuring in variational form. You
-    can use for instance ``Function.assign`` method to do that.
+     .. code-block:: python
+
+        problem = NonlinearVariationalProblem(F, w, bcs=bcs, J=J)
+        solver = NonlinearVariationalSolver(problem)
+        solver.parameters['newton_solver']['relative_tolerance'] = 1e-6
+        solver.parameters['newton_solver']['linear_solver'] = 'mumps'
+
+     to increase the tolerance reasonably and employ powerful LU solver MUMPS.
+
+     Prepare nice plotting of displacement by
+
+     .. code-block:: python
+
+        plt = plot(u, mode="displacement", interactive=False, wireframe=True)
+
+     and then just update a plot by ``plt.plot(u)`` every time-step.
+
+   **Task 5.** Tune the code for getting a 3D solution in a reasonable time.
+
+     Use a following optimization
+
+     .. code-block:: python
+
+        parameters['form_compiler']['representation'] = 'uflacs'
+        parameters['form_compiler']['optimize'] = True
+        parameters['form_compiler']['quadrature_degree'] = 4
+
+     and P1/P1/P1 spaces.
+
+     You can also try to run the 3D problem in parallel. You can disable
+     plotting from commandline by
+
+     .. code-block:: bash
+
+        DOLFIN_NOPLOT=1 mpirun -n 4 python spam_eggs.py
 
 
 .. only:: solution
