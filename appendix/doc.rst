@@ -1,4 +1,4 @@
-Apendix
+Appendix
 =======
 
 Mesh import
