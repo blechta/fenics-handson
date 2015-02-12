@@ -77,12 +77,12 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
     I = Identity(W.mesh().geometry().dim())
 
     # Balance of momentum
-    T, pp = stress(u, p)
-    T0, pp0 = stress(u0, p0)
+    S, pp = stress(u, p)
+    S0, pp0 = stress(u0, p0)
     F1 = (1.0/dt)*inner(u-u0, _u)*dx \
        - ( q*inner(v, _u)*dx + (1.0-q)*inner(v0, _u)*dx )
-    F2a = inner(T, grad(_v))*dx + pp*_p*dx
-    F2b = inner(T0, grad(_v))*dx + pp0*_p*dx
+    F2a = inner(S, grad(_v))*dx + pp*_p*dx
+    F2b = inner(S0, grad(_v))*dx + pp0*_p*dx
     F2 = (1.0/dt)*inner(v-v0, _v)*dx + q*F2a + (1.0-q)*F2b
 
     # Traction at boundary
