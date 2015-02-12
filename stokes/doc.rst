@@ -29,10 +29,10 @@ using FE discretization with data
 where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
 :math:`\mathbf{z}` 
 
-.. image:: geometry.png
-   :align: center
-   :width: 70%
-   :target: http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark1_re20.html
+  .. image:: geometry.png
+     :align: center
+     :width: 70%
+     :target: http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark1_re20.html
       
 ..
 
