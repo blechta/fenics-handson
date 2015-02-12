@@ -14,3 +14,4 @@ FEniCS tutorial
    elasticity/doc
    p_laplace/doc
    helmholtz/doc
+   appendix/doc
