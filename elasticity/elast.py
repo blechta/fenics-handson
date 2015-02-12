@@ -47,7 +47,8 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
 
     # Define constitutive law
     def stress(u, p):
-        """Returns Cauchy stress and (local) mass balance for given u, p."""
+        """Returns 1st Piola-Kirchhoff stress and (local) mass balance
+        for given u, p."""
         mu = Constant(E/(2.0*(1.0 + nu)))
         F = I + grad(u)
         J = det(F)
