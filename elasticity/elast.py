@@ -53,6 +53,7 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
         J = det(F)
         B = F * F.T
         T = -p*I + mu*(B-I) # Cauchy stress
+        S = J*T*inv(F).T # 1st Piola-Kirchhoff stress
         if nu == 0.5:
             # Incompressible
             pp = J-1.0
@@ -60,7 +61,7 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
             # Compressible
             lmbd = Constant(E*nu/((1.0 + nu)*(1.0 - 2.0*nu)))
             pp = 1.0/lmbd*p + (J*J-1.0)
-        return T, pp
+        return S, pp
 
     # Timestepping theta-method parameters
     q = Constant(0.5)
@@ -78,7 +79,8 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
     # Balance of momentum
     T, pp = stress(u, p)
     T0, pp0 = stress(u0, p0)
-    F1 = (1.0/dt)*inner(u-u0, _u)*dx - q*inner(v, _u)*dx + (1.0-q)*inner(v0, _u)*dx
+    F1 = (1.0/dt)*inner(u-u0, _u)*dx \
+       - ( q*inner(v, _u)*dx + (1.0-q)*inner(v0, _u)*dx )
     F2a = mu*inner(T, grad(_v))*dx + pp*_p*dx
     F2b = mu*inner(T0, grad(_v))*dx + pp0*_p*dx
     F2 = (1.0/dt)*inner(v-v0, _v)*dx + q*F2a + (1.0-q)*F2b
@@ -134,12 +136,12 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
         plt.plot(u)
 
 
-def geometry_2d():
+def geometry_2d(length):
     """Prepares 2D geometry. Returns facet function with 1, 2 on parts of
     the boundary."""
     n = 4
     x0 = 0.0
-    x1 = 20.0
+    x1 = x0 + length
     y0 = 0.0
     y1 = 1.0
     mesh = RectangleMesh(x0, y0, x1, y1, int((x1-x0)*n), int((y1-y0)*n), 'crossed')
@@ -170,6 +172,8 @@ def geometry_3d():
 
 if __name__ == '__main__':
 
-    solve_elasticity(geometry_2d(), 1e3, 0.3, 0.25, 10.0, 'results_2d_comp')
-    solve_elasticity(geometry_2d(), 1e3, 0.5, 0.25, 10.0, 'results_2d_incomp')
+    solve_elasticity(geometry_2d(20.0), 1e3, 0.3, 0.25, 10.0, 'results_2d_comp')
+    solve_elasticity(geometry_2d(20.0), 1e3, 0.5, 0.25, 10.0, 'results_2d_incomp')
+    solve_elasticity(geometry_2d(80.0), 1e3, 0.3, 0.25,  5.0, 'results_2d_long_comp')
     solve_elasticity(geometry_3d(), 1e3, 0.3, 0.50, 10.0, 'results_3d_comp')
+    interactive()
