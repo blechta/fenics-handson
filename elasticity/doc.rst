@@ -9,7 +9,7 @@ Find approximate solution to following non-linear system of PDEs
 .. math::
    \vec{u}_t  &= \vec{v}
         \quad\text{ in }\Omega\times[0, T], \\
-   \vec{v}_t  &= \operatorname{div}\mathbb{T}
+   \vec{v}_t  &= \operatorname{div} (J \mathbb{T} \mathbb{F}^{\top})
         \quad\text{ in }\Omega\times[0, T], \\
    J^2 - 1 &= \left\{\begin{array}{ll}
              0         && \text{incompressible case} \\
