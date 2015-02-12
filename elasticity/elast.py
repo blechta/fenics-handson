@@ -18,7 +18,7 @@
 # Begin code
 from dolfin import *
 
-# Use UFLACS to speed-up assembly
+# Use UFLACS to speed-up assembly and limit quadrature degree
 parameters['form_compiler']['representation'] = 'uflacs'
 parameters['form_compiler']['optimize'] = True
 parameters['form_compiler']['quadrature_degree'] = 4
@@ -32,9 +32,10 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
     ds = Measure("ds", subdomain_data=facet_function)
 
     # Build function space
-    U = VectorFunctionSpace(mesh, "Lagrange", 2)
+    U = VectorFunctionSpace(mesh, "Lagrange", 1)
     P = FunctionSpace(mesh, "Lagrange", 1)
     W = MixedFunctionSpace([U, U, P])
+    info("Num DOFs %d" % W.dim())
 
     # Prepare BCs
     bcs = [DirichletBC(W.sub(i), gdim*(0.0,), facet_function, 1)
@@ -160,6 +161,6 @@ def geometry_3d():
 
 if __name__ == '__main__':
 
-    solve_elasticity(geometry_2d(), 1e3, 0.3, 0.1, 20.0, 'results_0')
-    solve_elasticity(geometry_2d(), 1e3, 0.5, 0.1, 20.0, 'results_1')
-    solve_elasticity(geometry_3d(), 1e3, 0.3, 0.1, 20.0, 'results_2')
+    solve_elasticity(geometry_2d(), 1e3, 0.3, 0.25, 10.0, 'results_2d_comp')
+    solve_elasticity(geometry_2d(), 1e3, 0.5, 0.25, 10.0, 'results_2d_incomp')
+    solve_elasticity(geometry_3d(), 1e3, 0.3, 0.50, 10.0, 'results_3d_comp')
