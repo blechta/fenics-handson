@@ -55,7 +55,7 @@ in space with data
                \left\{ x = \sup_{\vec{x}\in\Omega}{x} \right\}
                && \text{in 3D}
         \end{array}\right. \\
-   T &= 10, \\
+   T &= 5, \\
    \vec{g} &= \left\{\begin{array}{ll}
              J \mathbb{F}^{-\top}
                \Bigl[\negthinspace\begin{smallmatrix}0\\100t\end{smallmatrix}\Bigr]
@@ -69,7 +69,7 @@ in space with data
              \infty && \text{incompressible case} \\
              \frac{E\nu}{(1+\nu)(1-2\nu)} && \text{compressible case}
         \end{array}\right. \\
-   E &= 1000, \\
+   E &= 10^5, \\
    \nu &= \left\{\begin{array}{ll}
              1/2 && \text{incompressible case} \\
              0.3 && \text{compressible case}
