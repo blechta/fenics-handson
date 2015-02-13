@@ -104,8 +104,8 @@ latter part.
         for j in range(eigensolver.get_number_converged()):
             r, c, rx, cx = eigensolver.get_eigenpair(j)
             eig_vec[:] = rx
-            plot(eig, 'Eigenvector to eigenvalue %d'%r)
-            interative()
+            plot(eig, title='Eigenvector to eigenvalue %g'%r)
+            interactive()
 
    **Task 4.** Write function which takes a tuple of functions and
    :math:`L^2`-orthogonalizes them using Gramm-Schmidt algorithm.
