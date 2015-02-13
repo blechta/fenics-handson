@@ -22,18 +22,18 @@ using FE discretization with data
 
 * :math:`\Omega = [0, 2.2]x[0, 0.41] - B_{0.05}\left([0.2,0.2]\right)`
 * :math:`\Gamma_\mathrm{N} = \left\{ x = 2.2 \right\}`
-* :math:`\Gamma_\mathrm{IN} = \left\{ x = 0.0 \right\}` 
-* :math:`\Gamma_\mathrm{D} = \Gamma_\mathrm{W} \cup \Gamma_\mathrm{S}` 
+* :math:`\Gamma_\mathrm{IN} = \left\{ x = 0.0 \right\}`
+* :math:`\Gamma_\mathrm{D} = \Gamma_\mathrm{W} \cup \Gamma_\mathrm{S}`
 * :math:`u_\mathrm{IN} = \left( 0.3 \frac{4}{0.41^2} y (0.41-y) , 0 \right)`
 
 where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
-:math:`\mathbf{z}` 
+:math:`\mathbf{z}`
 
   .. image:: geometry.png
      :align: center
      :width: 70%
      :target: http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark1_re20.html
-      
+
 ..
 
   **Task 1.** Write the variational formulation of the problem and
@@ -45,7 +45,7 @@ where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
 
       *Hint.* Use the mshr component of fenics - see `mshr documentation
       <https://bitbucket.org/benjamik/mshr/wiki/API>`_
-      
+
       .. code-block:: python
 
          import mshr
@@ -65,7 +65,7 @@ where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
       *Hint.* Try yet another way to mark the boundaries by direct
       access to the mesh entities by ``facets(mehs)``,
       ``vertices(mesh)``, ``cells(mesh)``
-      
+
       .. code-block:: python
 
          # Construct facet markers
@@ -76,15 +76,15 @@ where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
               elif near(mp[0], L): bndry[f] = 2  # outflow
               elif near(mp[1], 0.0) or near(mp[1], W): bndry[f] = 3  # walls
               elif mp.distance(center) <= radius:      bndry[f] = 5  # cylinder
-         
+
          plot(boundary_parts, interactive=True)
 
-                                                          
+
   **Task 3.** Construct the mixed finite element space and the
   bilinear and linear forms together with the ``DirichletBC`` object.
 
       *Hint.* Use for example the stable Taylor-Hood finite elements.
-      
+
       .. code-block:: python
 
          # Build function spaces (Taylor-Hood)
@@ -95,15 +95,15 @@ where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
       *Hint.* To define Dirichlet BC on subspace use the ``W.sub`` method.
 
       .. code-block:: python
-                      
+
          noslip = Constant((0, 0))
-         bc_walls = DirichletBC( W.sub(0) , noslip , bndry , 3 )
+         bc_walls = DirichletBC(W.sub(0), noslip, bndry, 3)
 
       *Hint.* To build the forms use the ``split`` method or function
       to access the components of the mixed space.
 
       .. code-block:: python
-         
+
          # Define unknown and test function(s)
          (v_, p_) = TestFunctions(W)
          (v , p)  = TrialFunctions(W)
@@ -127,15 +127,15 @@ where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
           w = Function(W)
           solve(lhs(F)==rhs(F), w, bcs)
           (v,p)=w.split(w)
-            
-                          
+
+
   **Task 4.** Now modify the problem to the Navier-Stokes equations
   and compute the `DFG-flow around cylinder benchmark
   <http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark1_re20.html>`_
 
     *Hint.* You can use generic ``solve`` function or
     ``NonlinearVariationalProblem`` and ``NonlinearVariationalSolver``
-    classes. 
+    classes.
 
     .. code-block:: python
 
@@ -151,24 +151,22 @@ where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
        # Define variational forms
        F = inner(T, grad(_v))*dx + _p*div(v)*dx + inner(grad(v)*v,_v)*dx
 
-       
-    
+
+
     *Hint.* Use ``Assemble`` function to evaluate the lift and drag functionals.
 
     .. code-block:: python
 
-       (v, p) = w.split(True)
-
        force = T*n
-       D=(force[0]/0.002)*ds(5)
-       L=(force[1]/0.002)*ds(5)
+       D = (force[0]/0.002)*ds(5)
+       L = (force[1]/0.002)*ds(5)
 
        drag = assemble(D)
        lift = assemble(L)
 
        print "drag= %e    lift= %e" % (drag , lift)
 
-                        
+
 .. only:: solution
 
    Reference solution - Stokes problem
