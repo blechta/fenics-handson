@@ -42,3 +42,17 @@ Applications built on top of FEniCS
 -----------------------------------
 
 See `Applications page of FEniCS project <http://fenicsproject.org/applications/>`_.
+
+
+What every computer scientist should know about floating-point arithmetic
+-------------------------------------------------------------------------
+
+(Goldberg, 1991) `pdf <http://www.karlin.mff.cuni.cz/~hron/NMMO403/
+What_every_computer_scientist_should_know_about_floating-point_
+arithmetic-Goldberg-1991.pdf>`_
+
+
+Periodic table of finite elements
+---------------------------------
+
+`femtable.org <http://femtable.org/>`_
