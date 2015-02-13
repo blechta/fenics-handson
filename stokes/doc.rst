@@ -169,15 +169,8 @@ where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
 
 .. only:: solution
 
-   Reference solution - Stokes problem
-   -----------------------------------
+   Reference solution
+   ------------------
 
    .. literalinclude:: stokes.py
-      :start-after: # Begin code
-
-
-   Reference solution - benchmark problem
-   --------------------------------------
-
-   .. literalinclude:: bench_ns.py
       :start-after: # Begin code
