@@ -64,13 +64,14 @@ bcs = [bc_cylinder, bc_walls, bc_in]
 n = FacetNormal(mesh)
 I = Identity(mesh.geometry().dim())
 ds = Measure("ds", subdomain_data=bndry)
+nu = Constant(0.001)
 
 
 def stokes():
 
     # Define variational forms for Stokes
     def a(u,v):
-        return inner(grad(u), grad(v))*dx
+        return inner(nu*grad(u), grad(v))*dx
     def b(p,v):
         return p*div(v)*dx
     def L(v):
@@ -97,7 +98,6 @@ def navier_stokes():
     u, p = split(w)
 
     # Define variational forms
-    nu = Constant(0.001)
     T = -p*I + 2.0*nu*sym(grad(u))
     F = inner(T, grad(v))*dx - q*div(u)*dx + inner(grad(u)*u, v)*dx
 
@@ -140,4 +140,9 @@ if __name__ == "__main__":
         ufile << u
         pfile << p
 
+        plot(u, title='velocity %s' % problem.__name__)
+        plot(p, title='pressure %s' % problem.__name__)
+
         end()
+
+    interactive()
