@@ -151,7 +151,7 @@ def geometry_2d(length):
     right = AutoSubDomain(lambda x: near(x[0], x1))
     left .mark(boundary_parts, 1)
     right.mark(boundary_parts, 2)
-    boundary_parts._mesh = mesh # Workaround memory corruption bug
+    boundary_parts._mesh = mesh # Workaround issue #467
     return boundary_parts
 
 
@@ -167,7 +167,7 @@ def geometry_3d():
     right = AutoSubDomain(lambda x: near(x[0], x1))
     left .mark(boundary_parts, 1)
     right.mark(boundary_parts, 2)
-    boundary_parts._mesh = mesh # Workaround memory corruption bug
+    boundary_parts._mesh = mesh # Workaround issue #467
     return boundary_parts
 
 
