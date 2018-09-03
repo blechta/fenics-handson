@@ -18,6 +18,7 @@
 # Begin code
 from dolfin import *
 import mshr
+import matplotlib.pyplot as plt
 
 # Define domain
 center = Point(0.2, 0.2)
@@ -31,7 +32,7 @@ geometry = mshr.Rectangle(Point(0.0, 0.0), Point(L, W)) \
 mesh = mshr.generate_mesh(geometry, 50)
 
 # Construct facet markers
-bndry = FacetFunction("size_t", mesh)
+bndry = MeshFunction("size_t", mesh, mesh.topology().dim()-1)
 for f in facets(mesh):
     mp = f.midpoint()
     if near(mp[0], 0.0): # inflow
@@ -44,9 +45,10 @@ for f in facets(mesh):
         bndry[f] = 5
 
 # Build function spaces (Taylor-Hood)
-V = VectorFunctionSpace(mesh, "CG", 2)
-P = FunctionSpace(mesh, "CG", 1)
-W = MixedFunctionSpace([V, P])
+P2 = VectorElement("P", mesh.ufl_cell(), 2)
+P1 = FiniteElement("P", mesh.ufl_cell(), 1)
+TH = MixedElement([P2, P1])
+W = FunctionSpace(mesh, TH)
 
 # No-slip boundary condition for velocity on walls and cylinder - boundary id 3
 noslip = Constant((0, 0))
@@ -54,7 +56,8 @@ bc_walls = DirichletBC(W.sub(0), noslip, bndry, 3)
 bc_cylinder = DirichletBC(W.sub(0), noslip, bndry, 5)
 
 # Inflow boundary condition for velocity - boundary id 1
-v_in = Expression(("0.3 * 4.0 * x[1] * (0.41 - x[1]) / ( 0.41 * 0.41 )", "0.0"))
+v_in = Expression(("0.3 * 4.0 * x[1] * (0.41 - x[1]) / ( 0.41 * 0.41 )", "0.0"),
+                  degree=2)
 bc_in = DirichletBC(W.sub(0), v_in, bndry, 1)
 
 # Collect boundary conditions
@@ -124,7 +127,7 @@ def navier_stokes():
 if __name__ == "__main__":
 
     for problem in [stokes, navier_stokes]:
-        begin("Running '%s'" % problem.__name__)
+        print("Running '%s'" % problem.__name__)
 
         # Call solver
         w = problem()
@@ -133,16 +136,15 @@ if __name__ == "__main__":
         u, p = w.split()
 
         # Save solution
-        ufile = File("results_%s/u.xdmf" % problem.__name__)
-        pfile = File("results_%s/p.xdmf" % problem.__name__)
         u.rename("u", "velocity")
         p.rename("p", "pressure")
-        ufile << u
-        pfile << p
+        with XDMFFile("results_%s/u.xdmf" % problem.__name__) as f:
+            f.write(u)
+        with XDMFFile("results_%s/p.xdmf" % problem.__name__) as f:
+            f.write(p)
 
+        plt.figure()
         plot(u, title='velocity %s' % problem.__name__)
+        plt.figure()
         plot(p, title='pressure %s' % problem.__name__)
-
-        end()
-
-    interactive()
+        plt.show()

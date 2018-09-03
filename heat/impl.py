@@ -1,4 +1,4 @@
-# Copyright (C) 2014, 2015 Jaroslav Hron, Jan Blechta
+# Copyright (C) 2014, 2015, 2018 Jaroslav Hron, Jan Blechta
 #
 # This file is part of FEniCS tutorial suite.
 #
@@ -17,13 +17,15 @@
 
 # Begin code
 from dolfin import *
+import matplotlib.pyplot as plt
 
 # Create mesh and build function space
 mesh = UnitSquareMesh(40, 40, 'crossed')
 V = FunctionSpace(mesh, "Lagrange", 1)
 
 # Create boundary markers
-boundary_parts = FacetFunction('size_t', mesh)
+tdim = mesh.topology().dim()
+boundary_parts = MeshFunction('size_t', mesh, tdim-1)
 left   = AutoSubDomain(lambda x: near(x[0], 0.0))
 right  = AutoSubDomain(lambda x: near(x[0], 1.0))
 bottom = AutoSubDomain(lambda x: near(x[1], 0.0))
@@ -34,15 +36,15 @@ bottom.mark(boundary_parts, 2)
 # Initial condition and right-hand side
 ic = Expression("""pow(x[0] - 0.25, 2) + pow(x[1] - 0.25, 2) < 0.2*0.2
                    ? -25.0 * ((pow(x[0] - 0.25, 2) + pow(x[1] - 0.25, 2)) - 0.2*0.2)
-                   : 0.0""")
+                   : 0.0""", degree=1)
 f = Expression("""pow(x[0] - 0.75, 2) + pow(x[1] - 0.75, 2) < 0.2*0.2
                   ? 1.0
-                  : 0.0""")
+                  : 0.0""", degree=1)
 
 # Equation coefficients
 K = Constant(1e-2) # thermal conductivity
 g = Constant(0.01) # Neumann heat flux
-b = Expression(("-(x[1] - 0.5)", "x[0] - 0.5")) # convecting velocity
+b = Expression(("-(x[1] - 0.5)", "x[0] - 0.5"), degree=1) # convecting velocity
 
 # Define boundary measure on Neumann part of boundary
 dsN = Measure("ds", subdomain_id=1, subdomain_data=boundary_parts)
@@ -76,15 +78,19 @@ solver  = LinearVariationalSolver(problem)
 u0.interpolate(ic)
 
 # Create file for storing results
-f = File("results/u.xdmf")
+f = XDMFFile("results/u.xdmf")
 
 # Time-stepping
 t = 0.0
 u.rename("u", "temperature")
 u.interpolate(ic)
 
-# save initial solution
-f << u
+# Save initial solution
+f.write(u, t)
+
+# Open figure for plots
+fig = plt.figure()
+plt.show(block=False)
 
 while t < t_end:
 
@@ -92,8 +98,12 @@ while t < t_end:
     solver.solve()
 
     # Store solution to file and plot
-    f << u
-    plot(u, title='Solution at t = %g' % t)
+    f.write(u, t)
+    p = plot(u, title='Solution at t = %g' % t)
+    if p is not None:
+        plt.colorbar(p)
+    fig.canvas.draw()
+    plt.clf()
 
     # Move to next time step
     u0.assign(u)

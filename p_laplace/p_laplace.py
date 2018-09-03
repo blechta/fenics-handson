@@ -17,10 +17,11 @@
 
 # Begin code
 from dolfin import *
+import matplotlib.pyplot as plt
 
 mesh = UnitSquareMesh(40, 40)
 V = FunctionSpace(mesh, 'Lagrange', 1)
-f = Expression("1.+cos(2.*pi*x[0])*sin(2.*pi*x[1])")
+f = Expression("1.+cos(2.*pi*x[0])*sin(2.*pi*x[1])", degree=2)
 
 def p_laplace(p, eps, u0=None):
     """Solves regularized p-Laplacian with mesh, space and right-hand side
@@ -42,7 +43,10 @@ def p_laplace(p, eps, u0=None):
     solver_parameters = {'newton_solver': {'maximum_iterations': 1000}}
     solve(F == 0, u, bc, solver_parameters=solver_parameters)
 
-    plot(u, title='p-Laplace, p=%g, eps=%g'%(float(p), float(eps)))
+    plt.gcf().show()
+    plt.clf()
+    plot(u, mode="warp", title='p-Laplace, p=%g, eps=%g'%(float(p), float(eps)))
+    plt.gcf().canvas.draw()
 
     # Compute energies
     energy_regularized = assemble(E)

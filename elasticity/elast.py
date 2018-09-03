@@ -17,10 +17,9 @@
 
 # Begin code
 from dolfin import *
+import matplotlib.pyplot as plt
 
-# Use UFLACS to speed-up assembly and limit quadrature degree
-parameters['form_compiler']['representation'] = 'uflacs'
-parameters['form_compiler']['optimize'] = True
+# Limit quadrature degree
 parameters['form_compiler']['quadrature_degree'] = 4
 
 
@@ -33,17 +32,24 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
     # Get mesh and prepare boundary measure
     mesh = facet_function.mesh()
     gdim = mesh.geometry().dim()
-    ds = Measure("ds", subdomain_data=facet_function)
+    dx = Measure("dx")
+    ds = Measure("ds", subdomain_data=facet_function, subdomain_id=2)
+
+    # Limit quadrature degree
+    dx = dx(degree=4)
+    ds = ds(degree=4)
 
     # Build function space
-    U = VectorFunctionSpace(mesh, "Lagrange", 1)
-    P = FunctionSpace(mesh, "Lagrange", 1)
-    W = MixedFunctionSpace([U, U, P])
+    element_v = VectorElement("P", mesh.ufl_cell(), 1)
+    element_s = FiniteElement("P", mesh.ufl_cell(), 1)
+    mixed_element = MixedElement([element_v, element_v, element_s])
+    W = FunctionSpace(mesh, mixed_element)
     info("Num DOFs %d" % W.dim())
 
     # Prepare BCs
-    bcs = [DirichletBC(W.sub(i), gdim*(0.0,), facet_function, 1)
-           for i in [0, 1]]
+    bc0 = DirichletBC(W.sub(0), gdim*(0,), facet_function, 1)
+    bc1 = DirichletBC(W.sub(1), gdim*(0,), facet_function, 1)
+    bcs = [bc0, bc1]
 
     # Define constitutive law
     def stress(u, p):
@@ -70,10 +76,10 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
 
     # Unknowns, values at previous step and test functions
     w = Function(W)
-    (u, v, p) = split(w)
+    u, v, p = split(w)
     w0 = Function(W)
-    (u0, v0, p0) = split(w0)
-    (_u, _v, _p) = TestFunctions(W)
+    u0, v0, p0 = split(w0)
+    _u, _v, _p = TestFunctions(W)
 
     I = Identity(W.mesh().geometry().dim())
 
@@ -91,7 +97,7 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
     bF_magnitude = Constant(0.0)
     bF_direction = {2: Constant((0.0, 1.0)), 3: Constant((0.0, 0.0, 1.0))}[gdim]
     bF = det(F)*dot(inv(F).T, bF_magnitude*bF_direction)
-    FF = inner(bF, _v)*ds(2)
+    FF = inner(bF, _v)*ds
 
     # Whole system and its Jacobian
     F = F1 + F2 + FF
@@ -104,23 +110,24 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
     solver.parameters['newton_solver']['linear_solver'] = 'mumps'
 
     # Extract solution components
-    (u, v, p) = w.split()
+    u, v, p = w.split()
     u.rename("u", "displacement")
     v.rename("v", "velocity")
     p.rename("p", "pressure")
 
     # Create files for storing solution
-    vfile = File("%s/velo.xdmf" % output_dir)
-    ufile = File("%s/disp.xdmf" % output_dir)
-    pfile = File("%s/pres.xdmf" % output_dir)
+    vfile = XDMFFile("%s/velo.xdmf" % output_dir)
+    ufile = XDMFFile("%s/disp.xdmf" % output_dir)
+    pfile = XDMFFile("%s/pres.xdmf" % output_dir)
 
     # Prepare plot window
-    plt = plot(u, mode="displacement", interactive=False, wireframe=True)
+    fig = plt.figure()
+    plt.show(block=False)
 
     # Time-stepping loop
     t = 0.0
     while t <= T_end:
-        print "Time: %g" % t
+        print("Time:", t)
         t += float(dt)
 
         # Increase traction
@@ -131,27 +138,32 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
         solver.solve()
 
         # Store solution to files and plot
-        ufile << (u, t)
-        vfile << (v, t)
-        pfile << (p, t)
-        plt.plot(u)
+        ufile.write(u, t)
+        vfile.write(v, t)
+        pfile.write(p, t)
+        plot(u, mode="displacement")
+        fig.canvas.draw()
+
+    # Close files
+    vfile.close()
+    ufile.close()
+    pfile.close()
 
 
 def geometry_2d(length):
     """Prepares 2D geometry. Returns facet function with 1, 2 on parts of
     the boundary."""
-    n = 4
+    n = 5
     x0 = 0.0
     x1 = x0 + length
     y0 = 0.0
     y1 = 1.0
-    mesh = RectangleMesh(x0, y0, x1, y1, int((x1-x0)*n), int((y1-y0)*n), 'crossed')
-    boundary_parts = FacetFunction('size_t', mesh)
+    mesh = RectangleMesh(Point(x0, y0), Point(x1, y1), int((x1-x0)*n), int((y1-y0)*n), 'crossed')
+    boundary_parts = MeshFunction('size_t', mesh, mesh.topology().dim()-1)
     left  = AutoSubDomain(lambda x: near(x[0], x0))
     right = AutoSubDomain(lambda x: near(x[0], x1))
     left .mark(boundary_parts, 1)
     right.mark(boundary_parts, 2)
-    boundary_parts._mesh = mesh # Workaround issue #467
     return boundary_parts
 
 
@@ -162,12 +174,11 @@ def geometry_3d():
     gdim = mesh.geometry().dim()
     x0 = mesh.coordinates()[:, 0].min()
     x1 = mesh.coordinates()[:, 0].max()
-    boundary_parts = FacetFunction('size_t', mesh)
+    boundary_parts = MeshFunction('size_t', mesh, mesh.topology().dim()-1)
     left  = AutoSubDomain(lambda x: near(x[0], x0))
     right = AutoSubDomain(lambda x: near(x[0], x1))
     left .mark(boundary_parts, 1)
     right.mark(boundary_parts, 2)
-    boundary_parts._mesh = mesh # Workaround issue #467
     return boundary_parts
 
 
@@ -177,4 +188,3 @@ if __name__ == '__main__':
     solve_elasticity(geometry_2d(20.0), 1e5, 0.5, 0.25, 5.0, 'results_2d_incomp')
     solve_elasticity(geometry_2d(80.0), 1e5, 0.3, 0.25, 5.0, 'results_2d_long_comp')
     solve_elasticity(geometry_3d(),     1e5, 0.3, 0.50, 5.0, 'results_3d_comp')
-    interactive()

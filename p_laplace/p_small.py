@@ -19,7 +19,6 @@
 from p_laplace import p_laplace
 import numpy as np
 import matplotlib.pyplot as plt
-from dolfin import interactive
 
 epsilons = [10.0**i for i in range(-10, -22, -2)]
 energies = []
@@ -35,17 +34,16 @@ for eps in epsilons:
 energies = np.array(energies)
 
 # Report
-print ' epsilon  |  energy_reg  |  energy | u max \n', \
+print(' epsilon  |  energy_reg  |  energy | u max \n',
     np.concatenate( ( np.array([epsilons,]).T,
                       energies,
                       np.array([maximums,]).T,
-                    ), axis=1)
+                    ), axis=1))
 
 # Plot energies
+plt.figure()
 plt.plot(epsilons, energies[:,0], 'o-', label='energy regularized')
 plt.plot(epsilons, energies[:,1], 'o-', label='energy')
 plt.xscale('log')
 plt.legend(loc='upper left')
-plt.show(block=False)
-
-interactive()
+plt.show()

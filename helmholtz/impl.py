@@ -29,7 +29,7 @@ def helmholtz_illposed(n):
     bc = DirichletBC(V, 0.0, lambda x, b: b)
     u, v = TrialFunction(V), TestFunction(V)
     a = (inner(grad(u), grad(v)) - Constant(5.0*pi*pi)*u*v)*dx
-    L = Expression('x[0] + x[1]')*v*dx
+    L = Expression('x[0] + x[1]', degree=1)*v*dx
     u = Function(V)
     solve(a == L, u, bc)
     energy_error = assemble(action(Constant(1.0)*action(a, u) - L, u))
@@ -77,10 +77,10 @@ def helmholtz_wellposed(n):
     # Check that we got whole eigenspace - last eigenvalue is different one
     assert not near(r, 5*pi*pi, 0.5*pi*pi), \
             "Possibly don't have whole eigenspace!"
-    print 'Eigenspace for 5*pi^2 has dimension', len(space)
+    print('Eigenspace for 5*pi^2 has dimension', len(space))
 
     # Orthogonalize right-hand side to 5*pi^2 eigenspace
-    f = Expression('x[0] + x[1]')
+    f = Expression('x[0] + x[1]', degree=1)
     f = project(f, V)
     orthogonalize(space+[f])
 
@@ -119,7 +119,7 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
     # Demonstrate that energy of ill-posed Helmholtz goes to minus infinity
-    results = np.array(map(helmholtz_illposed, [2**i for i in range(2, 9)]))
+    results = np.array(list(map(helmholtz_illposed, [2**i for i in range(2, 9)])))
     plt.subplot(2, 1, 1)
     plt.plot(results[:, 0], results[:, 2], 'o-')
     plt.title('Ill-posed Helmholtz')
@@ -128,7 +128,7 @@ if __name__ == '__main__':
     plt.show(block=False)
 
     # Demonstrate that energy of well-posed Helmholtz converges
-    results = np.array(map(helmholtz_wellposed, [2**i for i in range(2, 9)]))
+    results = np.array(list(map(helmholtz_wellposed, [2**i for i in range(2, 9)])))
     plt.subplot(2, 1, 2)
     plt.plot(results[:, 0], results[:, 2], 'o-')
     plt.title('Well-posed Helmholtz')
