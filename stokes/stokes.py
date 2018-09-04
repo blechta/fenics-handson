@@ -26,10 +26,10 @@ radius = 0.05
 L = 2.2
 W = 0.41
 geometry = mshr.Rectangle(Point(0.0, 0.0), Point(L, W)) \
-         - mshr.Circle(center, radius, 40)
+         - mshr.Circle(center, radius, 128)
 
 # Build mesh
-mesh = mshr.generate_mesh(geometry, 80)
+mesh = mshr.generate_mesh(geometry, 64)
 plot(mesh)
 plt.show()
 
@@ -122,6 +122,7 @@ def navier_stokes():
     # Define variational forms
     T = -p*I + 2.0*nu*sym(grad(u))
     F = inner(T, grad(v))*dx - q*div(u)*dx + inner(grad(u)*u, v)*dx
+    F += - nu*dot(dot(grad(u), v), n)*ds(2)
 
     solve(F == 0, w, bcs)
 
