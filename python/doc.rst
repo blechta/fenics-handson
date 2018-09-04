@@ -1,48 +1,54 @@
 Very short introduction to Python
 =================================
 
-Python is interpreted, dynamic-typed language.
+Python is interpreted, dynamic-typed language. We will be using Python
+version 3.
 
-..
+**Task 1.** Start Python interpreter by typing ``python3`` to shell and
+type in *Hello world!*
 
-   **Task 1.** Start Python interpreter by typing ``python`` to shell and
-   type in *Hello world!*
-
-   .. code-block:: python
-
-      >>> # Let's try Hello world! This is a comment.
-      >>> print "Hello world!"
-      Hello world!
+    >>> # Let's try Hello world! This is a comment.
+    >>> print("Hello world!")
+    Hello world!
+    >>> s = "Hello " + "world!"
+    >>> print(s)
+    Hello world!
 
 Basic datatypes
 ---------------
 
-..
+**Task 2.** Try using Python as an interactive calculator. Play with basic
+arithmetic operations; complex numbers are written as ``1 + 2j``. Power is written
+using double asterisk ``**``. Elementary functions are available in ``math``
+and ``cmath`` modules
 
-   **Task 2.** Try using Python as an interactive calculator. Play with basic
-   arithmetic operations; check the distinction of ``int`` and ``float``
-   datatypes. Complex numbers are written as ``1.0 + 2.0j``. Power is written
-   using double asterisk. Elementary functions are available in ``math``
-   module:
+    >>> import math
+    >>> math.sqrt(4.0)
+    2.0
+    >>> math.log10(10**666)
+    666.0
 
-   .. code-block:: python
+    >>> math.log(3+2j)
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    TypeError: can't convert complex to float
+    >>> import cmath
+    >>> cmath.log(3+2j)
+    (1.2824746787307684+0.5880026035475675j)
 
-      >>> import math
-      >>> math.sqrt(4.0)
-      2.0
 
-      >>> from math import cos
-      >>> cos(0.0)
-      1.0
+    >>> from math import cos
+    >>> cos(0.0)
+    1.0
 
-      >>> # Import everything from math
-      >>> # Generally not a preferred way - obfuscates the namespace
-      >>> from math import *
-      >>> sin(pi)
-      1.2246467991473532e-16
+    >>> # Import everything from math
+    >>> # Generally not a preferred way - obfuscates the namespace
+    >>> from math import *
+    >>> sin(pi)
+    1.2246467991473532e-16
 
-      >>> # Let's learn how to fly
-      >>> import antigravity
+    >>> # Let's learn how to fly
+    >>> import antigravity
 
 Container datatypes
 -------------------

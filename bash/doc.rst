@@ -1,26 +1,29 @@
-Extremly short introduction to bash
+Extremly short introduction to Bash
 ===================================
 
-Bash is one of several shell interpreters. Other shells you can meet
-are: sh, csh, tcsh, zsh, ash, etc...  The bash shell is the default
-standad shell on most gnu/linux based systems and basic commands are
-however almost same across all the shell variants. 
+.. highlight:: bash
 
 Shell is the direct interface between the user and the system kernel.
 
+.. note::
 
-   **Task 1.** Open any terminal application - gnome-terminal, kterm, xterm.
-   You will, most probably, be greeted by bash prompt
+    Bash is one of several shell interpreters. Other shells you can meet
+    are: sh, csh, tcsh, zsh, ash, etc...  The bash shell is the default
+    standad shell on most GNU/linux based systems and basic commands are
+    however almost same across all the shell variants.
 
-   .. code-block:: bash
 
-      r0:~> 
+**Task 1.** Open any terminal application - gnome-terminal, kterm, xterm.
+On many Lunux distributions you can achieve that by pushing ``CTRL+ALT+T``.
+You will, most probably, be greeted by Bash prompt::
+
+   user@machine:~$
 
 Basic shell commands
 --------------------
 
-``whoami`` 
-      kdo jsem?
+``whoami``
+      who am I?
 ``pwd``
       print working directory
 ``ls``
@@ -28,13 +31,17 @@ Basic shell commands
 ``ls -l``
       detailed list of working directory
 ``cd``
-      change directory 
+      change directory
 ``cp``
       copy files
 ``mv``
       move files
 ``rm``
       delete file
+``mkdir``
+      create directory
+``rm -rf``
+      remove directory recursively (including its contents)
 
 If the command is not recognized as shell command, then the folders in
 the enviroment variable ``PATH`` are searched for an executable with
@@ -42,46 +49,37 @@ that name.
 
 
 **Hint.** Help can be obtained using commands ``man``, ``info``,
-``apropos``. Try for instance
+``apropos``. Try for instance::
 
-.. code-block:: bash
+    man ls
+    apropos math
 
-   $ man man
-   $ apropos math
-
-
-**Hint.** Further help can be obtained using commands ``fortune``,
-``cowsay``.
-
-.. code-block:: bash
-
-   $ fortune | cowsay
-   ________________________________________
-  / Tuesday After Lunch is the cosmic time \
-  \ of the week.                           /
-   ----------------------------------------
-          \   ^__^
-           \  (oo)\_______
-              (__)\       )\/\
-                  ||----w |
-                  ||     ||
-
-
-.. todo::
-
-   ``r0> sudo apt-get fortune cowsay``
-
+To exit a ``man`` page hit ``q`` key.
 
 
 Remote connection - ssh
 -----------------------
 
-   **Task 2.** Use ``ssh`` utility to connect to a remote system.
- 
-   .. code-block:: bash
+   **Task 2.** Use ``ssh`` utility to connect to a remote system::
 
-      machine:~> ssh -C -Y your_login@r0.karlin.mff.cuni.cz
+      ssh -X -C tyche
 
+.. note::
+
+    * ``-X`` enable ``X11`` forwarding (allows processes on the remote machine
+      opening windows of graphical applications on the local machine)
+    * ``-C`` enables compression which is mainly beneficial for access from
+      a remote network
+    * ``tyche`` stands here for machine ``tyche.mathematik.tu-chemnitz.de``;
+      username on the local machine is used by default to login to the remote
+      machine; the machine is not accessible from outside the univerity, so
+      one would login through a jump host::
+
+        helmut@local_machine:~$ ssh -X -C user@login.tu-chemnitz.de
+        user@login:~$ ssh -X -C tyche
+        user@tyche:~$
+
+      Alternatively one can use VPN.
 
 
 Sending signals and process management
@@ -102,9 +100,9 @@ Every well behaved job listens to signals.
 ``ps``
     list all your jobs with their process ids
 ``kill jobid``
-    send terminate signal to a job, job id can be its process id or its shell id (including %)
+    send *terminate* signal to a job, job id can be its process id or its shell id (given by ``%<num>``)
 ``kill -9 jobid``
-    change directory 
+    send *kill* signal (immediate request to end) to a job
 
 Pressing following control keys will send signal to the foreground job
 
@@ -114,13 +112,3 @@ Pressing following control keys will send signal to the foreground job
            suspend signal
 ``^D``
            end of input signal
-
-Cluster job queues usage
-------------------------
-
-``qstat``
-     status of the computational queue
-``qsub -I -q queue1 -l nodes=1:ppn=1``
-     open an interactive session with 1 cpu
-
-More details on `snehurka web <http://cluster.karlin.mff.cuni.cz/pouziti-clusteru/spravce-uloh-pbs/>`_
