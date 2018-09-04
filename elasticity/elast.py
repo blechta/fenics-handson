@@ -1,4 +1,4 @@
-# Copyright (C) 2014, 2015 Jaroslav Hron, Jan Blechta
+# Copyright (C) 2014, 2015, 2018 Jaroslav Hron, Jan Blechta
 #
 # This file is part of FEniCS tutorial suite.
 #

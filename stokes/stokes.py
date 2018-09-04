@@ -1,4 +1,4 @@
-# Copyright (C) 2014, 2015 Jaroslav Hron, Jan Blechta
+# Copyright (C) 2014, 2015, 2018 Jaroslav Hron, Jan Blechta
 #
 # This file is part of FEniCS tutorial suite.
 #
@@ -26,10 +26,12 @@ radius = 0.05
 L = 2.2
 W = 0.41
 geometry = mshr.Rectangle(Point(0.0, 0.0), Point(L, W)) \
-         - mshr.Circle(center, radius, 10)
+         - mshr.Circle(center, radius, 40)
 
 # Build mesh
-mesh = mshr.generate_mesh(geometry, 50)
+mesh = mshr.generate_mesh(geometry, 80)
+plot(mesh)
+plt.show()
 
 # Construct facet markers
 bndry = MeshFunction("size_t", mesh, mesh.topology().dim()-1)
@@ -91,6 +93,23 @@ def stokes():
     info("Inflow flux:  %e" % assemble(inner(u, n)*ds(1)))
     info("Outflow flux: %e" % assemble(inner(u, n)*ds(2)))
 
+    # Report drag and lift
+    p = w.sub(1, deepcopy=False)
+    T = -p*I + nu*grad(u)
+    force = dot(T, n)
+    D = (force[0]/0.002)*ds(5)
+    L = (force[1]/0.002)*ds(5)
+    drag = assemble(D)
+    lift = assemble(L)
+    info("drag= %e    lift= %e" % (drag , lift))
+
+    # Report pressure difference
+    a_1 = Point(0.15, 0.2)
+    a_2 = Point(0.25, 0.2)
+    p = w.sub(1, deepcopy=False)
+    p_diff = p(a_1) - p(a_2)
+    info("p_diff = %e" % p_diff)
+
     return w
 
 
@@ -105,6 +124,11 @@ def navier_stokes():
     F = inner(T, grad(v))*dx - q*div(u)*dx + inner(grad(u)*u, v)*dx
 
     solve(F == 0, w, bcs)
+
+    # Report in,out fluxes
+    u = w.sub(0, deepcopy=False)
+    info("Inflow flux:  %e" % assemble(inner(u, n)*ds(1)))
+    info("Outflow flux: %e" % assemble(inner(u, n)*ds(2)))
 
     # Report drag and lift
     force = dot(T, n)

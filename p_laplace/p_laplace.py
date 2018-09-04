@@ -1,4 +1,4 @@
-# Copyright (C) 2014 Jan Blechta
+# Copyright (C) 2014, 2018 Jan Blechta
 #
 # This file is part of FEniCS tutorial suite.
 #
