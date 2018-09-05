@@ -1,179 +1,80 @@
 Very short introduction to FEniCS
 =================================
 
-.. image:: fenics_banner.png
-   :align: center
-   :width: 100%
-   :target: http://fenicsproject.org
-
-* started in 2003, collaboration between University of Chicago and
-  Chalmers University of Technology
-
-* 2011 - version 1.0 released
-
-* 2012 - `the book <http://fenicsproject.org/book>`_ with main
-  contribution by 5 institutions (Simula Research Laboratory, University of
-  Cambridge, University of Chicago, Texas Tech University, KTH Royal
-  Institute of Technology)
-
-     **A. Logg, K.-A. Mardal, G. N. Wells et al. (2012).**
-     *Automated Solution of Differential Equations by the Finite Element Method.*
-     Springer, 2012.
-     `Download from Launchpad. <http://launchpad.net/fenics-book/trunk/final/+download/fenics-book-2011-10-27-final.pdf>`_
-
-* 2015 - version 1.5 released
-
-* open source license (GNU LGPL v3), open source developement on
-  `bitbucket <https://bitbucket.org/fenics-project>`_
-
-* good `support <http://fenicsproject.org/support>`_ with
-  mailing-list and `Q&A forum <http://fenicsproject.org/qa>`_
-
-
-FEniCS components
------------------
-
-..  outdated component map
-    .. image:: fenics-map.png
-       :align: center
-       :target: http://fenicsproject.org/about
-
-Core components
-^^^^^^^^^^^^^^^
-
-* **DOLFIN** C++/Python interface of FEniCS, providing a consistent
-  PSE (Problem Solving Environment).
-
-* **UFL** (*Unified Form Language*) is a specific language for
-  declaration of finite element discretizations of variational
-  forms.
-
-* **FFC** (*FEniCS Form Compiler*) from UFL code generates C++ code
-  for assembling element tensors.
-
-* **Instant** Python module that allows for instant inlining and JIT
-  (Just-In-Time) compilation of C++ code in Python.
-
-* **FIAT** (*FInite element Automatic Tabulator*) generates finite elements
-  of arbitrary order on lines, triangles and tetrahedra.
-
-* **UFLACS** (*UFL Analyser and Compiler System*) optimizing frontend for FFC.
-
-* **mshr** is FEniCS mesh generator. Uses CGAL and Tetgen as backends for
-  generating meshing geometries described by CSG (Constructive Solid Geometry).
-
-External libraries
-^^^^^^^^^^^^^^^^^^
-
-* **MPI**, **OpenMP** parallel programming frameworks.
-
-* **PETSc** (*Portable, Extensible Toolkit for Scientific Computation*)
-  parallel linear algebra backend. Provides data structeres for
-  holding vectors and matrices and lots of linear and non-linear
-  solvers and preconditioners.
-
-* **SLEPc** (*the Scalable Library for Eigenvalue Problem Computations*)
-  extension of PETSc for solution of eigen-problems.
-
-* **SCOTCH**, **ParMETIS** mesh partitioning and graph coloring backends.
-
-* **VTK**, **HDF5**, **XDMF** visualization and IO backends.
-
-.. todo::
-
-   Add a review of variational formulation of PDE, finite element method.
-
-And now ...
+First touch
 -----------
 
-**Task 1.** Start interactive Python session and type in following code.
+**Task 1.** Login by SSH to ``tyche`` and type:
 
-.. code-block:: python
+.. code-block:: bash
 
-   >>> from dolfin import *
+    source /LOCAL/Software/FEniCS-2018.1/setup_env
 
-   >>> mesh = UnitSquareMesh(16, 16)
-   >>> V = FunctionSpace(mesh, 'Lagrange', 3)
-   Calling FFC just-in-time (JIT) compiler, this may take some time.
+to prepare environment for using FEniCS. Now fire up interactive
+Python 3 interpreter:
 
-We see JIT compilation of finite element code, i.e. C++ code is generated
-by FFC (FEniCS from compiler) and compiled by C++ compiler. This is done
-once and will not be done again with different mesh. The result is
-cached in ``~/.instant``.
+.. code-block:: bash
 
-.. code-block:: python
+    python3
 
-   >>> f = Expression("sin(6.0*pi*x[0])*sin(2.0*pi*x[1])")
-   Calling DOLFIN just-in-time (JIT) compiler, this may take some time.
+You should see something like:
 
-This is compiled C++ expression which is evaluated very quickly when evaluated
-but requires JIT compilation.
+.. code-block:: pycon3
 
-.. code-block:: python
+    Python 3.6.5 (default, Apr  1 2018, 05:46:30)
+    [GCC 7.3.0] on linux
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>>
 
-   >>> def boundary(x, on_boundary):
-   ...     return on_boundary
-   ...
-   >>> bc = DirichletBC(V, 0.0, boundary)
+Now type::
 
-The function ``boundary`` defines boundary of the domain and ``bc`` represents
-Dirichlet boundary condition on space ``V``.
+    from dolfin import *
+    import matplotlib.pyplot as plt
 
-.. code-block:: python
+    mesh = UnitSquareMesh(13, 8)
+    plot(mesh)
+    plt.show()
 
-   >>> u = TrialFunction(V)
-   >>> v = TestFunction(V)
-   >>> a = inner(grad(u), grad(v))*dx
-   >>> L = f*v*dx
+A graphical plot of the mesh should appear. If any of the
+steps above failed, you're not correctly set up to use FEniCS.
+If everything went fine, close the window and hit ``^D`` to
+quit the interpreter.
 
-This code defines bilinear form ``a`` and linear form ``L`` using UFL (Unified
-form language).
+Get the Poisson demo from FEniCS install dir and run it:
 
-.. code-block:: python
+.. code-block:: bash
 
-   >>> u = Function(V)
-   >>> solve(a == L, u, bc)
-   Calling FFC just-in-time (JIT) compiler, this may take some time.
-   Calling FFC just-in-time (JIT) compiler, this may take some time.
-   Solving linear variational problem.
+    mkdir -p work/fenics/poisson
+    cd work/fenics/poisson
+    cp /LOCAL/Software/FEniCS-2018.1/share/dolfin/demo/python/documented/poisson/demo_poisson.py .
+    python3 demo_poisson.py
 
-Finally we create finite-element function ``u`` on space ``V``. (``TrialFunction``
-and ``TestFunction`` were only thought arguments of multi-linear forms - not a
-real function with its values in memory.) The we ask DOLFIN to assemble
-linear system for the respective problem and solve it by some linear algebra
-backend. For the former C++ code to assemble forms ``a`` and ``L`` is again
-generated by FFC and compiled by C++ compiler. This is again mesh independent
-so that it won't be done again when refining a mesh. (Note that the solution
-process can be controlled in a much detailed way.)
+You should see some console output and a plot of the solution.
 
-.. code-block:: python
+Now login to ``tyche`` from another terminal window and open
+the demo file using your favourite editor (if you don't have any
+you can use ``gedit``, ``nano``, ...):
 
-   >>> plot(u, interactive=True)
+.. code-block:: bash
 
-.. image:: poisson_0.png
-   :scale: 75 %
+    cd work/fenics/poisson
+    <editor> demo_poisson.py
 
-**Task 2.** Prepare ``.py`` file with the code above and try executing it from
-shell. Try also running it in parallel using ``mpirun`` command.
+Now add *keyword argument* ``warp='mode'`` to the ``plot`` function
+call by applying the following diff:
 
-**Task 3.** Modify boundary condition on :math:`x=0,1` to homogeneous Neumann.
+.. code-block:: diff
 
-**Task 4.** Modify :math:`-\Delta` operator to non-linear
-:math:`-\mathrm{div} (1+k\,u^2) \nabla` for some large :math:`k`.
-(Write linear form depending non-linearly on unknown ``Function`` and provide
-``F == 0`` instead of ``a == L`` to ``solve`` function. Use ``Constant`` class
-for ``k`` to avoid form recompilation when changing ``k``.)
+     # Plot solution
+     import matplotlib.pyplot as plt
+    -plot(u)
+    +plot(u, mode='warp')
+     plt.show()
 
-.. todo::
+and run the demo again by ``python3 demo_poisson.py``.
 
-   Integrate convergence example (maybe - already present in Helmholtz task).
-   Add time*error minimization challenge.
-
-
-.. only:: solution
-
-   Reference solution
-   ------------------
-
-   .. literalinclude:: impl.py
-      :start-after: # Begin code
+**Task 2.** Open `Poisson demo documentation
+<https://fenicsproject.org/docs/dolfin/2018.1.0/python/demos/poisson/demo_poisson.py.html>`_
+on the FEniCS website. Notice that the doc page is generated from
+the demo file. Go quickly through the docpage while paying attention
+to usage of ``Constant`` and ``Expression`` classes.
