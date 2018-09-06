@@ -149,5 +149,8 @@ Mesh file of lego brick :download:`lego_beam.xml`.
    Reference solution
    ------------------
 
-   .. literalinclude:: elast.py
-      :start-after: # Begin code
+   .. toggle-header::
+      :header: **Show/Hide Code**
+
+      .. literalinclude:: elast.py
+         :start-after: # Begin code
