@@ -156,4 +156,4 @@ doctest:
 
 servehtml:
 	browse http://127.0.0.1:8000/_build/html/
-	python3 -m http.server --bind 127.0.0.1
+	python3 -m http.server --bind 127.0.0.1 2> /dev/null

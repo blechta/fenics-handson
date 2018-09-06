@@ -37,7 +37,7 @@ Now type::
 
 A graphical plot of the mesh should appear. If any of the
 steps above failed, you're not correctly set up to use FEniCS.
-If everything went fine, close the window and hit ``^D`` to
+If everything went fine, close the plot window and hit ``^D`` to
 quit the interpreter.
 
 Get the Poisson demo from FEniCS install dir and run it:
@@ -77,4 +77,21 @@ and run the demo again by ``python3 demo_poisson.py``.
 <https://fenicsproject.org/docs/dolfin/2018.1.0/python/demos/poisson/demo_poisson.py.html>`_
 on the FEniCS website. Notice that the doc page is generated from
 the demo file. Go quickly through the docpage while paying attention
-to usage of ``Constant`` and ``Expression`` classes.
+to
+
+* definition of weak formulation through forms ``a`` and ``L``,
+* usage of ``Constant`` and ``Expression`` classes.
+
+Now modify the problem to use the following data instead:
+
+.. math::
+    :nowrap:
+
+    \begin{align*}
+        a(u, v) &= \int_\Omega \nabla u\cdot\nabla v\,\mathrm{d}x
+                 +         \int_\Omega c\,u v\,\mathrm{d}x \\
+        c       &= 100 \\
+        f       &= x \\
+        g       &= \sin(5x) \exp(y) \\
+        u       &= y \qquad \text{on } \Gamma_\mathrm{D}
+    \end{align*}
