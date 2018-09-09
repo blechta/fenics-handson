@@ -2,21 +2,23 @@ from dolfin import *
 import matplotlib.pyplot as plt
 
 
-def step(get_data, dsN, theta, t, dt, u_old, u_new):
-    """Perform timestep by theta-scheme. Given function
-    get_data(t) returning data (f(t), g(t)); given solution
-    u_old at time t; store solution at time t + dt into
-    provided Function u_new."""
+def create_timestep_solver(get_data, dsN, theta, u_old, u_new):
+    """Prepare timestep solver by theta-scheme for given
+    function get_data(t) returning data (f(t), g(t)), given
+    solution u_old at time t and unknown u_new at time t + dt.
+    Return a solve function taking (t, dt).
+    """
 
-    f_n, g_n = get_data(t)
-    f_np1, g_np1 = get_data(t+dt)
+    # Initialize coefficients
+    f_n, g_n = get_data(0)
+    f_np1, g_np1 = get_data(0)
+    idt = Constant(0)
 
     # Extract function space
     V = u_new.function_space()
 
     # Prepare weak formulation
     u, v = TrialFunction(V), TestFunction(V)
-    idt = Constant(1/dt)
     theta = Constant(theta)
     F = ( idt*(u - u_old)*v*dx
         + inner(grad(theta*u + (1-theta)*u_old), grad(v))*dx
@@ -25,15 +27,26 @@ def step(get_data, dsN, theta, t, dt, u_old, u_new):
     )
     a, L = lhs(F), rhs(F)
 
-    # Push log level
-    old_level = get_log_level()
-    set_log_level(LogLevel.WARNING)
+    def solve_(t, dt):
+        """Update problem data to interval (t, t+dt) and
+        run the solver"""
 
-    # Run the solver
-    solve(a == L, u_new)
+        # Update coefficients to current t, dt
+        get_data(t, (f_n, g_n))
+        get_data(t+dt, (f_np1, g_np1))
+        idt.assign(1/dt)
 
-    # Pop log level
-    set_log_level(old_level)
+        # Push log level
+        old_level = get_log_level()
+        set_log_level(LogLevel.WARNING)
+
+        # Run the solver
+        solve(a == L, u_new)
+
+        # Pop log level
+        set_log_level(old_level)
+
+    return solve_
 
 
 def timestepping(V, dsN, theta, T, dt, u_0, get_data):
@@ -43,6 +56,9 @@ def timestepping(V, dsN, theta, T, dt, u_0, get_data):
 
     # Initialize solution function
     u = Function(V)
+
+    # Prepare solver for computing time step
+    solver = create_timestep_solver(get_data, dsN, theta, u, u)
 
     # Set initial condition
     u.interpolate(u_0)
@@ -56,7 +72,7 @@ def timestepping(V, dsN, theta, T, dt, u_0, get_data):
         print("t =", t, "dt =", dt)
 
         # Perform time step
-        step(get_data, dsN, theta, t, dt, u, u)
+        solver(t, dt)
         t += dt
 
         # Update plot
@@ -73,7 +89,12 @@ def timestepping_adaptive(V, dsN, theta, T, tol, u_0, get_data):
     u_np1_low = Function(V)
     u_np1_high = Function(V)
 
-    # Initial time step; the values does not really matter
+    # Prepare solvers for computing tentative time steps
+    solver_low = create_timestep_solver(get_data, dsN, theta, u_n, u_np1_low)
+    solver_high_1 = create_timestep_solver(get_data, dsN, theta, u_n, u_np1_high)
+    solver_high_2 = create_timestep_solver(get_data, dsN, theta, u_np1_high, u_np1_high)
+
+    # Initial time step; the value does not really matter
     dt = T/2
 
     # Set initial conditions
@@ -88,9 +109,9 @@ def timestepping_adaptive(V, dsN, theta, T, tol, u_0, get_data):
         print("t =", t, "dt =", dt)
 
         # Compute tentative time steps
-        step(get_data, dsN, theta, t, dt, u_n, u_np1_low)
-        step(get_data, dsN, theta, t, dt/2, u_n, u_np1_high)
-        step(get_data, dsN, theta, t+dt/2, dt/2, u_np1_high, u_np1_high)
+        solver_low(t, dt)
+        solver_high_1(t, dt/2)
+        solver_high_2(t+dt, dt/2)
 
         # Compute error estimate and new timestep
         est = compute_est(theta, u_np1_low, u_np1_high)
@@ -162,24 +183,27 @@ def create_surface_measure_left(mesh):
     return ds_left
 
 
-def get_data_1(t):
-    """Get data for Problem 1"""
-    f = Constant(0)
-    g = Constant(1)
+def get_data_1(t, result=None):
+    """Create or update data for Problem 1"""
+    f, g = result or (Constant(0), Constant(0))
+    f.assign(0)
+    g.assign(1)
     return f, g
 
 
-def get_data_2(t):
-    """Get data for Problem 2"""
-    f = Constant(2-t)
-    g = Constant(t)
+def get_data_2(t, result=None):
+    """Create or update data for Problem 2"""
+    f, g = result or (Constant(0), Constant(0))
+    f.assign(2-t)
+    g.assign(t)
     return f, g
 
 
-def get_data_3(t):
-    """Get data for Problem 3"""
-    f = Constant(0)
-    g = Constant(max(0, 1-t)/2)
+def get_data_3(t, result=None):
+    """Create or update data for Problem 3"""
+    f, g = result or (Constant(0), Constant(0))
+    f.assign(0)
+    g.assign(max(0, 1-t)/2)
     return f, g
 
 
