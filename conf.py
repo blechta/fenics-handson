@@ -26,13 +26,12 @@ html_static_path = ['_static']
 
 latex_elements = {
     'papersize': 'a4paper',
-    'fontsize': '10pt',
+    'pointsize': '10pt',
     #'preamble': '',
     #'figure_align': 'htbp',
 }
 latex_documents = [
-    (master_doc, 'FEniCS-hands-on.tex', 'FEniCS hands-on',
-     'Jan Blechta', 'howto'),
+    (master_doc, 'FEniCS-hands-on.tex', 'FEniCS hands-on', author, 'howto'),
 ]
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
