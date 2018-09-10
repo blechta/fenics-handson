@@ -1,3 +1,5 @@
-_*
+/_build
 
 *.pyc
+*.xdmf
+*.h5
