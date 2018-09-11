@@ -125,14 +125,14 @@ Consider data
                  ``Argument`` is any argument of
                  multilinear form.
 
-                 These objects do not have actual values
+                 Arguments do not have actual values
                  -- they only represent intended argument
                  of multilinear form.
 
                * Form ``Coefficient`` is an object,
                  for example of type ``Function``,
-                 ``Expression``, ``Constant``, which form
-                 the depends on (possibly in nonlinear manner)
+                 ``Expression``, ``Constant``, which the form
+                 depends on (possibly in nonlinear manner)
                  and which does not count as its ``Argument``.
 
                  For example, ``u_n`` as defined above, will
@@ -308,7 +308,38 @@ nonhomogeneous Neumann data
 
 .. admonition:: Task 3
 
-    Implement UFL
+    #. Derive weak formulation describing
+       :eq:`time-discrete`, :eq:`data0`, :eq:`data1`.
+
+    #. Define surface measure supported on the left
+       boundary of the unit square mesh.
+
+    .. hint::
+        .. toggle-header::
+            :header: **Show/Hide Code**
+
+            .. code-block:: python3
+
+                # Define instance of SubDomain class
+                class Left(SubDomain):
+                    def inside(self, x, on_boundary):
+                        return on_boundary and near(x[0], 0)
+                left = Left()
+
+                # Define and mark mesh function on facets
+                facets = MeshFunction('size_t', mesh, mesh.topology().dim()-1)
+                left.mark(facets, 1)
+
+                # Define exterior facet measure where facets==1
+                ds_left = Measure("ds", mesh, subdomain_data=facets, subdomain_id=1)
+
+    3. Using the surface measure, modify the implementation
+       from :ref:`Task 2 <task2>` to incorporate boundary
+       condition :eq:`data1`.
+
+    #. Run the code with :math:`\theta=1` and check that the
+       results look as expected.
+
 
 
 .. only:: solution
