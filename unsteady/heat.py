@@ -38,7 +38,8 @@ def create_timestep_solver(get_data, dsN, theta, u_old, u_new):
 
         # Push log level
         old_level = get_log_level()
-        set_log_level(LogLevel.WARNING)
+        warning = LogLevel.WARNING if cpp.__version__ > '2017.2.0' else WARNING
+        set_log_level(warning)
 
         # Run the solver
         solve(a == L, u_new)
@@ -183,11 +184,19 @@ def create_surface_measure_left(mesh):
     return ds_left
 
 
-def get_data_1(t, result=None):
+def get_data_0(t, result=None):
     """Create or update data for Problem 1"""
     f, g = result or (Constant(0), Constant(0))
     f.assign(0)
-    g.assign(1)
+    g.assign(0)
+    return f, g
+
+
+def get_data_1(t, result=None):
+    """Create or update data for Problem 1"""
+    f, g = result or (Constant(0), Constant(0))
+    f.assign(1)
+    g.assign(0)
     return f, g
 
 
@@ -213,6 +222,16 @@ if __name__ == '__main__':
     ds_left = create_surface_measure_left(V.mesh())
     T = 2
     u_0 = Expression("x[0]", degree=1)
+
+    # Problem 0, implicit Euler
+    theta = 1
+    dt = 0.1
+    timestepping(V, ds_left, theta, T, dt, u_0, get_data_0)
+
+    # Problem 0, explicit Euler
+    theta = 0
+    dt = 0.1
+    timestepping(V, ds_left, theta, T, dt, u_0, get_data_0)
 
     # Problem 1, implicit Euler
     theta = 1

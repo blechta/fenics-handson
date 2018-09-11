@@ -1,8 +1,5 @@
-Heat equation
-=============
-
 Heat equation in moving media
------------------------------
+=============================
 
 Find approximate solution to following linear PDE
 

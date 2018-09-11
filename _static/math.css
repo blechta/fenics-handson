@@ -1,0 +1,16 @@
+div.math {
+    overflow-x: auto;
+}
+
+.eqno {
+    margin-left: 5px;
+    float: right;
+}
+.math .headerlink {
+    display: inline-block;
+    visibility: hidden;
+}
+.math:hover .headerlink {
+    display: inline-block;
+    visibility: visible;
+}

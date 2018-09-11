@@ -8,6 +8,7 @@ FEniCS tutorial
    :caption: Preliminaries
 
    copyright
+   prolog
    bash/doc
    python/doc
 
@@ -16,15 +17,15 @@ FEniCS tutorial
    :caption: Class material
 
    fenics/doc
-   heat/doc
    unsteady/doc
    stokes/doc
    elasticity/doc
-   p_laplace/doc
    helmholtz/doc
 
 .. toctree::
    :maxdepth: 1
    :caption: Appendix
 
+   heat/doc
+   p_laplace/doc
    appendix/doc

@@ -40,6 +40,6 @@ todo_include_todos = True
 # Enable ".. only:: solution" sections
 tags.add('solution')
 
-# Add scroll bar to long equations
+# Fixes for typesetting math
 def setup(app):
-    app.add_stylesheet('math-scroll.css')
+    app.add_stylesheet('math.css')

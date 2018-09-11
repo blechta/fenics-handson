@@ -1,0 +1,10 @@
+Prolog
+======
+
+    My theory by A. Elk.  Brackets Miss, brackets.  This theory goes
+    as follows and begins now.  All brontosauruses are thin at one
+    end, much much thicker in the middle and then thin again at the
+    far end.  That is my theory, it is mine, and belongs to me and I
+    own it, and what it is too.
+
+    -- Anne Elk (Miss)

@@ -1,8 +1,5 @@
-Time-dependent problems
-=======================
-
 Heat equation
--------------
+=============
 
 .. sidebar:: Goals
 
@@ -27,6 +24,7 @@ in space with given data :math:`f`, :math:`g`, :math:`u_0`.
 :math:`\theta`-scheme time-discrete heat equation reads:
 
 .. math::
+    :label: time-discrete
 
     \frac{1}{\Delta t} (u^{n+1} - u^n)
     - \theta\Delta u^{n+1} - (1-\theta)\Delta u^n
@@ -40,14 +38,283 @@ in space with given data :math:`f`, :math:`g`, :math:`u_0`.
         &&\quad\text{ in }\Omega
 
 for a certain sequence :math:`0=t_0 < t_1 < t_2 < ... \leq T`.
+Special cases are:
 
+.. list-table::
+
+    * - :math:`\theta=0`
+      - explicit Euler scheme,
+    * - :math:`\theta=\frac12`
+      - Crank-Nicolson scheme,
+    * - :math:`\theta=1`
+      - implicit Euler scheme.
+
+
+.. _task1:
+
+.. admonition:: Task 1
+
+
+    Multiply :eq:`time-discrete` by a test function from
+    :math:`H^1(\Omega)` and derive a weak formulation
+    :math:`\theta`-scheme for heat equation.
+
+
+First steps
+-----------
+
+Consider data
+
+.. math::
+    :label: data0
+
+    \Omega &= (0, 1)^2,
+
+    T &= 2,
+
+    f &= 0,
+
+    g &= 0,
+
+    u_0(x,y) &= x.
+
+.. _task2:
+
+.. admonition:: Task 2
+
+    Write FEniCS code implementing problem :eq:`time-discrete`,
+    :eq:`data0`, assuming general :math:`\theta`, and arbitrary
+    but fixed :math:`\Delta t`. In particular assume::
+
+        from dolfin import *
+
+        mesh = UnitSquareMesh(32, 32)
+        V = FunctionSpace(mesh, "Lagrange", 1)
+
+        theta = Constant(0.5)
+        dt = Constant(0.1)
+
+    Proceed step-by-step.
+
+        #. **Define all relevant data from** :eq:`data0`.
+           Use ``Constant`` or ``Expression`` classes
+           to define :math:`f`, :math:`g`, :math:`u_0`.
+
+        #. Define a finite element function for holding
+           solution at a particular time step::
+
+               u_n = Function(V)
+
+           and arguments of linear and bilinear forms::
+
+               u, v = TrialFunction(V), TestFunction(V)
+
+           .. Note::
+
+               Don't forget the distinction between
+               ``Function`` and ``(Trial|Test)Function``:
+
+               * ``Function`` is an actual FE function
+                 with its expansion coefficients (with
+                 respect to an FE basis) stored in memory.
+
+               * ``TestFunction`` is a first argument of
+                 multilinear form (of rank >= 1).
+                 ``TrialFunction`` is a second argument of
+                 multilinear form (of rank >= 2).
+                 ``Argument`` is any argument of
+                 multilinear form.
+
+                 These objects do not have actual values
+                 -- they only represent intended argument
+                 of multilinear form.
+
+               * Form ``Coefficient`` is an object,
+                 for example of type ``Function``,
+                 ``Expression``, ``Constant``, which form
+                 the depends on (possibly in nonlinear manner)
+                 and which does not count as its ``Argument``.
+
+                 For example, ``u_n`` as defined above, will
+                 serve a role of ``Coefficient`` in the form
+                 ``L`` below.
+
+        #. **Define bilinear and linear forms describing
+           Galerkin descretization of the weak formulation
+           derived in**
+           :ref:`Task 1 <task1>`
+           **on the space** ``V``.
+
+           You can conveniently mix bilinear and
+           linear terms into a single expression::
+
+               F = 1/dt*(u - u_n)*v*dx + ...
+
+           and separate bilinear and linear part
+           using ``lhs``, ``rhs``::
+
+               a, L = lhs(F), rhs(F)
+
+           .. tip::
+
+               It is good to execute your code every once in a while,
+               even when it is not doing anything useful so far,
+               e.g., does not have time-stepping yet. You will
+               catch the bugs early and fix them easily.
+
+        #. **Prepare for the beggining of time-stepping.**
+           Assume ``u0`` is an ``Expression`` or ``Constant``.
+           You can do::
+
+               u_n.interpolate(u0)
+
+        #. **Implement time-stepping.** Write a control flow
+           statement (for example a ``while`` loop) which executes
+           the solver for problem ``a == L`` repeatedly while
+           updating what needed.
+
+        #. **Run with different values of**
+           :math:`\theta=1,\frac12,0`.
+
+           As a first indicator of correctness of the implementation
+           you can drop into the loop lines
+           like::
+
+               energy = assemble(u_n*dx)
+               print("Energy =", energy)
+
+           Are you observing expected value?
+
+
+Data IO, plotting
+-----------------
+
+There are several possibilities for visualization of data.
+
+.. toggle-header::
+    :header: **XDMF output and Paraview**
+
+    One possibility is to use IO facilities of FEniCS and
+    visualize using external software, for example Paraview.
+
+    .. Note::
+
+        This approach allows to separate
+
+        * actual computation, which can happen in headless HPC
+          environment, for example big parallel clusters of
+          thousands of CPU cores,
+
+        * and visualization, which many times needs human
+          interaction.
+
+    Code for storing data to file could look like::
+
+        # Open file for XDMF IO
+        f = XDMFFile('solution.xdmf')
+
+        while t < T:
+
+            # Compute time step
+            perform_timestep(u_n, t, dt)
+            t += dt
+
+            # Save the result to file at time t
+            f.write(u_n, t)
+
+    Then you can open Paraview by shell command
+
+    .. code-block:: bash
+
+        paraview &
+
+    and visualize the file ``solution.xdmf``.
+
+.. toggle-header::
+    :header: **Matplotlib -- native plotting in Python**
+
+    Another possibility is to use Python plotting library
+    `Matplotlib <https://matplotlib.org/>`_.
+
+    .. Note::
+
+        `Matplotlib <https://matplotlib.org/>`_ is Python native
+        plotting library, which is programmable and supports
+
+        * interactive use from Python interpreters, including
+          popular shells like `Jupyter <https://jupyter.org/>`_,
+        * high-quality vector output suitable for scientific
+          publishing.
+
+        FEniCS ``plot(obj, **kwargs)`` function implements
+        plotting using Matplotlib for several different types
+        of ``obj``, for instance ``Function``, ``Expression``,
+        ``Mesh``, ``MeshFunction``. As Matplotlib is highly
+        programmable and customizable, FEniCS ``plot()`` is
+        typically accompanied by some native matplotlib
+        commands. Mimimal example of
+        interaction of FEniCS and matplotlib::
+
+            from dolfin import *
+            import matplotlib.pyplot as plt
+
+            mesh = UnitSquareMesh(64, 64)
+            plot(mesh)
+            plt.savefig('mesh_64_64.pdf')  # Render to PDF
+            plt.show()  # Render into interactive window
+
+    Add something along the lines of::
+
+        import matplotlib.pyplot as plt
+
+        # Open a plot window
+        fig = plt.figure()
+        fig.show()
+
+        while t < T:
+
+            # Compute time step
+            perform_timestep(u_n, t, dt)
+            t += dt
+
+            # Update plot to current time step
+            fig.clear()
+            p = plot(u_n, mode="warp")
+            fig.colorbar(p)
+            fig.gca().set_zlim((0, 2))
+            fig.canvas.draw()
+
+
+.. admonition:: Task 3
+
+    Implement at least one of the aforementioned ways to
+    plot your solutions in time. Check that your solution
+    of :ref:`Task 2 <task2>` looks reasonable.
+
+
+Nonhomogeneous Neumann BC
+-------------------------
+
+Consider :eq:`time-discrete`, :eq:`data0` but now with
+nonhomogeneous Neumann data
+
+.. math::
+    :label: data1
+
+    g &= 1 \text{ on } \{ x = 0 \},
+
+    g &= 0 \text{ elsewhere}.
+
+
+.. admonition:: Task 3
+
+    Implement UFL
 
 
 .. only:: solution
 
    Reference solution
    ------------------
-
    .. toggle-header::
        :header: **Show/Hide Code**
 
@@ -57,5 +324,10 @@ for a certain sequence :math:`0=t_0 < t_1 < t_2 < ... \leq T`.
            <https://en.wikipedia.org/wiki/Don%27t_repeat_yourself>`_.
            Hands-on participants are not expected to write such
            a modularized code during a session.
+
+           More clean design would be achieved by employing classes.
+           It is in general a good idea to start just with free
+           functions and refactor later into classes when developing
+           an object oriented code.
 
        .. literalinclude:: heat.py
