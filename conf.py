@@ -20,6 +20,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'README.rst']
 pygments_style = 'sphinx'
+highlight_language = 'python3'
 html_theme = 'sphinx_rtd_theme'
 html_theme_options = {}
 html_static_path = ['_static']
@@ -43,3 +44,4 @@ todo_include_todos = True
 # Fixes for typesetting math
 def setup(app):
     app.add_stylesheet('math.css')
+    app.add_javascript('copybutton.js')

@@ -318,7 +318,7 @@ nonhomogeneous Neumann data
         .. toggle-header::
             :header: **Show/Hide Code**
 
-            .. code-block:: python3
+            ::
 
                 # Define instance of SubDomain class
                 class Left(SubDomain):

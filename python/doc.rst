@@ -5,7 +5,7 @@ Python is interpreted, dynamic-typed language. We will be using Python
 version 3.
 
 **Task 1.** Start Python interpreter by typing ``python3`` to shell and
-type in *Hello world!*
+type in *Hello world!*::
 
     >>> # Let's try Hello world! This is a comment.
     >>> print("Hello world!")
@@ -20,7 +20,7 @@ Basic datatypes
 **Task 2.** Try using Python as an interactive calculator. Play with basic
 arithmetic operations; complex numbers are written as ``1 + 2j``. Power is written
 using double asterisk ``**``. Elementary functions are available in ``math``
-and ``cmath`` modules
+and ``cmath`` modules::
 
     >>> import math
     >>> math.sqrt(4.0)

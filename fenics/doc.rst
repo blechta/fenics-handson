@@ -17,9 +17,7 @@ Python 3 interpreter:
 
     python3
 
-You should see something like:
-
-.. code-block:: pycon3
+You should see something like::
 
     Python 3.6.5 (default, Apr  1 2018, 05:46:30)
     [GCC 7.3.0] on linux
@@ -28,12 +26,19 @@ You should see something like:
 
 Now type::
 
-    from dolfin import *
-    import matplotlib.pyplot as plt
+    >>> from dolfin import *
+    >>> import matplotlib.pyplot as plt
+    >>> 
+    >>> mesh = UnitSquareMesh(13, 8)
+    >>> plot(mesh)
+    [<matplotlib.lines.Line2D object at 0x7fe0003d65c0>, <matplotlib.lines.Line2D object at 0x7fe0003d6748>]
+    >>> plt.show()
 
-    mesh = UnitSquareMesh(13, 8)
-    plot(mesh)
-    plt.show()
+.. hint::
+
+    Click on ``>>>`` in the right top corner
+    of the code snippet to make the code copyable.
+
 
 A graphical plot of the mesh should appear. If any of the
 steps above failed, you're not correctly set up to use FEniCS.
