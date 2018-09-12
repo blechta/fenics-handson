@@ -4,7 +4,7 @@ Very short introduction to FEniCS
 First touch
 -----------
 
-**Task 1.** Login by SSH to ``tyche`` and type:
+Login by SSH to ``tyche`` and type:
 
 .. code-block:: bash
 
@@ -40,16 +40,23 @@ steps above failed, you're not correctly set up to use FEniCS.
 If everything went fine, close the plot window and hit ``^D`` to
 quit the interpreter.
 
-Get the Poisson demo from FEniCS install dir and run it:
 
-.. code-block:: bash
+Run and modify demos
+--------------------
 
-    mkdir -p work/fenics/poisson
-    cd work/fenics/poisson
-    cp /LOCAL/Software/FEniCS-2018.1/share/dolfin/demo/python/documented/poisson/demo_poisson.py .
-    python3 demo_poisson.py
+.. admonition:: Task 1
 
-You should see some console output and a plot of the solution.
+    Get the Poisson demo from FEniCS install dir and run it:
+
+    .. code-block:: bash
+
+        mkdir -p work/fenics/poisson
+        cd work/fenics/poisson
+        cp /LOCAL/Software/FEniCS-2018.1/share/dolfin/demo/python/documented/poisson/demo_poisson.py .
+        python3 demo_poisson.py
+
+    You should see some console output and a plot of the solution.
+
 
 Now login to ``tyche`` from another terminal window and open
 the demo file using your favourite editor (if you don't have any
@@ -60,20 +67,24 @@ you can use ``gedit``, ``nano``, ...):
     cd work/fenics/poisson
     <editor> demo_poisson.py
 
-Now add *keyword argument* ``warp='mode'`` to the ``plot`` function
-call by applying the following diff:
 
-.. code-block:: diff
+.. admonition:: Task 2
 
-     # Plot solution
-     import matplotlib.pyplot as plt
-    -plot(u)
-    +plot(u, mode='warp')
-     plt.show()
+    Now add *keyword argument* ``warp='mode'`` to the ``plot`` function
+    call by applying the following diff:
 
-and run the demo again by ``python3 demo_poisson.py``.
+    .. code-block:: diff
 
-**Task 2.** Open `Poisson demo documentation
+         # Plot solution
+         import matplotlib.pyplot as plt
+        -plot(u)
+        +plot(u, mode='warp')
+         plt.show()
+
+    and run the demo again by ``python3 demo_poisson.py``.
+
+
+Open `Poisson demo documentation
 <https://fenicsproject.org/docs/dolfin/2018.1.0/python/demos/poisson/demo_poisson.py.html>`_
 on the FEniCS website. Notice that the doc page is generated from
 the demo file. Go quickly through the docpage while paying attention
@@ -82,16 +93,20 @@ to
 * definition of weak formulation through forms ``a`` and ``L``,
 * usage of ``Constant`` and ``Expression`` classes.
 
-Now modify the problem to use the following data instead:
 
-.. math::
-    :nowrap:
+.. admonition:: Task 3
 
-    \begin{align*}
-        a(u, v) &= \int_\Omega \nabla u\cdot\nabla v\,\mathrm{d}x
-                 +         \int_\Omega c\,u v\,\mathrm{d}x \\
-        c       &= 100 \\
-        f       &= x \\
-        g       &= \sin(5x) \exp(y) \\
-        u       &= y \qquad \text{on } \Gamma_\mathrm{D}
-    \end{align*}
+    Now modify the problem to use the following data instead:
+
+        .. math::
+
+            a(u, v) &= \int_\Omega \nabla u\cdot\nabla v\,\mathrm{d}x
+                     +         \int_\Omega c\,u v\,\mathrm{d}x
+
+            c       &= 100
+
+            f       &= x
+
+            g       &= \sin(5x) \exp(y)
+
+            u       &= y \qquad \text{on } \Gamma_\mathrm{D}

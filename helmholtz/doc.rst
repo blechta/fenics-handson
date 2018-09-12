@@ -131,11 +131,13 @@ latter part.
 
 .. only:: solution
 
-   Reference solution
-   ------------------
+    Reference solution
+    ------------------
 
-   .. literalinclude:: impl.py
-      :start-after: # Begin code
+    .. toggle-header::
+        :header: **Show/Hide Code**
+
+        .. literalinclude:: impl.py
 
 
 .. [Evans] Lawrence C. Evans. *Partial Differential Equations.* Second edition.

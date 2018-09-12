@@ -1,5 +1,5 @@
-Stokes equation
-===============
+Navier-Stokes equations
+=======================
 
 Stokes flow around cylinder
 ---------------------------
@@ -7,26 +7,31 @@ Stokes flow around cylinder
 Solve the following linear system of PDEs
 
 .. math::
+
    - \operatorname{div}(\nabla u) + \nabla p &= f
-        \quad\text{ in }\Omega, \\
+        &&\quad\text{ in }\Omega,
+
    \operatorname{div} u &= 0
-        \quad\text{ in }\Omega, \\
+        &&\quad\text{ in }\Omega,
+
    u &= 0
-        \quad\text{ on }\Gamma_\mathrm{D}, \\
+        &&\quad\text{ on }\Gamma_\mathrm{D},
+
    u &= u_\mathrm{IN}
-        \quad\text{ on }\Gamma_\mathrm{IN}, \\
+        &&\quad\text{ on }\Gamma_\mathrm{IN},
+
    \tfrac{\partial u}{\partial\mathbf{n}} &= g
-        \quad\text{ on }\Gamma_\mathrm{N}, \\
+        &&\quad\text{ on }\Gamma_\mathrm{N},
 
 using FE discretization with data
 
-* :math:`\Omega = [0, 2.2]x[0, 0.41] - B_{0.05}\left([0.2,0.2]\right)`
+* :math:`\Omega = (0, 2.2)\times(0, 0.41) - B_{0.05}\left((0.2,0.2)\right)`
 * :math:`\Gamma_\mathrm{N} = \left\{ x = 2.2 \right\}`
 * :math:`\Gamma_\mathrm{IN} = \left\{ x = 0.0 \right\}`
 * :math:`\Gamma_\mathrm{D} = \Gamma_\mathrm{W} \cup \Gamma_\mathrm{S}`
 * :math:`u_\mathrm{IN} = \left( 0.3 \frac{4}{0.41^2} y (0.41-y) , 0 \right)`
 
-where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
+where :math:`B_R(\mathbf{z})` is a disc of radius :math:`R` and center
 :math:`\mathbf{z}`
 
   .. image:: geometry.png
@@ -36,15 +41,23 @@ where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
 
 ..
 
-  **Task 1.** Write the variational formulation of the problem and
-  discretize the equation by mixed finite element method.
 
-  **Task 2.** Build mesh, prepare facet function marking
+.. admonition:: Task 1
+
+  Write the variational formulation of the problem and
+  discretize the equation by a mixed finite element method.
+
+
+.. admonition:: Task 2
+
+  Build a mesh, prepare a mesh function marking
   :math:`\Gamma_\mathrm{N}` and :math:`\Gamma_\mathrm{D}` and plot it to
   check its correctness.
 
-      *Hint.* Use the mshr component of fenics - see `mshr documentation
-      <https://bitbucket.org/benjamik/mshr/wiki/API>`_
+  .. hint::
+
+      Use the FEniCS meshing tool ``mshr``, see `mshr documentation
+      <https://bitbucket.org/benjamik/mshr/wiki/API>`_.
 
       .. code-block:: python
 
@@ -62,115 +75,112 @@ where :math:`B_R(\mathbf{z})` is a circle of radius :math:`R` and center
          mesh = mshr.generate_mesh(geometry, 50)
 
 
-      *Hint.* Try yet another way to mark the boundaries by direct
-      access to the mesh entities by ``facets(mehs)``,
-      ``vertices(mesh)``, ``cells(mesh)``
+  .. hint::
 
-      .. code-block:: python
+      Try yet another way to mark the boundaries by direct
+      access to the mesh entities by ``facets(mesh)``,
+      ``vertices(mesh)``, ``cells(mesh)`` mesh-entity iterators::
 
-         # Construct facet markers
-         bndry = FacetFunction("size_t", mesh)
-         for f in facets(mesh):
+          # Construct facet markers
+          bndry = MeshFunction("size_t", mesh, mesh.topology().dim()-1)
+          for f in facets(mesh):
               mp = f.midpoint()
-              if near(mp[0], 0.0): bndry[f] = 1  # inflow
-              elif near(mp[0], L): bndry[f] = 2  # outflow
-              elif near(mp[1], 0.0) or near(mp[1], W): bndry[f] = 3  # walls
-              elif mp.distance(center) <= radius:      bndry[f] = 5  # cylinder
+              if near(mp[0], 0.0): # inflow
+                  bndry[f] = 1
+              elif near(mp[0], L): # outflow
+                  bndry[f] = 2
+              elif near(mp[1], 0.0) or near(mp[1], W): # walls
+                  bndry[f] = 3
+              elif mp.distance(center) <= radius: # cylinder
+                  bndry[f] = 5
 
-         plot(boundary_parts, interactive=True)
-
-
-  **Task 3.** Construct the mixed finite element space and the
-  bilinear and linear forms together with the ``DirichletBC`` object.
-
-      *Hint.* Use for example the stable Taylor-Hood finite elements.
-
-      .. code-block:: python
-
-         # Build function spaces (Taylor-Hood)
-         V = VectorFunctionSpace(mesh, "Lagrange", 2)
-         P = FunctionSpace(mesh, "Lagrange", 1)
-         W = MixedFunctionSpace([V, P])
-
-      *Hint.* To define Dirichlet BC on subspace use the ``W.sub`` method.
-
-      .. code-block:: python
-
-         noslip = Constant((0, 0))
-         bc_walls = DirichletBC(W.sub(0), noslip, bndry, 3)
-
-      *Hint.* To build the forms use the ``split`` method or function
-      to access the components of the mixed space.
-
-      .. code-block:: python
-
-         # Define unknown and test function(s)
-         (v_, p_) = TestFunctions(W)
-         (v , p)  = TrialFunctions(W)
+          # Dump facet markers to file
+          with XDMFFile('facets.xdmf') as f:
+              f.write(bndry)
 
 
-      Then you can define the forms for example as:
+.. admonition:: Task 3
 
-      .. code-block:: python
+    Construct the mixed finite element space and the
+    bilinear and linear forms together with the ``DirichletBC`` object.
 
-          def a(u,v): return inner(grad(u), grad(v))*dx
-          def b(p,v): return p*div(v)*dx
-          def L(v):   return inner(f, v)*dx
+    .. hint::
 
-          F = a(v,v_) + b(p,v_) + b(p_,v) - L(v_)
+        Use for example the stable Taylor-Hood finite elements::
 
+            # Build function spaces (Taylor-Hood)
+            P2 = VectorElement("P", mesh.ufl_cell(), 2)
+            P1 = FiniteElement("P", mesh.ufl_cell(), 1)
+            TH = MixedElement([P2, P1])
+            W = FunctionSpace(mesh, TH)
 
-      And solve by:
+    .. hint::
 
-      .. code-block:: python
+        To define Dirichlet BC on subspace use the ``W.sub()`` method::
 
-          w = Function(W)
-          solve(lhs(F)==rhs(F), w, bcs)
-          (v,p)=w.split(w)
+            noslip = Constant((0, 0))
+            bc_walls = DirichletBC(W.sub(0), noslip, bndry, 3)
 
+    .. hint::
 
-  **Task 4.** Now modify the problem to the Navier-Stokes equations
-  and compute the `DFG-flow around cylinder benchmark
-  <http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark1_re20.html>`_
+        To build the forms use::
 
-    *Hint.* You can use generic ``solve`` function or
-    ``NonlinearVariationalProblem`` and ``NonlinearVariationalSolver``
-    classes.
+            # Define trial and test functions
+            u, p = TrialFunctions(W)
+            v, q = TestFunctions(W)
 
-    .. code-block:: python
-
-       (_v, _p) = TestFunctions(W)
-       w = Function(W)
-       (v, p) = split(w)
-
-       I = Identity(v.geometric_dimension())    # Identity tensor
-
-       D = 0.5*(grad(v)+grad(v).T)  # or D=sym(grad(v))
-       T = -p*I + 2*nu*D
-
-       # Define variational forms
-       F = inner(T, grad(_v))*dx + _p*div(v)*dx + inner(grad(v)*v,_v)*dx
+        Then you can define forms on mixed space using
+        ``u``, ``p``, ``v``, ``q`` as usual.
 
 
+.. admonition:: Task 4
 
-    *Hint.* Use ``Assemble`` function to evaluate the lift and drag functionals.
+    Now modify the problem to the Navier-Stokes equations
+    and compute the `DFG-flow around cylinder benchmark
+    <http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark1_re20.html>`_
 
-    .. code-block:: python
+    .. hint::
 
-       force = T*n
-       D = (force[0]/0.002)*ds(5)
-       L = (force[1]/0.002)*ds(5)
+        You can use generic ``solve`` function or
+        ``NonlinearVariationalProblem`` and ``NonlinearVariationalSolver``
+        classes::
 
-       drag = assemble(D)
-       lift = assemble(L)
 
-       print "drag= %e    lift= %e" % (drag , lift)
+            # Define test functions
+            v, q = TestFunctions(W)
+            w = Function(W)
+            u, p = split(w)
+
+            # Facet normal, identity tensor and boundary measure
+            n = FacetNormal(mesh)
+            I = Identity(mesh.geometry().dim())
+            ds = Measure("ds", subdomain_data=bndry)
+            nu = Constant(0.001)
+
+            # Define variational forms
+            T = -p*I + 2.0*nu*sym(grad(u))
+            F = inner(T, grad(v))*dx - q*div(u)*dx + inner(grad(u)*u, v)*dx
+            F += - nu*dot(dot(grad(u), v), n)*ds(2)
+
+    .. hint::
+
+        Use ``Assemble`` function to evaluate the lift and drag functionals::
+
+
+            # Report drag and lift
+            force = dot(T, n)
+            D = (force[0]/0.002)*ds(5)
+            L = (force[1]/0.002)*ds(5)
+            drag = assemble(D)
+            lift = assemble(L)
+            info("drag= %e    lift= %e" % (drag , lift))
 
 
 .. only:: solution
 
-   Reference solution
-   ------------------
+    Reference solution
+    ------------------
+    .. toggle-header::
+        :header: **Show/Hide Code**
 
-   .. literalinclude:: stokes.py
-      :start-after: # Begin code
+        .. literalinclude:: stokes.py

@@ -63,7 +63,7 @@ is Euclidian distance between points :math:`\mathbf{p}`, :math:`\mathbf{q}`.
          bottom.mark(boundary_parts, 2)
          plot(boundary_parts, interactive=True)
 
-                      
+
   **Task 3.** Define expressions :math:`\mathbf{b}`, :math:`f`, :math:`u_0`
   and plot them.
 
@@ -93,8 +93,8 @@ is Euclidian distance between points :math:`\mathbf{p}`, :math:`\mathbf{q}`.
 
            # oneline C++
            b = Expression(("-(x[1] - 0.5)", "x[0] - 0.5"))
-           
-                                                        
+
+
   **Task 4.** Use facet markers from Task 2 to define ``DirichletBC`` object
   and ``Measure`` for integration along :math:`\Gamma_\mathrm{N}`.
 
@@ -103,8 +103,8 @@ is Euclidian distance between points :math:`\mathbf{p}`, :math:`\mathbf{q}`.
      .. code-block:: python
 
         dsN = Measure("ds", subdomain_id=1, subdomain_data=boundary_parts)
-             
-                          
+
+
   **Task 5.** Now proceed to variational formulation and time-stepping loop.
   Write bilinear and linear form representing PDE. How is solution at previous
   time-step represented therein?
@@ -122,18 +122,22 @@ is Euclidian distance between points :math:`\mathbf{p}`, :math:`\mathbf{q}`.
      *Hint* See `Poisson demo <http://fenicsproject.org/documentation/dolfin/1.5.0/python/demo/documented/poisson/python/documentation.html#index-0>`_
 
      .. code-block:: python
-                             
+
         # Create file for storing results
         f = File("results/u.xdmf")
 
         u.rename("u", "temperature")
         f << u
 
-                        
+
 .. only:: solution
 
-   Reference solution
-   ------------------
+    Reference solution
+    ------------------
 
-   .. literalinclude:: impl.py
-      :start-after: # Begin code
+    .. toggle-header::
+        :header: **Show/Hide Code**
+
+        .. literalinclude:: impl.py
+
+

@@ -79,20 +79,24 @@ Potential for p-Laplace equation
 
 .. only:: solution
 
-   Reference solution
-   ------------------
+    Reference solution
+    ------------------
 
-   **File** ``p_laplace.py``
+    Reference solution consists of three files -- one module file:
 
-   .. literalinclude:: p_laplace.py
-      :start-after: # Begin code
+        .. toggle-header::
+            :header: **Show/Hide File** ``p_laplace.py``
 
-   **File** ``p_small.py``
+            .. literalinclude:: p_laplace.py
 
-   .. literalinclude:: p_small.py
-      :start-after: # Begin code
+    and two executable scripts:
 
-   **File** ``p_large.py``
+        .. toggle-header::
+            :header: **Show/Hide File** ``p_small.py``
 
-   .. literalinclude:: p_large.py
-      :start-after: # Begin code
+            .. literalinclude:: p_small.py
+
+        .. toggle-header::
+            :header: **Show/Hide File** ``p_large.py``
+
+            .. literalinclude:: p_large.py

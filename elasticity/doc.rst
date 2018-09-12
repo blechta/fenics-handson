@@ -11,22 +11,22 @@ Find approximate solution to following non-linear system of PDEs
 
    \begin{align*}
    \vec{u}_t  &= \vec{v}
-        &&\quad\text{ in }\Omega\times[0, T], \\
+        &&\quad\text{ in }\Omega\times(0, T), \\
    \vec{v}_t  &= \operatorname{div} (J \mathbb{T} \mathbb{F}^{-\top})
-        &&\quad\text{ in }\Omega\times[0, T], \\
+        &&\quad\text{ in }\Omega\times(0, T), \\
    J^2 - 1 &= \begin{cases}
              0         & \text{incompressible case} \\
             -p/\lambda & \text{compressible case}
         \end{cases}
-        &&\quad\text{ in }\Omega\times[0, T], \\
+        &&\quad\text{ in }\Omega\times(0, T), \\
    \vec{u} = \vec{v} &= 0
-        &&\quad\text{ on }\Gamma_\mathrm{D}\times[0, T], \\
+        &&\quad\text{ on }\Gamma_\mathrm{D}\times(0, T), \\
    \mathbb{T}\vec{n} &= \vec{g}
-        &&\quad\text{ on }\Gamma_\mathrm{N}\times[0, T], \\
+        &&\quad\text{ on }\Gamma_\mathrm{N}\times(0, T), \\
    \mathbb{T}\vec{n} &= 0
-        &&\quad\text{ on }\Omega\backslash\Gamma_\mathrm{D}\cup\Gamma_\mathrm{N}\times[0, T], \\
+        &&\quad\text{ on }\partial\Omega\backslash(\Gamma_\mathrm{D}\cup\Gamma_\mathrm{N})\times(0, T), \\
    \vec{u} = \vec{v} &= 0
-        &&\quad\text{ on }\Omega\times{0}
+        &&\quad\text{ on }\Omega\times\{0\}
    \end{align*}
 
 where
@@ -146,11 +146,10 @@ Mesh file of lego brick :download:`lego_beam.xml`.
 
 .. only:: solution
 
-   Reference solution
-   ------------------
+    Reference solution
+    ------------------
 
-   .. toggle-header::
-      :header: **Show/Hide Code**
+    .. toggle-header::
+        :header: **Show/Hide Code**
 
-      .. literalinclude:: elast.py
-         :start-after: # Begin code
+        .. literalinclude:: elast.py

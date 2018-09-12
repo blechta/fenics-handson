@@ -344,21 +344,21 @@ nonhomogeneous Neumann data
 
 .. only:: solution
 
-   Reference solution
-   ------------------
-   .. toggle-header::
-       :header: **Show/Hide Code**
+    Reference solution
+    ------------------
+    .. toggle-header::
+        :header: **Show/Hide Code**
 
-       .. note::
+        .. note::
 
-           The reference solution follows `DRY principle
-           <https://en.wikipedia.org/wiki/Don%27t_repeat_yourself>`_.
-           Hands-on participants are not expected to write such
-           a modularized code during a session.
+            The reference solution follows `DRY principle
+            <https://en.wikipedia.org/wiki/Don%27t_repeat_yourself>`_.
+            Hands-on participants are not expected to write such
+            a modularized code during a session.
 
-           More clean design would be achieved by employing classes.
-           It is in general a good idea to start just with free
-           functions and refactor later into classes when developing
-           an object oriented code.
+            More clean design would be achieved by employing classes.
+            It is in general a good idea to start just with free
+            functions and refactor later into classes when developing
+            an object oriented code.
 
-       .. literalinclude:: heat.py
+        .. literalinclude:: heat.py
