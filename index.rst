@@ -1,8 +1,6 @@
 FEniCS tutorial
 ===============
 
-.. todolist::
-
 .. toctree::
    :maxdepth: 1
    :caption: Preliminaries
@@ -29,3 +27,5 @@ FEniCS tutorial
    heat/doc
    p_laplace/doc
    appendix/doc
+
+.. todolist::
