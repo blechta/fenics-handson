@@ -1,5 +1,13 @@
-Very short introduction to FEniCS
-=================================
+.. _fenics-intro:
+
+Short introduction to FEniCS
+============================
+
+.. todo::
+
+    Add some further modifications of the demo (nonconstant,
+    nonscalar coefficients), non-linearity.
+
 
 First touch
 -----------

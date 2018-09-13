@@ -1,6 +1,15 @@
 Equation of elasticity
 ======================
 
+.. sidebar:: Goals
+
+    Further mixed elements, further cool physics...
+
+.. todo::
+
+    Update this sheet!
+
+
 Deformation of elastic material
 -------------------------------
 
@@ -82,64 +91,71 @@ in space with data
 Mesh file of lego brick :download:`lego_beam.xml`.
 
 
-..
+.. admonition:: Task 1
 
-   **Task 1.** Discretize the equation in time and write variational formulation
+   Discretize the equation in time and write variational formulation
    of the problem.
 
-   **Task 2.** Build mesh, prepare facet function marking
+
+.. admonition:: Task 2
+
+   Build mesh, prepare facet function marking
    :math:`\Gamma_\mathrm{N}` and :math:`\Gamma_\mathrm{D}` and plot it to
    check its correctness.
 
-     *Hint.*
-     You can get coordinates of :math:`\Gamma_\mathrm{D}` by something like
-     ``x0 = mesh.coordinates()[:, 0].min()`` for lego mesh. Analogically
-     for :math:`\Gamma_\mathrm{N}`.
+   .. hint::
 
-   **Task 3.** Define Cauchy stress and variational formulation of the problem.
+       You can get coordinates of :math:`\Gamma_\mathrm{D}` by something like
+       ``x0 = mesh.coordinates()[:, 0].min()`` for lego mesh. Analogically
+       for :math:`\Gamma_\mathrm{N}`.
 
-     *Hint.*
-     Get geometric dimension by ``gdim = mesh.geometry().dim()`` to be able
-     to write the code independently of the dimension.
 
-   **Task 4.** Prepare a solver and
-   write simple time-stepping loop.
+.. admonition:: Task 3
 
-     Prepare a solver by
+   Define Cauchy stress and variational formulation of the problem.
 
-     .. code-block:: python
+   .. hint::
 
-        problem = NonlinearVariationalProblem(F, w, bcs=bcs, J=J)
-        solver = NonlinearVariationalSolver(problem)
-        solver.parameters['newton_solver']['relative_tolerance'] = 1e-6
-        solver.parameters['newton_solver']['linear_solver'] = 'mumps'
+       Get geometric dimension by ``gdim = mesh.geometry().dim()`` to be able
+       to write the code independently of the dimension.
 
-     to increase the tolerance reasonably and employ powerful LU solver MUMPS.
 
-     Prepare nice plotting of displacement by
+.. admonition:: Task 4
 
-     .. code-block:: python
+   Prepare a solver and write simple time-stepping loop.
 
-        plt = plot(u, mode="displacement", interactive=False, wireframe=True)
+   Prepare a solver by::
 
-     and then just update a plot by ``plt.plot(u)`` every time-step.
+      problem = NonlinearVariationalProblem(F, w, bcs=bcs, J=J)
+      solver = NonlinearVariationalSolver(problem)
+      solver.parameters['newton_solver']['relative_tolerance'] = 1e-6
+      solver.parameters['newton_solver']['linear_solver'] = 'mumps'
 
-   **Task 5.** Tune the code for getting a 3D solution in a reasonable time.
+   to increase the tolerance reasonably and employ
+   powerful sparse direct solver MUMPS.
 
-     Use a following optimization
+   Prepare nice plotting of displacement by::
 
-     .. code-block:: python
+      plot(u, mode="displacement")
 
-        parameters['form_compiler']['representation'] = 'uflacs'
-        parameters['form_compiler']['optimize'] = True
+   Manipulate the plot how shown in
+   :ref:`the Matplotlib note <unsteady-matplotlib>`.
+
+
+.. admonition:: Task 5
+
+    Tune the code for getting a 3D solution in a reasonable time.
+
+    Use a following optimization::
+
         parameters['form_compiler']['quadrature_degree'] = 4
 
-     and P1/P1/P1 spaces.
+    and P1/P1/P1 spaces.
 
-     You can also try to run the 3D problem in parallel. You can disable
-     plotting from commandline by
+    You can also try to run the 3D problem in parallel. You can disable
+    plotting from commandline by
 
-     .. code-block:: bash
+    .. code-block:: bash
 
         DOLFIN_NOPLOT=1 mpirun -n 4 python spam_eggs.py
 

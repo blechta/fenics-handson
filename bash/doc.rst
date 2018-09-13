@@ -1,7 +1,12 @@
-Extremly short introduction to Bash
-===================================
+Extremly short introduction to shell
+====================================
 
 .. highlight:: bash
+
+.. attention::
+
+    If you are already (to any extent) familiar with Linux shell,
+    skip directly to :ref:`Task 2 <bash-task2>`.
 
 Shell is the direct interface between the user and the system kernel.
 
@@ -12,12 +17,14 @@ Shell is the direct interface between the user and the system kernel.
     standad shell on most GNU/linux based systems and basic commands are
     however almost same across all the shell variants.
 
+.. admonition:: Task 1
 
-**Task 1.** Open any terminal application - gnome-terminal, kterm, xterm.
-On many Lunux distributions you can achieve that by pushing ``CTRL+ALT+T``.
-You will, most probably, be greeted by Bash prompt::
+    Open any terminal application - gnome-terminal, kterm, xterm.
+    On many Lunux distributions you can achieve that by pushing ``CTRL+ALT+T``.
+    You will, most probably, be greeted by Bash prompt::
 
-   user@machine:~$
+       user@machine:~$
+
 
 Basic shell commands
 --------------------
@@ -48,38 +55,49 @@ the enviroment variable ``PATH`` are searched for an executable with
 that name.
 
 
-**Hint.** Help can be obtained using commands ``man``, ``info``,
-``apropos``. Try for instance::
+.. hint::
 
-    man ls
-    apropos math
+    Help can be obtained using commands ``man``, ``info``,
+    ``apropos``. Try for instance::
 
-To exit a ``man`` page hit ``q`` key.
+        man ls
+        apropos math
+
+    To exit a ``man`` page hit ``q`` key.
 
 
 Remote connection - ssh
 -----------------------
 
-   **Task 2.** Use ``ssh`` utility to connect to a remote system::
+.. _bash-task2:
 
-      ssh -X -C tyche
+.. attention::
 
-.. note::
+    If you are already familiar with SSH login to TUC machines,
+    skip to :ref:`Python tutorial <python-intro>`.
 
-    * ``-X`` enable ``X11`` forwarding (allows processes on the remote machine
-      opening windows of graphical applications on the local machine)
-    * ``-C`` enables compression which is mainly beneficial for access from
-      a remote network
-    * ``tyche`` stands here for machine ``tyche.mathematik.tu-chemnitz.de``;
-      username on the local machine is used by default to login to the remote
-      machine; the machine is not accessible from outside the univerity, so
-      one would login through a jump host::
+.. admonition:: Task 2
 
-        helmut@local_machine:~$ ssh -X -C user@login.tu-chemnitz.de
-        user@login:~$ ssh -X -C tyche
-        user@tyche:~$
+    Use ``ssh`` utility to connect to a remote system::
 
-      Alternatively one can use VPN.
+        ssh -X -C tyche
+
+    .. note::
+
+        * ``-X`` enable ``X11`` forwarding (allows processes on the remote machine
+          opening windows of graphical applications on the local machine)
+        * ``-C`` enables compression which is mainly beneficial for access from
+          a remote network
+        * ``tyche`` stands here for machine ``tyche.mathematik.tu-chemnitz.de``;
+          username on the local machine is used by default to login to the remote
+          machine; the machine is not accessible from outside the univerity, so
+          one would login through a jump host::
+
+            helmut@local_machine:~$ ssh -X -C user@login.tu-chemnitz.de
+            user@login:~$ ssh -X -C tyche
+            user@tyche:~$
+
+          Alternatively one can use VPN.
 
 
 Sending signals and process management

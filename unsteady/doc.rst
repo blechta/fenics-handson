@@ -5,6 +5,17 @@ Heat equation
 
     Learn how to deal with time-dependent problems.
     Solve heat equation by :math:`\theta`-scheme.
+    Get familiar further with the form language UFL.
+
+.. todo::
+
+    Add a task for spatially depending data
+    (using ``Expression``).
+
+.. todo::
+
+    Add a task for adaptive time step.
+
 
 We will be interested in solving heat equation:
 
@@ -50,7 +61,7 @@ Special cases are:
       - implicit Euler scheme.
 
 
-.. _task1:
+.. _unsteady-task1:
 
 .. admonition:: Task 1
 
@@ -78,7 +89,7 @@ Consider data
 
     u_0(x,y) &= x.
 
-.. _task2:
+.. _unsteady-task2:
 
 .. admonition:: Task 2
 
@@ -142,7 +153,7 @@ Consider data
         #. **Define bilinear and linear forms describing
            Galerkin descretization of the weak formulation
            derived in**
-           :ref:`Task 1 <task1>`
+           :ref:`Task 1 <unsteady-task1>`
            **on the space** ``V``.
 
            You can conveniently mix bilinear and
@@ -230,8 +241,11 @@ There are several possibilities for visualization of data.
 
     and visualize the file ``solution.xdmf``.
 
+.. _unsteady-matplotlib:
+
 .. toggle-header::
     :header: **Matplotlib -- native plotting in Python**
+
 
     Another possibility is to use Python plotting library
     `Matplotlib <https://matplotlib.org/>`_.
@@ -289,7 +303,7 @@ There are several possibilities for visualization of data.
 
     Implement at least one of the aforementioned ways to
     plot your solutions in time. Check that your solution
-    of :ref:`Task 2 <task2>` looks reasonable.
+    of :ref:`Task 2 <unsteady-task2>` looks reasonable.
 
 
 Nonhomogeneous Neumann BC
@@ -334,7 +348,7 @@ nonhomogeneous Neumann data
                 ds_left = Measure("ds", mesh, subdomain_data=facets, subdomain_id=1)
 
     3. Using the surface measure, modify the implementation
-       from :ref:`Task 2 <task2>` to incorporate boundary
+       from :ref:`Task 2 <unsteady-task2>` to incorporate boundary
        condition :eq:`data1`.
 
     #. Run the code with :math:`\theta=1` and check that the

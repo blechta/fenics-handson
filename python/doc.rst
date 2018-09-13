@@ -1,59 +1,79 @@
+.. _python-intro:
+
 Very short introduction to Python
 =================================
+
+.. attention::
+
+    If you are already familiar with Python variables,
+    basic data types, functions and basics of classes
+    skip to :ref:`FEniCS tutorial <fenics-intro>`.
+
 
 Python is interpreted, dynamic-typed language. We will be using Python
 version 3.
 
-**Task 1.** Start Python interpreter by typing ``python3`` to shell and
-type in *Hello world!*::
+.. admonition:: Task 1
 
-    >>> # Let's try Hello world! This is a comment.
-    >>> print("Hello world!")
-    Hello world!
-    >>> s = "Hello " + "world!"
-    >>> print(s)
-    Hello world!
+    Start Python interpreter by typing ``python3`` to shell and
+    type in *Hello world!* program::
+
+        >>> # Let's try Hello world! This is a comment.
+        >>> print("Hello world!")
+        Hello world!
+        >>> s = "Hello " + "world!"
+        >>> print(s)
+        Hello world!
+
 
 Basic datatypes
 ---------------
 
-**Task 2.** Try using Python as an interactive calculator. Play with basic
-arithmetic operations; complex numbers are written as ``1 + 2j``. Power is written
-using double asterisk ``**``. Elementary functions are available in ``math``
-and ``cmath`` modules::
+.. admonition:: Task 2
 
-    >>> import math
-    >>> math.sqrt(4.0)
-    2.0
-    >>> math.log10(10**666)
-    666.0
+    Try using Python as an interactive calculator. Play with basic
+    arithmetic operations; complex numbers are written as ``1 + 2j``. Power is written
+    using double asterisk ``**``. Elementary functions are available in ``math``
+    and ``cmath`` modules.
 
-    >>> math.log(3+2j)
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-    TypeError: can't convert complex to float
-    >>> import cmath
-    >>> cmath.log(3+2j)
-    (1.2824746787307684+0.5880026035475675j)
+    .. toggle-header::
+        :header: **Show/Hide Example**
+
+        ::
+
+            >>> import math
+            >>> math.sqrt(4.0)
+            2.0
+            >>> math.log10(10**666)
+            666.0
+
+            >>> math.log(3+2j)
+            Traceback (most recent call last):
+              File "<stdin>", line 1, in <module>
+            TypeError: can't convert complex to float
+            >>> import cmath
+            >>> cmath.log(3+2j)
+            (1.2824746787307684+0.5880026035475675j)
 
 
-    >>> from math import cos
-    >>> cos(0.0)
-    1.0
+            >>> from math import cos
+            >>> cos(0.0)
+            1.0
 
-    >>> # Import everything from math
-    >>> # Generally not a preferred way - obfuscates the namespace
-    >>> from math import *
-    >>> sin(pi)
-    1.2246467991473532e-16
+            >>> # Import everything from math
+            >>> # Generally not a preferred way - obfuscates the namespace
+            >>> from math import *
+            >>> sin(pi)
+            1.2246467991473532e-16
 
-    >>> # Let's learn how to fly
-    >>> import antigravity
+            >>> # Let's learn how to fly
+            >>> import antigravity
+
 
 Container datatypes
 -------------------
 
-.. code-block:: python
+::
 
       >>> # Lists are ordered collection of objects
       >>> philoshophers = ['Cimrman', 'Landau', 'Lifschitz', 'Souček']
@@ -63,7 +83,7 @@ Container datatypes
       'Cimrman'
 
       >>> # Items can accessed backwards by negative indices
-      >>> print philosophers[-1]
+      >>> print(philosophers[-1])
       Souček
 
       >>> # Slice ending index is one item farther
@@ -87,27 +107,27 @@ Container datatypes
       >>> ethanol_concentation = {'wine': 0.1,
       ...                         'beer': 0.05,
       ...                         'slivovice': 0.52}
-      >>> print "One glass of wine has", \
-      ...    str(glass_volume['wine']*ethanol_concentration['wine']), \
-      ...    "litres of ethanol."
+      >>> print("One glass of wine has",
+      ...       str(glass_volume['wine']*ethanol_concentration['wine']),
+      ...       "litres of ethanol.")
       One glass of wine has 0.02 litres of ethanol.
 
 
 Flow control and functions
 --------------------------
 
-.. code-block:: python
+::
 
       >>> # Blocks are defined by indentation
       >>> # Use consistently spaces; don't mix with tabs - danger
       >>> for i in range(10, -1, -1):
-      ...     print i, 'green', {True: 'bottle', False: 'bottles'}[i==1], \
-      ...         'hanging on the wall'
+      ...     print(i, 'green', {True: 'bottle', False: 'bottles'}[i==1],
+      ...         'hanging on the wall')
       ...
 
       >>> for os in ['Windows', 'Linux', 'Apples MacOS X', 'BSD']:
       ...     if 's' in os:
-      ...         print os, 'sucks'
+      ...         print(os, 'sucks')
 
       >>> a = [3, 7, 666, 42, 616]
       >>> # Find divisible by 3
@@ -128,31 +148,35 @@ Flow control and functions
       ...         y = 0.0
       ...     return y
 
-..
 
-   **Task 3.** Exploiting ``glass_volume`` and ``ethanol_concentation``
-   variables defined above write function taking dictionary with keys of
-   beverage type and values of number of glasses drunk and returning total
-   volume of alcohol drunk.
+.. admonition:: Task 2
+
+    Exploiting ``glass_volume`` and ``ethanol_concentation``
+    variables defined above write function taking dictionary with keys of
+    beverage type and values of number of glasses drunk and returning total
+    volume of alcohol drunk.
 
     .. only:: solution
 
-       Reference solution
-       ^^^^^^^^^^^^^^^^^^
+        Reference solution
+        ^^^^^^^^^^^^^^^^^^
 
-       .. code-block:: python
+        .. toggle-header::
+            :header: **Show/Hide Code**
 
-          def methanol_enrichment_factor():
-              from datetime import date
-              today = date.today()
-              return 1.5 if today.year == 2012 and today.month >= 9 else 1.0
+            ::
 
-          def alcohol(glasses):
-              # Let's do it by list comprehension
-              ethanol = sum([glasses[d]*glass_volume[d]*ethanol_concentration[d]
-                             for d in glasses])
-              alcohol = ethanol*methanol_enrichment_factor()
-              return alcohol
+                def methanol_enrichment_factor():
+                    from datetime import date
+                    today = date.today()
+                    return 1.5 if today.year == 2012 and today.month >= 9 else 1.0
+
+                def alcohol(glasses):
+                     # Let's do it by list comprehension
+                     ethanol = sum([glasses[d]*glass_volume[d]*ethanol_concentration[d]
+                                    for d in glasses])
+                     alcohol = ethanol*methanol_enrichment_factor()
+                     return alcohol
 
 
 What is variable, mutabulity and imutability
@@ -162,7 +186,7 @@ Every **variable** in Python **is just a name for an object**. (Remember,
 evything in Python is object.) Understanding semantics of assignmenet operator
 is crucial thing! Consider following snippet
 
-.. code-block:: python
+::
 
    >>> a = 42
    >>> b = a
@@ -187,7 +211,7 @@ are mutable). The basic numeric types like ``int``, ``float`` etc. are imutable.
 Some container data types (for instance ``list``, ``dict``) and user-defined
 objects (classes, see below) are mutable.
 
-.. code-block:: python
+::
 
    >>> drinks = ['beer', 'wine', 'wine', 'wine', 'cognac', 'wine']
    >>> drinks[0] = ['tea']

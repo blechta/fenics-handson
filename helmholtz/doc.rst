@@ -1,48 +1,58 @@
 Eigenfunctions of Laplacian and Helmholtz equation
 ==================================================
 
+.. todo::
+
+    Fix sheet and test reference solution!
+
+
 Wave equation with harmonic forcing
 -----------------------------------
 
 Let's have wave equation with special right-hand side
 
 .. math::
-   w_{tt} - \Delta w &= f\, e^{i\omega t} \quad\text{ in }\Omega\times[0,T], \\
-                   w &= 0                 \quad\text{ on }\partial\Omega
-                                                                \times[0,T], \\
+
+   w_{tt} - \Delta w &= f\, e^{i\omega t}
+       &&\quad\text{ in }\Omega\times(0,T),
+
+                   w &= 0
+       &&\quad\text{ on }\partial\Omega\times(0,T),
 
 with :math:`f \in L^2(\Omega)`. Such a problem has a solution (in some proper
 sense; being unique when enriched by initial conditions), see [Evans]_,
 chapter 7.2.
 
-..
+.. admonition:: Task 1
 
-   **Task 1.** Try seeking for a particular solution of this equation while
-   taking advantage of special structure of right-hand side. Assuming ansatz
+    Try seeking for a particular solution of this equation while
+    taking advantage of special structure of right-hand side. Assuming ansatz
 
-   .. math::
-      w := u\, e^{i\omega t}, \quad u\in H_0^1(\Omega)
+    .. math::
+        w := u\, e^{i\omega t}, \quad u\in H_0^1(\Omega)
 
-   derive non-homogeneous Helmholtz equation for :math:`u` using the Fourier
-   method and try solving it using FEniCS with
+    derive non-homogeneous Helmholtz equation for :math:`u` using the Fourier
+    method and try solving it using FEniCS with
 
-   * :math:`\Omega = [0,1]\times[0,1]`,
-   * :math:`\omega = \sqrt{5}\pi`,
-   * :math:`f = x + y`.
+    * :math:`\Omega = [0,1]\times[0,1]`,
+    * :math:`\omega = \sqrt{5}\pi`,
+    * :math:`f = x + y`.
 
 
-   **Task 2.** Plot solution energies against number of degrees of freedom.
+.. admonition:: Task 2
 
-      *Hint.* Having list of number of degrees of freedom ``ndofs`` and list of
-      energies ``energies`` do
+    Plot solution energies against number of degrees of freedom.
 
-      .. code-block:: python
+    .. hint::
 
-         import matplotlib.pyplot as plt
-         plt.plot(ndofs, energies, 'o-')
-         plt.show()
+        Having list of number of degrees of freedom ``ndofs`` and list of
+        energies ``energies`` do::
 
-   What does it mean? Is the problem well-posed?
+           import matplotlib.pyplot as plt
+           plt.plot(ndofs, energies, 'o-')
+           plt.show()
+
+    What does it mean? Is the problem well-posed?
 
 
 Helmholtz equation and eigenspaces of Laplacian
@@ -75,58 +85,66 @@ latter part.
 
    Make the exposition above simpler.
 
-..
 
-   **Task 3.** Use SLEPc eigensolver to find :math:`E_{\omega^2}`.
+.. admonition:: Task 3
 
-      *Hint.* Having assembled matrices ``A``, ``B``, the eigenvectors solving
+    Use SLEPc eigensolver to find :math:`E_{\omega^2}`.
 
-      .. math::
+    .. hint::
 
-         A x = \lambda B x
+        Having assembled matrices ``A``, ``B``, the eigenvectors solving
 
-      with :math:`\lambda` close to target ``lambd`` can be found by
+        .. math::
 
-      .. code-block:: python
+            A x = \lambda B x
 
-        eigensolver = SLEPcEigenSolver(as_backend_type(A), as_backend_type(B))
-        eigensolver.parameters['problem_type'] = 'gen_hermitian'
-        eigensolver.parameters['spectrum'] = 'target real'
-        eigensolver.parameters['spectral_shift'] = lambd
-        eigensolver.parameters['spectral_transform'] = 'shift-and-invert'
-        eigensolver.parameters['tolerance'] = 1e-6
-        #eigensolver.parameters['verbose'] = True # for debugging
-        eigensolver.solve(number_of_requested_eigenpairs)
+        with :math:`\lambda` close to target ``lambd`` can be found by::
 
-        eig = Function(V)
-        eig_vec = eig.vector()
-        space = []
-        for j in range(eigensolver.get_number_converged()):
-            r, c, rx, cx = eigensolver.get_eigenpair(j)
-            eig_vec[:] = rx
-            plot(eig, title='Eigenvector to eigenvalue %g'%r)
-            interactive()
+            eigensolver = SLEPcEigenSolver(as_backend_type(A), as_backend_type(B))
+            eigensolver.parameters['problem_type'] = 'gen_hermitian'
+            eigensolver.parameters['spectrum'] = 'target real'
+            eigensolver.parameters['spectral_shift'] = lambd
+            eigensolver.parameters['spectral_transform'] = 'shift-and-invert'
+            eigensolver.parameters['tolerance'] = 1e-6
+            #eigensolver.parameters['verbose'] = True  # for debugging
+            eigensolver.solve(number_of_requested_eigenpairs)
 
-   **Task 4.** Write function which takes a tuple of functions and
-   :math:`L^2`-orthogonalizes them using Gramm-Schmidt algorithm.
+            eig = Function(V)
+            eig_vec = eig.vector()
+            space = []
+            for j in range(eigensolver.get_number_converged()):
+                r, c, rx, cx = eigensolver.get_eigenpair(j)
+                eig_vec[:] = rx
+                plot(eig, title='Eigenvector to eigenvalue %g'%r)
+                plt.show()
 
-   **Task 5.** Compute :math:`f^\perp` for :math:`f` from Task 1 and solve the
-   Helmholtz equation with :math:`f^\perp` on right-hand side. Again, plot
-   energies of solutions against number of degrees of freedom.
 
-.. only:: solution
+.. admonition:: Task 4
 
-      .. note::
+    Write function which takes a tuple of functions and
+    :math:`L^2`-orthogonalizes them using Gramm-Schmidt algorithm.
 
-         *Lecturer note.* Student must not include eigenvectors corresponding
-         to other eigenvalues. SLEPc returns these after last targeted one. For
-         this case the dimension of :math:`E_{\omega^2}` is 2. Let\'s denote
-         this bunch of vectors by ``E``.
 
-         GS orthogonalization is called to tuple ``E+[f]``. This first
-         orthogonalizes eigenvectors themself (for sure -- SLEPc doc is not
-         conclusive about this) and then orthogonalizes ``f`` to
-         :math:`E_{\omega^2}`.
+.. admonition:: Task 5
+
+    Compute :math:`f^\perp` for :math:`f` from Task 1 and solve the
+    Helmholtz equation with :math:`f^\perp` on right-hand side. Again, plot
+    energies of solutions against number of degrees of freedom.
+
+
+    .. only:: solution
+
+        .. note::
+
+            *Lecturer note.* Student must not include eigenvectors corresponding
+            to other eigenvalues. SLEPc returns these after last targeted one. For
+            this case the dimension of :math:`E_{\omega^2}` is 2. Let\'s denote
+            this bunch of vectors by ``E``.
+
+            GS orthogonalization is called to tuple ``E+[f]``. This first
+            orthogonalizes eigenvectors themself (for sure -- SLEPc doc is not
+            conclusive about this) and then orthogonalizes ``f`` to
+            :math:`E_{\omega^2}`.
 
 
 .. only:: solution

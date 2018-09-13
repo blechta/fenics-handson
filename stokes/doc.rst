@@ -1,6 +1,21 @@
 Navier-Stokes equations
 =======================
 
+.. sidebar:: Goals
+
+    Learn how to deal with mixed finite elements.
+    Get remembered how fragile can numerical solutions be.
+    Reproduce some cool physics -- Kármán vortex street.
+
+.. todo::
+
+    Add a task to analyze discretization error in the lift!
+
+.. todo::
+
+    Add :math:`\mathrm{Re}=100`!
+
+
 Stokes flow around cylinder
 ---------------------------
 

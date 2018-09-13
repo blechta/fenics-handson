@@ -4,6 +4,10 @@ Appendix
 Mesh import
 -----------
 
+.. todo::
+
+    Update: ``pygmsh``, ``meshio``, native ``gmsh`` bindings, ...
+
 GMSH + dolfin-convert [http://geuz.org/gmsh]
 
 1.  Use GMSH to create your domain; mark boundaries either by gmsh gui
@@ -13,7 +17,7 @@ GMSH + dolfin-convert [http://geuz.org/gmsh]
 3.  Run: ``dolfin-convert yourdomain.msh yourdomain.xml``
 4.  Then in the FEniCS script you can read the XML mesh:
 
-.. code-block:: python
+::
 
    mesh = Mesh("yourdomain.xml")
    cell_function = MeshFunction("size_t", mesh, "yourdomain_physical_region.xml")
@@ -23,9 +27,9 @@ GMSH + dolfin-convert [http://geuz.org/gmsh]
 Local mesh refinement
 ---------------------
 
-.. code-block:: python
+::
 
-   markers = CellFunction("bool", mesh)
+   markers = MeshFunction("bool", mesh, mesh.topology().dim())
    markers.set_all(False)
    for c in cells(mesh):
        # Mark cells with facet midpoints near y == 1.0
@@ -35,13 +39,8 @@ Local mesh refinement
    mesh = refine(mesh, markers, redistribute=False)
 
 This will create new mesh object.
-For adaptivity see `adaptive Poisson demo <http://fenicsproject.org/documentation/dolfin/1.5.0/python/demo/documented/auto-adaptive-poisson/python/documentation.html>`_ and `adapt method reference <http://fenicsproject.org/documentation/dolfin/1.5.0/python/programmers-reference/cpp/fem/adapt.html#dolfin.cpp.fem.adapt>`_.
-
-
-Applications built on top of FEniCS
------------------------------------
-
-See `Applications page of FEniCS project <http://fenicsproject.org/applications/>`_.
+For adaptivity see `adaptive Poisson demo
+<https://fenicsproject.org/docs/dolfin/2018.1.0/python/demos/auto-adaptive-poisson/demo_auto-adaptive-poisson.py.html>`_.
 
 
 What every computer scientist should know about floating-point arithmetic
