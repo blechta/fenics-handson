@@ -69,6 +69,11 @@ Basic datatypes
             >>> # Let's learn how to fly
             >>> import antigravity
 
+        .. hint::
+
+            Click on ``>>>`` in the right top corner
+            of the code snippet to make the code copyable.
+
 
 Container datatypes
 -------------------

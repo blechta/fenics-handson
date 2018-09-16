@@ -1,5 +1,5 @@
-FEniCS tutorial
-===============
+FEniCS hands-on tutorial
+========================
 
 .. toctree::
    :maxdepth: 1

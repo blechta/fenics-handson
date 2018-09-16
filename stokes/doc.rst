@@ -117,7 +117,7 @@ where :math:`B_R(\mathbf{z})` is a disc of radius :math:`R` and center
 .. admonition:: Task 3
 
     Construct the mixed finite element space and the
-    bilinear and linear forms together with the ``DirichletBC`` object.
+    bilinear and linear forms together with the `DirichletBC <dolfin.fem.bcs.DirichletBC>` object.
 
     .. hint::
 
