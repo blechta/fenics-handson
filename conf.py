@@ -52,5 +52,6 @@ def setup(app):
 intersphinx_mapping = {
     'python':('https://docs.python.org/3/', None),
     'ufl': ('https://fenics.readthedocs.io/projects/ufl/en/2017.2.0.post0/', None),
-    'dolfin': ('https://fenicsproject.org/docs/dolfin/2017.2.0/python/', None),
+    'dolfin': ('https://fenics.readthedocs.io/projects/dolfin/en/2017.2.0/', None),
+    'pydolfinapi': ('https://fenicsproject.org/docs/dolfin/2017.2.0/python/', None),
 }

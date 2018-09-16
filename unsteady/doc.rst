@@ -108,7 +108,8 @@ Consider data
     Proceed step-by-step.
 
         #. **Define all relevant data from** :eq:`data0`.
-           Use ``Constant`` or ``Expression`` classes
+           Use `Constant <dolfin.functions.constant.Constant>` or
+           `Expression <dolfin.functions.expression.Expression>` classes
            to define :math:`f`, :math:`g`, :math:`u_0`.
 
         #. Define a finite element function for holding
@@ -123,24 +124,28 @@ Consider data
            .. Note::
 
                Don't forget the distinction between
-               ``Function`` and ``(Trial|Test)Function``:
+               `Function <dolfin.functions.function.Function>`,
+               `TestFunction <dolfin.functions.function.TestFunction>`,
+               `TrialFunction <dolfin.functions.function.TrialFunction>`:
 
-               * ``Function`` is an actual FE function
+               * `Function <dolfin.functions.function.Function>`
+                 is an actual FE function
                  with its expansion coefficients (with
                  respect to an FE basis) stored in memory.
 
-               * ``TestFunction`` is a first argument of
-                 multilinear form (of rank >= 1).
-                 ``TrialFunction`` is a second argument of
-                 multilinear form (of rank >= 2).
-                 ``Argument`` is any argument of
-                 multilinear form.
+               * `TestFunction <dolfin.functions.function.TestFunction>`
+                 is a first argument of multilinear form (of rank >= 1).
+                 `TrialFunction <dolfin.functions.function.TrialFunction>`
+                 is a second argument of multilinear form (of rank >= 2).
+                 (`Argument <dolfin.functions.function.Argument>`
+                 is any argument of multilinear form.)
 
                  Arguments do not have actual values
                  -- they only represent intended argument
                  of multilinear form.
 
-               * Form ``Coefficient`` is an object,
+               * :doc:`Form coefficient <ufl:manual/form_language>`
+                 is an object,
                  for example of type ``Function``,
                  ``Expression``, ``Constant``, which the form
                  depends on (possibly in nonlinear manner)
@@ -162,7 +167,7 @@ Consider data
                F = 1/dt*(u - u_n)*v*dx + ...
 
            and separate bilinear and linear part
-           using ``lhs``, ``rhs``::
+           using `lhs <ufl.lhs>`, `rhs <ufl.rhs>`::
 
                a, L = lhs(F), rhs(F)
 
@@ -175,12 +180,12 @@ Consider data
 
         #. **Prepare for the beggining of time-stepping.**
            Assume ``u0`` is an ``Expression`` or ``Constant``.
-           You can do::
+           You can use `interpolate <dolfin.fem.interpolation.interpolate>`
 
                u_n.interpolate(u0)
 
         #. **Implement time-stepping.** Write a control flow
-           statement (for example a ``while`` loop) which executes
+           statement (for example a :ref:`while <tut-firststeps>` loop) which executes
            the solver for problem ``a == L`` repeatedly while
            updating what needed.
 
@@ -219,7 +224,7 @@ There are several possibilities for visualization of data.
         * and visualization, which many times needs human
           interaction.
 
-    Code for storing data to file could look like::
+    One can used `XDMFFile <dolfin.cpp.io.XDMFFile>` to store data::
 
         # Open file for XDMF IO
         f = XDMFFile('solution.xdmf')
@@ -326,7 +331,14 @@ nonhomogeneous Neumann data
        :eq:`time-discrete`, :eq:`data0`, :eq:`data1`.
 
     #. Define surface measure supported on the left
-       boundary of the unit square mesh.
+       boundary of the unit square mesh by following
+       steps:
+
+        #. subclass `SubDomain <dolfin.cpp.mesh.SubDomain>`,
+        #. define `MeshFunction <dolfin.cpp.mesh.MeshFunction>`,
+        #. mark the mesh function using
+           `SubDomain.mark <dolfin.cpp.mesh.SubDomain.mark>` method,
+        #. define integration `Measure <ufl.Measure>`.
 
     .. hint::
         .. toggle-header::

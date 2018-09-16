@@ -93,8 +93,11 @@ where :math:`B_R(\mathbf{z})` is a disc of radius :math:`R` and center
   .. hint::
 
       Try yet another way to mark the boundaries by direct
-      access to the mesh entities by ``facets(mesh)``,
-      ``vertices(mesh)``, ``cells(mesh)`` mesh-entity iterators::
+      access to the mesh entities by
+      `vertices(mesh) <dolfin.cpp.mesh.vertices>`,
+      `facets(mesh) <dolfin.cpp.mesh.facets>`,
+      `cells(mesh) <dolfin.cpp.mesh.cells>`
+      mesh-entity iterators::
 
           # Construct facet markers
           bndry = MeshFunction("size_t", mesh, mesh.topology().dim()-1)
@@ -131,7 +134,8 @@ where :math:`B_R(\mathbf{z})` is a disc of radius :math:`R` and center
 
     .. hint::
 
-        To define Dirichlet BC on subspace use the ``W.sub()`` method::
+        To define Dirichlet BC on subspace use the
+        `W.sub() <dolfin.functions.functionspace.FunctionSpace.sub>` method::
 
             noslip = Constant((0, 0))
             bc_walls = DirichletBC(W.sub(0), noslip, bndry, 3)
@@ -156,8 +160,9 @@ where :math:`B_R(\mathbf{z})` is a disc of radius :math:`R` and center
 
     .. hint::
 
-        You can use generic ``solve`` function or
-        ``NonlinearVariationalProblem`` and ``NonlinearVariationalSolver``
+        You can use generic `solve <dolfin.fem.solving.solve>` function or
+        `NonlinearVariationalProblem <dolfin.fem.solving.NonlinearVariationalProblem>`
+        and `NonlinearVariationalSolver <dolfin.cpp.fem.NonlinearVariationalSolver>`
         classes::
 
 
@@ -179,7 +184,8 @@ where :math:`B_R(\mathbf{z})` is a disc of radius :math:`R` and center
 
     .. hint::
 
-        Use ``Assemble`` function to evaluate the lift and drag functionals::
+        Use `assemble <dolfin.fem.assembling.assemble>` function
+        to evaluate the lift and drag functionals::
 
 
             # Report drag and lift

@@ -83,7 +83,8 @@ you can use ``gedit``, ``nano``, ...):
 
 .. admonition:: Task 2
 
-    Now add *keyword argument* ``warp='mode'`` to the ``plot`` function
+    Now add :ref:`keyword argument <python:tut-keywordargs>`
+    ``warp='mode'`` to the `plot <dolfin.common.plotting.plot>` function
     call by applying the following diff:
 
     .. code-block:: diff
@@ -97,14 +98,14 @@ you can use ``gedit``, ``nano``, ...):
     and run the demo again by ``python3 demo_poisson.py``.
 
 
-Open `Poisson demo documentation
-<https://fenicsproject.org/docs/dolfin/2018.1.0/python/demos/poisson/demo_poisson.py.html>`_
+Open :doc:`Poisson demo documentation <demos/poisson/python/demo_poisson.py>`
 on the FEniCS website. Notice that the doc page is generated from
 the demo file. Go quickly through the docpage while paying attention
 to
 
 * definition of weak formulation through forms ``a`` and ``L``,
-* usage of ``Constant`` and ``Expression`` classes.
+* usage of `Constant <dolfin.functions.constant.Constant>` and
+  `Expression <dolfin.functions.expression.Expression>` classes.
 
 
 .. admonition:: Task 3
