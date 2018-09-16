@@ -44,13 +44,14 @@ todo_include_todos = True
 ## Enable ".. only:: solution" sections
 #tags.add('solution')
 
-# Fixes for typesetting math
 def setup(app):
+    # Fixes for typesetting math
     app.add_stylesheet('math.css')
+    # Show/hide >>> button in Python snippets
     app.add_javascript('copybutton.js')
 
 intersphinx_mapping = {
-    'python':('https://docs.python.org/3/', None),
+    'python': ('https://docs.python.org/3/', None),
     'ufl': ('https://fenics.readthedocs.io/projects/ufl/en/2017.2.0.post0/', None),
     'dolfin': ('https://fenics.readthedocs.io/projects/dolfin/en/2017.2.0/', None),
     'pydolfinapi': ('https://fenicsproject.org/docs/dolfin/2017.2.0/python/', None),
