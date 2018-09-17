@@ -67,3 +67,11 @@ On the other hand FEniCS images for Docker provide the most portable
 solution, with arbitrary FEniCS version choice, for systems where
 `Docker CE <https://www.docker.com/community-edition>`_ can be installed
 and run; see https://fenicsproject.org/download/.
+
+Resources
+---------
+
+* `DOLFIN docs <https://fenics.readthedocs.io/projects/dolfin/en/2017.2.0>`_
+* `DOLFIN Python API docs <https://fenicsproject.org/docs/dolfin/2017.2.0/python/index.html>`_
+* `Python docs <https://docs.python.org/3>`_
+* `FEniCS AllAnswered <https://www.allanswered.com/community/s/fenics-project/>`_
