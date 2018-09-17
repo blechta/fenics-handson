@@ -9,7 +9,8 @@ First touch
 .. toggle-header::
   :header: Login by SSH to ``tyche`` and type: **How to login**
 
-    Use ``ssh`` utility to connect to a remote system::
+    Open a terminal window by hitting ``CTRL+T``.
+    Use ``ssh`` to connect to a remote system::
 
         ssh -X -C tyche
 

@@ -38,8 +38,8 @@ latex_documents = [
     (master_doc, 'FEniCS-hands-on.tex', 'FEniCS hands-on', author, 'howto'),
 ]
 
-# If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True
+## If true, `todo` and `todoList` produce output, else they produce nothing.
+#todo_include_todos = True
 
 ## Enable ".. only:: solution" sections
 #tags.add('solution')
