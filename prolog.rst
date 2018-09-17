@@ -87,6 +87,7 @@ by
     sudo apt-get install --no-install-recommends python3-dolfin
 
     # Optionally install mshr from source
+    sudo apt-get install libgmp-dev libmpfr-dev
     wget https://bitbucket.org/fenics-project/mshr/downloads/mshr-2017.2.0.tar.gz
     tar -xzf mshr-2017.2.0.tar.gz
     cd mshr-2017.2.0
