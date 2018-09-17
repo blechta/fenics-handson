@@ -32,14 +32,6 @@ consist of modificating existing FEniCS demos while gradually
 taking bigger and bigger tasks in writing original code.
 
 
-Resources
----------
-
-.. todo::
-
-    Add FEniCS and Python resources
-
-
 FEniCS installation
 -------------------
 
@@ -54,19 +46,66 @@ Nevertheless participants might want to install FEnicS
 to their laptops, workstation, home computers to practice
 or use FEniCS outside of the tutorial classes. The easiest
 option for new FEniCS users on Ubuntu is to install using
-APT from FEniCS PPA:
+APT from FEniCS PPA.
+
+
+Ubuntu packages
+^^^^^^^^^^^^^^^
+
+Installing FEniCS (including mshr) from PPA:
 
 .. code-block:: bash
 
-    sudo apt-get install software-properties-common
+    sudo apt-get install --no-install-recommends software-properties-common
     sudo add-apt-repository ppa:fenics-packages/fenics
     sudo apt-get update
     sudo apt-get install --no-install-recommends fenics
+
+will install the following versions:
+
+.. list-table::
+    :header-rows: 1
+
+    * - Ubuntu
+      - FEniCS
+    * - Xenial 16.04
+      - 2017.2.0
+    * - Bionic 18.04
+      - 2018.1.0
+
+On the other hand FEniCS 2017.2.0 can be installed on Bionic
+by
+
+.. code-block:: bash
+
+    # Remove PPA if previously added
+    sudo apt-get install --no-install-recommends software-properties-common
+    sudo add-apt-repository --remove ppa:fenics-packages/fenics
+
+    # Install DOLFIN from official Bionic package
+    sudo apt-get update
+    sudo apt-get install --no-install-recommends python3-dolfin
+
+    # Optionally install mshr from source
+    wget https://bitbucket.org/fenics-project/mshr/downloads/mshr-2017.2.0.tar.gz
+    tar -xzf mshr-2017.2.0.tar.gz
+    cd mshr-2017.2.0
+    mkdir build
+    cd build
+    cmake -DPYTHON_EXECUTABLE=/usr/bin/python3 ..
+    make
+    sudo make install
+    sudo ldconfig
+
+
+Docker images
+^^^^^^^^^^^^^
 
 On the other hand FEniCS images for Docker provide the most portable
 solution, with arbitrary FEniCS version choice, for systems where
 `Docker CE <https://www.docker.com/community-edition>`_ can be installed
 and run; see https://fenicsproject.org/download/.
+
 
 Resources
 ---------
