@@ -19,9 +19,6 @@ of Technology in September 2018
 Nevertheless it is not excluded that these sheets could not be
 used separately or for any other occassion.
 
-* Source code: <https://github.com/blechta/fenics-handson>
-* Official build: <https://fenics-handson.readthedocs.io/>
-
 
 Target
 ------
