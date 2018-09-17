@@ -1,5 +1,5 @@
-Equation of elasticity
-======================
+Hyperelasticity
+===============
 
 .. sidebar:: Goals
 

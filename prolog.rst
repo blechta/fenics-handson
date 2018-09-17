@@ -20,8 +20,8 @@ Nevertheless it is not excluded that these sheets could not be
 used separately or for any other occassion.
 
 
-Target
-------
+Target audience
+---------------
 
 This tutorial gives lectures on usage of FEniCS version 2017.2.0
 through its Python 3 user interface. It is specifically intended

@@ -12,9 +12,9 @@ FEniCS hands-on tutorial
    :maxdepth: 1
    :caption: Class material
 
-   fenics/doc
-   unsteady/doc
-   stokes/doc
+   poisson/doc
+   heat/doc
+   navierstokes/doc
    elasticity/doc
    helmholtz/doc
 
@@ -22,8 +22,8 @@ FEniCS hands-on tutorial
    :maxdepth: 1
    :caption: Appendix
 
-   heat/doc
-   p_laplace/doc
-   appendix/doc
+   heatconv/doc
+   plaplace/doc
+   sundry/doc
 
 .. todolist::
