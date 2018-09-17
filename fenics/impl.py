@@ -106,12 +106,6 @@ def solve_task8(V):
 
 
 if __name__ == '__main__':
-    # This branch is run when this file is executed as a
-    # script, i.e.,
-    #
-    #   $ python3 <file>.py
-    #
-    # It is not run when the file is imported as a module
 
     # Create mesh and define function space
     mesh = UnitSquareMesh(32, 32)
