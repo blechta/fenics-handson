@@ -41,8 +41,9 @@ latex_documents = [
 ## If true, `todo` and `todoList` produce output, else they produce nothing.
 #todo_include_todos = True
 
-## Enable ".. only:: solution" sections
-#tags.add('solution')
+# Enable ".. only:: {priv,pub}" sections
+#tags.add('priv')
+tags.add('pub')
 
 def setup(app):
     # Fixes for typesetting math

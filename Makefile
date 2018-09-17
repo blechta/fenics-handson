@@ -28,7 +28,7 @@ servehtml:
 	python3 -m http.server --bind 127.0.0.1 2> /dev/null
 
 html-solution:
-	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" -t solution $(SPHINXOPTS) $(O)
+	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" -t priv $(SPHINXOPTS) $(O)
 
 upload: html-solution
 	rsync -rP _build/html/ login:public_html/priv/fenics-handson

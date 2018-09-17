@@ -160,7 +160,7 @@ Mesh file of lego brick :download:`lego_beam.xml`.
         DOLFIN_NOPLOT=1 mpirun -n 4 python spam_eggs.py
 
 
-.. only:: solution
+.. only:: priv
 
     Reference solution
     ------------------

@@ -132,7 +132,7 @@ latter part.
     energies of solutions against number of degrees of freedom.
 
 
-    .. only:: solution
+    .. only:: priv
 
         .. note::
 
@@ -147,7 +147,7 @@ latter part.
             :math:`E_{\omega^2}`.
 
 
-.. only:: solution
+.. only:: priv
 
     Reference solution
     ------------------

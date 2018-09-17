@@ -9,7 +9,7 @@ First touch
 .. toggle-header::
   :header: Login by SSH to ``tyche`` and type: **How to login**
 
-    Open a terminal window by hitting ``CTRL+T``.
+    Open a terminal window by hitting ``CTRL+ALT+T``.
     Use ``ssh`` to connect to a remote system::
 
         ssh -X -C tyche
@@ -79,7 +79,7 @@ First touch
 
               kinit <user>@TU-CHEMNITZ.DE
 
-          and during its validity password-less login
+          and during its validity password-less login from anywhere
 
           .. code-block:: bash
 
@@ -398,7 +398,6 @@ is equivalent to problem :eq:`nonlinear1`.
 Yet another nonlinearity
 ------------------------
 
-
 Consider quasilinear equation in divergence form
 
 .. math::
@@ -442,3 +441,14 @@ with data
             (..., ...),
         ))
         F = inner(A*grad(u), grad(v))*dx + ...
+
+
+.. only:: pub
+
+    Reference solution
+    ------------------
+
+    .. toggle-header::
+        :header: **Show/Hide Code**
+
+        .. literalinclude:: impl.py

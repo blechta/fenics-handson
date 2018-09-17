@@ -197,7 +197,7 @@ where :math:`B_R(\mathbf{z})` is a disc of radius :math:`R` and center
             info("drag= %e    lift= %e" % (drag , lift))
 
 
-.. only:: solution
+.. only:: priv
 
     Reference solution
     ------------------

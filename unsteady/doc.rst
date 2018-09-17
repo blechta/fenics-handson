@@ -368,7 +368,7 @@ nonhomogeneous Neumann data
 
 
 
-.. only:: solution
+.. only:: priv
 
     Reference solution
     ------------------
