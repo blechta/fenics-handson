@@ -7,8 +7,6 @@ FEniCS hands-on tutorial
 
    copyright
    prolog
-   bash/doc
-   python/doc
 
 .. toctree::
    :maxdepth: 1

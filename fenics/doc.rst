@@ -6,11 +6,88 @@ Poisson in a hundred ways
 First touch
 -----------
 
-Login by SSH to ``tyche`` and type:
+.. toggle-header::
+  :header: Login by SSH to ``tyche`` and type: **How to login**
+
+    Use ``ssh`` utility to connect to a remote system::
+
+        ssh -X -C tyche
+
+    .. note::
+
+        * ``-X`` enable ``X11`` forwarding (allows processes on the remote machine
+          opening windows of graphical applications on the local machine)
+        * ``-C`` enables compression which is mainly beneficial for access from
+          a remote network
+        * ``tyche`` stands here for machine ``tyche.mathematik.tu-chemnitz.de``;
+          username on the local machine is used by default to login to the remote
+          machine; the machine is not accessible from outside the univerity, so
+          one would login through a jump host
+
+          .. code-block:: bash
+
+              luigivercotti@local_machine:~$ ssh -X -C user@login.tu-chemnitz.de
+              user@login:~$ ssh -X -C tyche
+              user@tyche:~$
+
+          Alternatively one can use VPN.
+
+      .. toggle-header::
+          :header: **For experts: Kerberos + public key + jump host**
+
+          The most comfortable solution for password-less logins
+          outside of the university:
+
+          * add
+
+            .. code-block:: cfg
+
+                Host login
+                   Hostname login.tu-chemnitz.de
+                   User <user>
+                   ForwardAgent yes
+                   ForwardX11 yes
+                   ForwardX11Trusted yes
+                   GSSAPIAuthentication yes
+                   GSSAPIDelegateCredentials yes
+
+                Host tyche
+                   Hostname tyche.mathematik.tu-chemnitz.de
+                   User <user>
+                   ForwardAgent yes
+                   ForwardX11 yes
+                   ForwardX11Trusted yes
+                   ProxyCommand ssh login -W %h:%p
+
+            to ``~/.ssh/config``,
+
+          * upload public key to ``login`` and ``tyche``
+            by
+
+            .. code-block:: bash
+
+                ssh-copy-id login
+                ssh-copy-id tyche
+
+          * `install Kerberos
+            <https://www.tu-chemnitz.de/urz/security/ssh.html/>`_
+
+          which allows to get Kerberos ticket by
+
+          .. code-block:: bash
+
+              kinit <user>@TU-CHEMNITZ.DE
+
+          and during its validity password-less login
+
+          .. code-block:: bash
+
+              ssh tyche
+
 
 .. code-block:: bash
 
-    source /LOCAL/Software/FEniCS-2018.1/setup_env
+    source /LOCAL/opt/fenics-2017.2.0/fenics.conf
 
 to prepare environment for using FEniCS. Now fire up interactive
 Python 3 interpreter:
@@ -59,7 +136,7 @@ Run and modify Poisson demo
 
         mkdir -p work/fenics/poisson
         cd work/fenics/poisson
-        cp /LOCAL/Software/FEniCS-2018.1/share/dolfin/demo/python/documented/poisson/demo_poisson.py .
+        cp /LOCAL/opt/fenics-2017.2.0/share/dolfin/demo/documented/poisson/python/demo_poisson.py .
         python3 demo_poisson.py
 
     You should see some console output and a plot of the solution.
