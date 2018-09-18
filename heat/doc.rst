@@ -150,6 +150,15 @@ Consider data
            the solver for problem ``a == L`` repeatedly while
            updating what needed.
 
+           .. hint::
+
+               Having `Function`\s ``f``, ``g`` on the same space
+               you can perform assignment :math:`f := g` by
+               ::
+
+                   f.vector()[:] = g.vector()
+
+
         #. **Run with different values of**
            :math:`\theta=1,\frac12,0`.
 
