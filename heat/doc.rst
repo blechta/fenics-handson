@@ -5,16 +5,7 @@ Heat equation
 
     Learn how to deal with time-dependent problems.
     Solve heat equation by :math:`\theta`-scheme.
-    Get familiar further with the form language UFL.
-
-.. todo::
-
-    Add a task for spatially depending data
-    (using ``Expression``).
-
-.. todo::
-
-    Add a task for adaptive time step.
+    Plot some nice figures.
 
 
 We will be interested in solving heat equation:
@@ -37,7 +28,7 @@ in space with given data :math:`f`, :math:`g`, :math:`u_0`.
 .. math::
     :label: time-discrete
 
-    \frac{1}{\Delta t} (u^{n+1} - u^n)
+    \frac{1}{\Delta t} \Bigl(u^{n+1} - u^n\Bigr)
     - \theta\Delta u^{n+1} - (1-\theta)\Delta u^n
     &= \theta f(t_{n+1}) + (1-\theta) f(t_n)
         &&\quad\text{ in }\Omega, \; n=0,1,2,\ldots
@@ -66,9 +57,9 @@ Special cases are:
 .. admonition:: Task 1
 
 
-    Multiply :eq:`time-discrete` by a test function from
+    Test :eq:`time-discrete` by functions from
     :math:`H^1(\Omega)` and derive a weak formulation
-    :math:`\theta`-scheme for heat equation.
+    of :math:`\theta`-scheme for heat equation.
 
 
 First steps
@@ -121,40 +112,6 @@ Consider data
 
                u, v = TrialFunction(V), TestFunction(V)
 
-           .. Note::
-
-               Don't forget the distinction between
-               `Function <dolfin.functions.function.Function>`,
-               `TestFunction <dolfin.functions.function.TestFunction>`,
-               `TrialFunction <dolfin.functions.function.TrialFunction>`:
-
-               * `Function <dolfin.functions.function.Function>`
-                 is an actual FE function
-                 with its expansion coefficients (with
-                 respect to an FE basis) stored in memory.
-
-               * `TestFunction <dolfin.functions.function.TestFunction>`
-                 is a first argument of multilinear form (of rank >= 1).
-                 `TrialFunction <dolfin.functions.function.TrialFunction>`
-                 is a second argument of multilinear form (of rank >= 2).
-                 (`Argument <dolfin.functions.function.Argument>`
-                 is any argument of multilinear form.)
-
-                 Arguments do not have actual values
-                 -- they only represent intended argument
-                 of multilinear form.
-
-               * :doc:`Form coefficient <ufl:manual/form_language>`
-                 is an object,
-                 for example of type ``Function``,
-                 ``Expression``, ``Constant``, which the form
-                 depends on (possibly in nonlinear manner)
-                 and which does not count as its ``Argument``.
-
-                 For example, ``u_n`` as defined above, will
-                 serve a role of ``Coefficient`` in the form
-                 ``L`` below.
-
         #. **Define bilinear and linear forms describing
            Galerkin descretization of the weak formulation
            derived in**
@@ -180,9 +137,13 @@ Consider data
 
         #. **Prepare for the beggining of time-stepping.**
            Assume ``u0`` is an ``Expression`` or ``Constant``.
-           You can use `interpolate <dolfin.fem.interpolation.interpolate>`
+           You can use `Function.interpolate()
+           <dolfin.cpp.function.Function.interpolate>`
+           or `interpolate() <dolfin.fem.interpolation.interpolate>`::
 
                u_n.interpolate(u0)
+               # or
+               u_n = interpolate(u0, V)
 
         #. **Implement time-stepping.** Write a control flow
            statement (for example a :ref:`while <tut-firststeps>` loop) which executes
@@ -303,6 +264,20 @@ There are several possibilities for visualization of data.
             fig.gca().set_zlim((0, 2))
             fig.canvas.draw()
 
+    .. warning::
+
+        Matplotlib's interactive capabalities aparently
+        depend on used `Matplotlib backend
+        <https://matplotlib.org/faq/usage_faq.html#what-is-a-backend>`_.
+        In particular updating the contents of the plot window seems
+        to work fine with ``TkAgg`` backend. Issue shell command
+
+        .. code-block:: shell
+
+            export MPLBACKEND=tkagg
+
+        to choose ``TkAgg`` in the current shell session.
+
 
 .. admonition:: Task 3
 
@@ -366,6 +341,133 @@ nonhomogeneous Neumann data
     #. Run the code with :math:`\theta=1` and check that the
        results look as expected.
 
+
+Time-dependent BC
+-----------------
+
+Consider time-dependent data
+
+.. math::
+    :label: data2
+
+    f(x, t) &= 2-t,
+
+    g(x, t) &= \left\{\begin{array}{ll}
+                   t & x = 0, \newline
+                   0 & \text{otherwise}.
+               \end{array}\right.
+
+.. admonition:: Task 4
+
+    Modify solution of the previous task to use data :eq:`data2`.
+
+    .. hint::
+
+        You can use `Constant.assign()
+        <dolfin.cpp.function.Constant.assign>` or
+        ``Expression.<param> = <value>``
+        to change existing `Constant` or `Expression`.
+        Look for *User defined parameters* in `Expression
+        <dolfin.functions.expression.Expression>`
+        documentation.
+
+
+Now consider different time-dependent data
+
+.. math::
+    :label: data3
+
+    f(x, t) &= 0,
+
+    g(x, t) &=
+        \left\{\begin{array}{ll}
+            \max\bigl(0, \tfrac{1-t}{2}\bigr) & x = 0, \newline
+            0                                 & \text{otherwise}.
+        \end{array}\right.
+
+.. admonition:: Task 5
+
+    Modify solution of the previous task to use data :eq:`data3`.
+
+
+Adaptive time-stepping
+----------------------
+
+Consider solution of *low* precision generated by timestep
+:math:`\Delta t`:
+
+.. math::
+    :label: steplo
+
+    \frac{1}{\Delta t} \Bigl(u^{n+1}_\mathrm{low} - u^n\Bigr)
+    - \theta\Delta u^{n+1}_\mathrm{low} - (1-\theta)\Delta u^n
+    = \theta f(t_{n+1}) + (1-\theta) f(t_n)
+
+and solution of *high* precision computed by two timesteps
+of a half size:
+
+.. math::
+    :label: stephi
+
+    \frac{1}{\Delta t/2} \Bigl(u^{n+1/2}_\mathrm{high} - u^n\Bigr)
+    - \theta\Delta u^{n+1/2}_\mathrm{high} - (1-\theta)\Delta u^n
+    &= \theta f(t_{n+1/2}) + (1-\theta) f(t_n),
+
+    \frac{1}{\Delta t/2} \Bigl(u^{n+1}_\mathrm{high} - u^{n+1/2}_\mathrm{high}\Bigr)
+    - \theta\Delta u^{n+1}_\mathrm{high} - (1-\theta)\Delta u^{n+1/2}_\mathrm{high}
+    &= \theta f(t_{n+1}) + (1-\theta) f(t_{n+1/2}).
+
+By `Richardson extrapolation
+<https://en.wikipedia.org/wiki/Richardson_extrapolation>`_
+one can estimate the error of discretization (in time)
+by quantity:
+
+.. math::
+    :label: estimator
+
+    \eta :=
+    \frac{\|u^{n+1}_\mathrm{high} - u^{n+1}_\mathrm{low}\|_{L^2(\Omega)}}
+         {2^p - 1}
+
+where
+
+.. math::
+    :label: order
+
+    p = \left\{\begin{array}{ll}
+        2 && \theta=\tfrac12, \newline
+        1 && \text{otherwise}
+        \end{array}\right.
+
+is a theoretical order of accuracy of the :math:`\theta`-scheme.
+Given a tolerance :math:`\mathrm{Tol}` set the new timestep to
+
+.. math::
+    :label: dtnew
+
+    \Delta t^* :=
+    \left( \frac{\rho\,\mathrm{Tol}}{\eta} \right)^\frac1p \Delta t.
+
+Here :math:`0<\rho\leq1` is a chosen safety factor. That
+asymptotically ensures that the error (or at least the
+estimator) committed with the new time step is
+:math:`\rho`-multiple of the tolerance.
+
+Now consider an algorithm:
+
+    #. compute :math:`u^{n+1}_\mathrm{low}`
+       and :math:`u^{n+1}_\mathrm{high}`
+    #. compute :math:`\eta`
+    #. compute :math:`\Delta t^*`
+    #. | if :math:`\eta\leq\mathrm{Tol}`:
+       |     :math:`u^{n+1}:=u^{n+1}_\mathrm{high}`
+       |     :math:`n \mathrel{+}= 1`
+    #. update timestep :math:`\Delta t:=\Delta t^*`
+
+.. admonition:: Task 6
+
+    Solve :eq:`time-discrete`, :eq:`data0`:math:`_{1,2,5}`,
+    :eq:`data3` using the adaptive strategy described above.
 
 
 .. only:: priv
