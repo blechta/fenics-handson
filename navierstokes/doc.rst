@@ -4,16 +4,8 @@ Navier-Stokes equations
 .. sidebar:: Goals
 
     Learn how to deal with mixed finite elements.
-    Get remembered how fragile can numerical solutions be.
+    Remember how fragile can numerical solutions be.
     Reproduce some cool physics -- Kármán vortex street.
-
-.. todo::
-
-    Add a task to analyze discretization error in the lift!
-
-.. todo::
-
-    Add :math:`\mathrm{Re}=100`!
 
 
 Stokes flow around cylinder
@@ -22,105 +14,118 @@ Stokes flow around cylinder
 Solve the following linear system of PDEs
 
 .. math::
+    :label: stokes
 
-   - \operatorname{div}(\nabla u) + \nabla p &= f
+    - \nu\Delta\mathbf{u} + \nabla p &= 0
         &&\quad\text{ in }\Omega,
 
-   \operatorname{div} u &= 0
+    \operatorname{div}\mathbf{u} &= 0
         &&\quad\text{ in }\Omega,
 
-   u &= 0
+    \mathbf{u} &= 0
         &&\quad\text{ on }\Gamma_\mathrm{D},
 
-   u &= u_\mathrm{IN}
+    \mathbf{u} &= \mathbf{u}_\mathrm{IN}
         &&\quad\text{ on }\Gamma_\mathrm{IN},
 
-   \tfrac{\partial u}{\partial\mathbf{n}} &= g
-        &&\quad\text{ on }\Gamma_\mathrm{N},
+    \nu\tfrac{\partial\mathbf{u}}{\partial\mathbf{n}} -p\mathbf{n} &= 0
+        &&\quad\text{ on }\Gamma_\mathrm{N}
 
 using FE discretization with data
 
-* :math:`\Omega = (0, 2.2)\times(0, 0.41) - B_{0.05}\left((0.2,0.2)\right)`
-* :math:`\Gamma_\mathrm{N} = \left\{ x = 2.2 \right\}`
-* :math:`\Gamma_\mathrm{IN} = \left\{ x = 0.0 \right\}`
-* :math:`\Gamma_\mathrm{D} = \Gamma_\mathrm{W} \cup \Gamma_\mathrm{S}`
-* :math:`u_\mathrm{IN} = \left( 0.3 \frac{4}{0.41^2} y (0.41-y) , 0 \right)`
+.. math::
+    :label: dfg20
+
+    \Omega &= (0, 2.2)\times(0, 0.41) - B_{0.05}\left((0.2,0.2)\right),
+
+    \Gamma_\mathrm{N} &= \left\{ x = 2.2 \right\} = \text{(green)},
+
+    \Gamma_\mathrm{IN} &= \left\{ x = 0.0 \right\} = \text{(red)},
+
+    \Gamma_\mathrm{D} &= \partial\Omega\setminus(\Gamma_\mathrm{N}\cup\Gamma_\mathrm{IN}) = \text{(black)},
+
+    u_\mathrm{IN} &= \left( \frac{4Uy (0.41-y)}{0.41^2}  , 0 \right),
+
+    \nu &= 0.001, \qquad U = 0.3
 
 where :math:`B_R(\mathbf{z})` is a disc of radius :math:`R` and center
 :math:`\mathbf{z}`
 
   .. image:: geometry.png
      :align: center
-     :width: 70%
+     :width: 80%
      :target: http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark1_re20.html
-
-..
 
 
 .. admonition:: Task 1
 
-  Write the variational formulation of the problem and
-  discretize the equation by a mixed finite element method.
+    Write the weak formulation of the problem and
+    a spatial discretization by a mixed finite element method.
 
 
 .. admonition:: Task 2
 
-  Build a mesh, prepare a mesh function marking
-  :math:`\Gamma_\mathrm{N}` and :math:`\Gamma_\mathrm{D}` and plot it to
-  check its correctness.
+    Build a mesh, prepare a mesh function marking :math:`\Gamma_\mathrm{IN}`,
+    :math:`\Gamma_\mathrm{N}` and :math:`\Gamma_\mathrm{D}` and plot it to
+    check its correctness.
 
-  .. hint::
+    .. hint::
 
-      Use the FEniCS meshing tool ``mshr``, see `mshr documentation
-      <https://bitbucket.org/benjamik/mshr/wiki/API>`_.
+        Use the FEniCS meshing tool ``mshr``, see `mshr documentation
+        <https://bitbucket.org/benjamik/mshr/wiki/API>`_.
 
-      .. code-block:: python
+        .. code-block:: python
 
-         import mshr
+            import mshr
 
-         # Define domain
-         center = Point(0.2, 0.2)
-         radius = 0.05
-         L = 2.2
-         W = 0.41
-         geometry =  mshr.Rectangle(Point(0.0,0.0), Point(L, W)) \
-                    -mshr.Circle(center, radius, 10)
+            # Discretization parameters
+            N_circle = 16
+            N_bulk = 64
 
-         # Build mesh
-         mesh = mshr.generate_mesh(geometry, 50)
+            # Define domain
+            center = Point(0.2, 0.2)
+            radius = 0.05
+            L = 2.2
+            W = 0.41
+            geometry =  mshr.Rectangle(Point(0.0, 0.0), Point(L, W)) \
+                       -mshr.Circle(center, radius, N_circle)
+
+            # Build mesh
+            mesh = mshr.generate_mesh(geometry, N_bulk)
 
 
-  .. hint::
+    .. hint::
 
-      Try yet another way to mark the boundaries by direct
-      access to the mesh entities by
-      `vertices(mesh) <dolfin.cpp.mesh.vertices>`,
-      `facets(mesh) <dolfin.cpp.mesh.facets>`,
-      `cells(mesh) <dolfin.cpp.mesh.cells>`
-      mesh-entity iterators::
+        Try yet another way to mark the boundaries by direct
+        access to the mesh entities by
+        `vertices(mesh) <dolfin.cpp.mesh.vertices>`,
+        `facets(mesh) <dolfin.cpp.mesh.facets>`,
+        `cells(mesh) <dolfin.cpp.mesh.cells>`
+        mesh-entity iterators::
 
-          # Construct facet markers
-          bndry = MeshFunction("size_t", mesh, mesh.topology().dim()-1)
-          for f in facets(mesh):
-              mp = f.midpoint()
-              if near(mp[0], 0.0): # inflow
-                  bndry[f] = 1
-              elif near(mp[0], L): # outflow
-                  bndry[f] = 2
-              elif near(mp[1], 0.0) or near(mp[1], W): # walls
-                  bndry[f] = 3
-              elif mp.distance(center) <= radius: # cylinder
-                  bndry[f] = 5
+            # Construct facet markers
+            bndry = MeshFunction("size_t", mesh, mesh.topology().dim()-1)
+            for f in facets(mesh):
+                mp = f.midpoint()
+                if near(mp[0], 0.0):  # inflow
+                    bndry[f] = 1
+                elif near(mp[0], L):  # outflow
+                    bndry[f] = 2
+                elif near(mp[1], 0.0) or near(mp[1], W):  # walls
+                    bndry[f] = 3
+                elif mp.distance(center) <= radius:  # cylinder
+                    bndry[f] = 5
 
-          # Dump facet markers to file
-          with XDMFFile('facets.xdmf') as f:
-              f.write(bndry)
+            # Dump facet markers to file to plot in Paraview
+            with XDMFFile('facets.xdmf') as f:
+                f.write(bndry)
 
 
 .. admonition:: Task 3
 
     Construct the mixed finite element space and the
-    bilinear and linear forms together with the `DirichletBC <dolfin.fem.bcs.DirichletBC>` object.
+    bilinear and linear forms together with appropriate
+    `DirichletBC <dolfin.fem.bcs.DirichletBC>` object.
 
     .. hint::
 
@@ -137,8 +142,7 @@ where :math:`B_R(\mathbf{z})` is a disc of radius :math:`R` and center
         To define Dirichlet BC on subspace use the
         `W.sub() <dolfin.functions.functionspace.FunctionSpace.sub>` method::
 
-            noslip = Constant((0, 0))
-            bc_walls = DirichletBC(W.sub(0), noslip, bndry, 3)
+            bc_walls = DirichletBC(W.sub(0), (0, 0), bndry, 3)
 
     .. hint::
 
@@ -152,49 +156,86 @@ where :math:`B_R(\mathbf{z})` is a disc of radius :math:`R` and center
         ``u``, ``p``, ``v``, ``q`` as usual.
 
 
+Steady Navier-Stokes flow
+-------------------------
+
 .. admonition:: Task 4
 
-    Now modify the problem to the Navier-Stokes equations
-    and compute the `DFG-flow around cylinder benchmark
+    Modify the problem into the Navier-Stokes equations given by
+
+    .. math::
+       :label: navierstokes
+
+       - \nu\Delta\mathbf{u} + \mathbf{u}\cdot\nabla\mathbf{u} + \nabla p = 0
+            \quad\text{ in }\Omega
+
+    together with :eq:`stokes`:math:`_2`--:eq:`stokes`:math:`_5`.
+    Compute the `DFG-flow around cylinder benchmark 2D-1, laminar case, Re=20
     <http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark1_re20.html>`_
+    given by :eq:`navierstokes`,
+    :eq:`stokes`:math:`_2`--:eq:`stokes`:math:`_5`, :eq:`dfg20`.
 
     .. hint::
 
-        You can use generic `solve <dolfin.fem.solving.solve>` function or
-        `NonlinearVariationalProblem <dolfin.fem.solving.NonlinearVariationalProblem>`
-        and `NonlinearVariationalSolver <dolfin.cpp.fem.NonlinearVariationalSolver>`
-        classes::
+        As usual get rid of `TrialFunctions` in favour of
+        nonlinear dependence on `Function`. You can split
+        a ``Function`` on a mixed space into components::
 
-
-            # Define test functions
-            v, q = TestFunctions(W)
             w = Function(W)
             u, p = split(w)
 
-            # Facet normal, identity tensor and boundary measure
-            n = FacetNormal(mesh)
-            I = Identity(mesh.geometry().dim())
-            ds = Measure("ds", subdomain_data=bndry)
-            nu = Constant(0.001)
+            F = nu*inner(grad(u), grad(v))*dx + ...
 
-            # Define variational forms
-            T = -p*I + 2.0*nu*sym(grad(u))
-            F = inner(T, grad(v))*dx - q*div(u)*dx + inner(grad(u)*u, v)*dx
-            F += - nu*dot(dot(grad(u), v), n)*ds(2)
+
+.. admonition:: Task 5
+
+    Add computation of lift and drag coefficients :math:`C_\mathrm{D}`,
+    :math:`C_\mathrm{L}` and pressure difference :math:`p_\mathrm{diff}`
+    as defined on `the DFG 2D-1 website
+    <http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark1_re20.html>`_.
 
     .. hint::
 
         Use `assemble <dolfin.fem.assembling.assemble>` function
-        to evaluate the lift and drag functionals::
+        to evaluate the lift and drag functionals.
+
+        Use either
+        `Function.split() <dolfin.functions.function.Function.split>`
+        or `Function.sub() <dolfin.functions.function.Function.sub>`
+        to extract pressure ``p`` from solution ``w`` for evaluation.
+        Evaluate the pressure ``p`` at point ``a = Point(234, 567)``
+        by calling ``p(a)``.
 
 
-            # Report drag and lift
-            force = dot(T, n)
-            D = (force[0]/0.002)*ds(5)
-            L = (force[1]/0.002)*ds(5)
-            drag = assemble(D)
-            lift = assemble(L)
-            info("drag= %e    lift= %e" % (drag , lift))
+.. admonition:: Task 6
+
+    Check computed pressure difference and lift/drag coefficents
+    against the reference. Investigate if/how the lift coefficent
+    is sensitive to changes in the discretization parameters --
+    conduct a convergence study.
+
+
+Kármán vortex street
+--------------------
+
+.. admonition:: Task 7
+
+    Consider evolutionary Navier-Stokes equations
+
+    .. math::
+
+       u_t - \nu\Delta\mathbf{u} + \mathbf{u}\cdot\nabla\mathbf{u} + \nabla p = 0.
+
+    Prepare temporal discretization and timestepping
+    to compute the `DFG-flow around cylinder benchmark 2D-1,
+    fixed time interval, Re=100
+    <http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark3_re100.html>`_ with datum
+
+    .. math::
+
+        U(t) = 1.5 \sin(\tfrac{\pi}{8} t)
+
+    instead of :eq:`dfg20`:math:`_{6b}`. Plot the transient solution.
 
 
 .. only:: priv
