@@ -5,6 +5,7 @@ Heat equation
 
     Learn how to deal with time-dependent problems.
     Solve heat equation by :math:`\theta`-scheme.
+    Solve wave equation with central differences.
     Plot some nice figures.
 
 
@@ -477,6 +478,62 @@ Now consider an algorithm:
 
     Solve :eq:`time-discrete`, :eq:`data0`:math:`_{1,2,5}`,
     :eq:`data3` using the adaptive strategy described above.
+
+
+Wave equation
+-------------
+
+Now consider problem
+
+.. math::
+    :label: wave
+
+    u_{tt} - \Delta u &= f
+        &&\quad\text{ in }\Omega\times(0, T),
+
+    u &= 0
+        &&\quad\text{ on }\partial\Omega\times(0, T),
+
+    u(\cdot,t) &= u_0
+        &&\quad\text{ in }\Omega,
+
+    u_t(\cdot,t) &= v_0
+        &&\quad\text{ in }\Omega.
+
+This problem can be discretized in time as
+
+.. math::
+    :label: wave-time-discrete
+
+    \frac{1}{(\Delta t)^2} \Bigl(u^{n+1} - 2u^n + u^{n-1}\Bigr)
+    -\tfrac12 \Delta(u^{n+1} + u^{n-1}) = f(t^n).
+
+The iteration can be bootstrapped by
+
+.. math::
+
+    u^1 := u^0 + \Delta t v^0.
+
+.. admonition:: Task 7
+
+    Implement solver for problem :eq:`wave` by discretizing
+    in time with :eq:`wave-time-discrete`. Solve the problem
+    with data
+
+    .. math::
+
+        f &= 0,
+
+        u^0(x,y) &= \max(0, 1-4 r(x,y))
+        \qquad \text{where } r(x,y)=\operatorname{dist}((x,y),(\tfrac12,\tfrac{3}{10})),
+
+        v^0(x,y) &= 0,
+
+        T &= 5,
+
+        \Omega &= (0,1)^2.
+
+    Visualize the result.
 
 
 .. only:: priv
