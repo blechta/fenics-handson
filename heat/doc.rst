@@ -153,12 +153,10 @@ Consider data
 
            .. hint::
 
-               Having `Function`\s ``f``, ``g`` on the same space
-               you can perform assignment :math:`f := g` by
-               ::
-
-                   f.vector()[:] = g.vector()
-
+               Note that a single `Function` object is needed to implement
+               the time-stepping. The function can be used to hold
+               the value of :math:`u_n` and then be updated by calling
+               ``solve(...)``.
 
         #. **Run with different values of**
            :math:`\theta=1,\frac12,0`.
@@ -478,6 +476,17 @@ Now consider an algorithm:
 
     Solve :eq:`time-discrete`, :eq:`data0`:math:`_{1,2,5}`,
     :eq:`data3` using the adaptive strategy described above.
+
+     .. hint::
+
+         You will need more than one `Function` and perform
+         assignments between them.
+         Having `Function`\s ``f``, ``g`` on the same space
+         you can perform assignment :math:`f := g` by
+         ::
+
+             f.vector()[:] = g.vector()
+
 
 
 Wave equation
