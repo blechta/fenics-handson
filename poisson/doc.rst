@@ -451,4 +451,6 @@ with data
     .. toggle-header::
         :header: **Show/Hide Code**
 
-        .. literalinclude:: impl.py
+        :download:`Download Code <100ways.py>`
+
+        .. literalinclude:: 100ways.py

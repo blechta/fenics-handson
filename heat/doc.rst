@@ -545,23 +545,44 @@ The iteration can be bootstrapped by
     Visualize the result.
 
 
-.. only:: priv
+.. only:: pub
 
     Reference solution
     ------------------
+
+    .. note::
+
+        The reference solution follows `the DRY principle
+        <https://en.wikipedia.org/wiki/Don%27t_repeat_yourself>`_.
+        Hands-on participants are not expected to write such
+        a structured code during the session.
+
+    .. attention::
+
+        For on-the-fly plotting, ``TkAgg`` `Matplotlib backend
+        <https://matplotlib.org/faq/usage_faq.html#what-is-a-backend>`_
+        has been tested. You can enforce its selection by a shell
+        command
+
+        .. code-block:: shell
+
+            export MPLBACKEND=tkagg
+
+        Note that the the plotting is the bottleneck of the code.
+        The code runs much faster without plots which can be
+        ensured by
+
+        .. code-block:: shell
+
+            DOLFIN_NOPLOT=1 MPLBACKEND=template python3 heat.py
+
+        We leave as an exercise to add XDMF output for plotting
+        in Paraview.
+
+
     .. toggle-header::
         :header: **Show/Hide Code**
 
-        .. note::
-
-            The reference solution follows `DRY principle
-            <https://en.wikipedia.org/wiki/Don%27t_repeat_yourself>`_.
-            Hands-on participants are not expected to write such
-            a modularized code during a session.
-
-            More clean design would be achieved by employing classes.
-            It is in general a good idea to start just with free
-            functions and refactor later into classes when developing
-            an object oriented code.
+        :download:`Download Code <heat.py>`
 
         .. literalinclude:: heat.py

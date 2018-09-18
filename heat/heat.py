@@ -67,10 +67,16 @@ def timestepping(V, dsN, theta, T, dt, u_0, get_data):
     # Open plot window
     fig = init_plot()
 
+    # Print table header
+    print("{:10s} | {:10s} | {:10s}".format("t", "dt", "energy"))
+
     # Perform timestepping
     t = 0
     while t < T:
-        print("t =", t, "dt =", dt)
+
+        # Report some numbers
+        energy = assemble(u*dx)
+        print("{:10.4f} | {:10.4f} | {:#10.4g}".format(t, dt, energy))
 
         # Perform time step
         solver(t, dt)
@@ -104,10 +110,16 @@ def timestepping_adaptive(V, dsN, theta, T, tol, u_0, get_data):
     # Open plot window
     fig = init_plot()
 
+    # Print table header
+    print("{:10s} | {:10s} | {:10s}".format("t", "dt", "energy"))
+
     # Perform timestepping
     t = 0
     while t < T:
-        print("t =", t, "dt =", dt)
+
+        # Report some numbers
+        energy = assemble(u_n*dx)
+        print("{:10.4f} | {:10.4f} | {:#10.4g}".format(t, dt, energy))
 
         # Compute tentative time steps
         solver_low(t, dt)
@@ -159,6 +171,8 @@ def update_plot(fig, u, zlims=(0, 2)):
     use zlims as limits on z-axis"""
     fig.clear()
     p = plot(u, mode="warp")
+    if p is None:
+        return
     fig.colorbar(p)
     fig.gca().set_zlim(zlims)
     fig.canvas.draw()
@@ -184,32 +198,32 @@ def create_surface_measure_left(mesh):
     return ds_left
 
 
-def get_data_0(t, result=None):
-    """Create or update data for Problem 1"""
+def get_data_2(t, result=None):
+    """Create or update data for Task 2"""
     f, g = result or (Constant(0), Constant(0))
     f.assign(0)
     g.assign(0)
     return f, g
 
 
-def get_data_1(t, result=None):
-    """Create or update data for Problem 1"""
+def get_data_3(t, result=None):
+    """Create or update data for Task 3"""
     f, g = result or (Constant(0), Constant(0))
     f.assign(1)
     g.assign(0)
     return f, g
 
 
-def get_data_2(t, result=None):
-    """Create or update data for Problem 2"""
+def get_data_4(t, result=None):
+    """Create or update data for Task 4"""
     f, g = result or (Constant(0), Constant(0))
     f.assign(2-t)
     g.assign(t)
     return f, g
 
 
-def get_data_3(t, result=None):
-    """Create or update data for Problem 3"""
+def get_data_5(t, result=None):
+    """Create or update data for Task 5 and Task 6"""
     f, g = result or (Constant(0), Constant(0))
     f.assign(0)
     g.assign(max(0, 1-t)/2)
@@ -223,45 +237,46 @@ if __name__ == '__main__':
     T = 2
     u_0 = Expression("x[0]", degree=1)
 
-    # Problem 0, implicit Euler
+    # Run all problems
     theta = 1
-    dt = 0.1
-    timestepping(V, ds_left, theta, T, dt, u_0, get_data_0)
-
-    # Problem 0, explicit Euler
-    theta = 0
-    dt = 0.1
-    timestepping(V, ds_left, theta, T, dt, u_0, get_data_0)
-
-    # Problem 1, implicit Euler
-    theta = 1
-    dt = 0.1
-    timestepping(V, ds_left, theta, T, dt, u_0, get_data_1)
-
-    # Problem 1, explicit Euler
-    theta = 0
-    dt = 0.1
-    timestepping(V, ds_left, theta, T, dt, u_0, get_data_1)
-
-    # Problem 2, implicit Euler
-    theta = 1
+    print("Task 2, theta =", theta)
     dt = 0.1
     timestepping(V, ds_left, theta, T, dt, u_0, get_data_2)
 
-    # Problem 3 with fixed timestep, implicit Euler
+    theta = 1/2
+    print("Task 2, theta =", theta)
+    dt = 0.1
+    timestepping(V, ds_left, theta, T, dt, u_0, get_data_2)
+
+    theta = 0
+    print("Task 2, theta =", theta)
+    dt = 0.1
+    timestepping(V, ds_left, theta, T, dt, u_0, get_data_2)
+
     theta = 1
+    print("Task 3, theta =", theta)
     dt = 0.1
     timestepping(V, ds_left, theta, T, dt, u_0, get_data_3)
 
-    # Problem 3 by adaptive implicit Euler
     theta = 1
-    tol = 1e-3
-    timestepping_adaptive(V, ds_left, theta, T, tol, u_0, get_data_3)
+    print("Task 4, theta =", theta)
+    dt = 0.1
+    timestepping(V, ds_left, theta, T, dt, u_0, get_data_4)
 
-    # Problem 3 by adaptive Crank-Nicolson
-    theta = 0.5
+    theta = 1
+    print("Task 5, theta =", theta)
+    dt = 0.1
+    timestepping(V, ds_left, theta, T, dt, u_0, get_data_5)
+
+    theta = 1
+    print("Task 6, theta =", theta)
     tol = 1e-3
-    timestepping_adaptive(V, ds_left, theta, T, tol, u_0, get_data_3)
+    timestepping_adaptive(V, ds_left, theta, T, tol, u_0, get_data_5)
+
+    theta = 1/2
+    print("Task 6, theta =", theta)
+    tol = 1e-3
+    timestepping_adaptive(V, ds_left, theta, T, tol, u_0, get_data_5)
 
     # Hold plots before quitting
     plt.show()
