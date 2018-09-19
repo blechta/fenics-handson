@@ -76,6 +76,7 @@ where :math:`B_R(\mathbf{z})` is a disc of radius :math:`R` and center
 
         .. code-block:: python
 
+            from dolfin import *
             import mshr
 
             # Discretization parameters
