@@ -224,17 +224,18 @@ Kármán vortex street
     Consider evolutionary Navier-Stokes equations
 
     .. math::
+       :label: unsteady
 
        u_t - \nu\Delta\mathbf{u} + \mathbf{u}\cdot\nabla\mathbf{u} + \nabla p = 0.
 
     Prepare temporal discretization and timestepping
-    to compute the `DFG-flow around cylinder benchmark 2D-1,
-    fixed time interval, Re=100
-    <http://www.featflow.de/en/benchmarks/cfdbenchmarking/flow/dfg_benchmark3_re100.html>`_ with datum
+    to compute a solution of :eq:`unsteady`,
+    :eq:`stokes`:math:`_2`--:eq:`stokes`:math:`_5`, :eq:`dfg20` but
+    use
 
     .. math::
 
-        U(t) = 1.5 \sin(\tfrac{\pi}{8} t)
+        U = 1
 
     instead of :eq:`dfg20`:math:`_{6b}`. Plot the transient solution.
 
