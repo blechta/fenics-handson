@@ -1,8 +1,6 @@
 from dolfin import *
 import matplotlib.pyplot as plt
-
-# Limit quadrature degree
-parameters['form_compiler']['quadrature_degree'] = 4
+import os
 
 
 def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
@@ -26,7 +24,7 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
     element_s = FiniteElement("P", mesh.ufl_cell(), 1)
     mixed_element = MixedElement([element_v, element_v, element_s])
     W = FunctionSpace(mesh, mixed_element)
-    info("Num DOFs %d" % W.dim())
+    info("Num DOFs {}".format(W.dim()))
 
     # Prepare BCs
     bc0 = DirichletBC(W.sub(0), gdim*(0,), facet_function, 1)
@@ -98,19 +96,19 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
     p.rename("p", "pressure")
 
     # Create files for storing solution
-    vfile = XDMFFile("%s/velo.xdmf" % output_dir)
-    ufile = XDMFFile("%s/disp.xdmf" % output_dir)
-    pfile = XDMFFile("%s/pres.xdmf" % output_dir)
+    vfile = XDMFFile(os.path.join(output_dir, "velo.xdmf"))
+    ufile = XDMFFile(os.path.join(output_dir, "disp.xdmf"))
+    pfile = XDMFFile(os.path.join(output_dir, "pres.xdmf"))
 
     # Prepare plot window
     fig = plt.figure()
-    plt.show(block=False)
+    fig.show()
 
     # Time-stepping loop
-    t = 0.0
+    t = 0
     while t <= T_end:
-        print("Time:", t)
         t += float(dt)
+        info("Time: {}".format(t))
 
         # Increase traction
         bF_magnitude.assign(100.0*t)
@@ -123,6 +121,7 @@ def solve_elasticity(facet_function, E, nu, dt, T_end, output_dir):
         ufile.write(u, t)
         vfile.write(v, t)
         pfile.write(p, t)
+        fig.clear()
         plot(u, mode="displacement")
         fig.canvas.draw()
 
@@ -165,6 +164,7 @@ def geometry_3d():
 
 
 if __name__ == '__main__':
+    parameters['std_out_all_processes'] = False
 
     solve_elasticity(geometry_2d(20.0), 1e5, 0.3, 0.25, 5.0, 'results_2d_comp')
     solve_elasticity(geometry_2d(20.0), 1e5, 0.5, 0.25, 5.0, 'results_2d_incomp')

@@ -168,7 +168,9 @@ Within shell download by
 
     Use the following optimization::
 
-        parameters['form_compiler']['quadrature_degree'] = 4
+        # Limit quadrature degree
+        dx = dx(degree=4)
+        ds = ds(degree=4)
 
     and P1/P1/P1 spaces.
 
