@@ -43,6 +43,8 @@ in space with given data :math:`f`, :math:`g`, :math:`u_0`.
 for a certain sequence :math:`0=t_0 < t_1 < t_2 < ... \leq T`.
 Special cases are:
 
+.. _theta-table:
+
 .. list-table::
 
     * - :math:`\theta=0`

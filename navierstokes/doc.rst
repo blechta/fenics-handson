@@ -228,10 +228,11 @@ Kármán vortex street
 
        u_t - \nu\Delta\mathbf{u} + \mathbf{u}\cdot\nabla\mathbf{u} + \nabla p = 0.
 
-    Prepare temporal discretization and timestepping
+    Prepare temporal discretization using
+    :ref:`the Crank-Nicolson scheme <theta-table>`
     to compute a solution of :eq:`unsteady`,
-    :eq:`stokes`:math:`_2`--:eq:`stokes`:math:`_5`, :eq:`dfg20` but
-    use
+    :eq:`stokes`:math:`_2`--:eq:`stokes`:math:`_5`, :eq:`dfg20`
+    on time interval :math:`(0,8)` but use
 
     .. math::
 
@@ -240,13 +241,31 @@ Kármán vortex street
     instead of :eq:`dfg20`:math:`_{6b}`. Plot the transient solution.
 
 
-.. only:: priv
+.. only:: pub
 
     Reference solution
     ------------------
+
+    .. note::
+
+        You can run FEniCS codes in parallel (using MPI) by
+
+        .. code-block:: shell
+
+            mpirun -n <np> python3 <yourscript>.py
+
+        where for ``<np>`` substitute number of processors to use.
+
+        To run just the unsteady Navier-Stokes part of the
+        code below on, say, eight cores:
+
+        .. code-block:: shell
+
+            mpirun -n 8 python3 -c"import dfg; dfg.task_7()"
+
     .. toggle-header::
         :header: **Show/Hide Code**
 
-        :download:`Download Code <stokes.py>`
+        :download:`Download Code <dfg.py>`
 
-        .. literalinclude:: stokes.py
+        .. literalinclude:: dfg.py
