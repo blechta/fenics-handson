@@ -106,6 +106,8 @@ Potential for p-Laplace equation
         .. toggle-header::
             :header: **Show/Hide File** ``p_laplace.py``
 
+            :download:`Download Code <p_laplace.py>`
+
             .. literalinclude:: p_laplace.py
 
     and two executable scripts:
@@ -113,9 +115,13 @@ Potential for p-Laplace equation
         .. toggle-header::
             :header: **Show/Hide File** ``p_small.py``
 
+            :download:`Download Code <p_small.py>`
+
             .. literalinclude:: p_small.py
 
         .. toggle-header::
             :header: **Show/Hide File** ``p_large.py``
+
+            :download:`Download Code <p_large.py>`
 
             .. literalinclude:: p_large.py

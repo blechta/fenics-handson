@@ -245,4 +245,6 @@ Kármán vortex street
     .. toggle-header::
         :header: **Show/Hide Code**
 
+        :download:`Download Code <stokes.py>`
+
         .. literalinclude:: stokes.py

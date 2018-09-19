@@ -155,6 +155,8 @@ latter part.
     .. toggle-header::
         :header: **Show/Hide Code**
 
+        :download:`Download Code <impl.py>`
+
         .. literalinclude:: impl.py
 
 
