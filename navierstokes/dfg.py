@@ -162,7 +162,10 @@ def postprocess(w, nu, ds_circle):
     # Report pressure difference
     a_1 = Point(0.15, 0.2)
     a_2 = Point(0.25, 0.2)
-    p_diff = p(a_1) - p(a_2)
+    try:
+        p_diff = p(a_1) - p(a_2)
+    except RuntimeError:
+        p_diff = 0
 
     return C_D, C_L, p_diff
 

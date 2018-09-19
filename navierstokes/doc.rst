@@ -256,7 +256,8 @@ Kármán vortex street
 
         where for ``<np>`` substitute number of processors to use.
 
-        To run just the unsteady Navier-Stokes part of the
+        To benefit from parallism you can
+        run the unsteady Navier-Stokes part of the
         code below on, say, eight cores:
 
         .. code-block:: shell
