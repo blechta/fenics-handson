@@ -113,6 +113,7 @@ Resources
 
 * `DOLFIN docs <https://fenics.readthedocs.io/projects/dolfin/en/2017.2.0>`_
 * `DOLFIN Python API docs <https://fenicsproject.org/docs/dolfin/2017.2.0/python/index.html>`_
+* `UFL manual and API docs <https://fenics.readthedocs.io/projects/ufl/en/2017.2.0.post0/>`_
 * `mshr API docs <https://bitbucket.org/fenics-project/mshr/wiki/API>`_
 * `Python docs <https://docs.python.org/3>`_
 * `FEniCS AllAnswered <https://www.allanswered.com/community/s/fenics-project/>`_
