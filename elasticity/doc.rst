@@ -174,12 +174,16 @@ Within shell download by
 
     and P1/P1/P1 spaces.
 
-    You can also try to run the 3D problem in parallel. You can disable
-    plotting from commandline by
+    You can also try to run the 3D problem in parallel:
 
     .. code-block:: bash
 
-        DOLFIN_NOPLOT=1 mpirun -n 4 python <script>.py
+        # Disable plotting
+        export MPLBACKEND=template
+        export DOLFIN_NOPLOT=1
+
+        # Run he code in parallel
+        mpirun -n <np> python <script>.py
 
 
 .. only:: priv
