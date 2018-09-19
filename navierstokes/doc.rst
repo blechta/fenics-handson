@@ -16,7 +16,7 @@ Solve the following linear system of PDEs
 .. math::
     :label: stokes
 
-    - \nu\Delta\mathbf{u} + \nabla p &= 0
+    - \nu\Delta\mathbf{u} + \nabla p &= \mathbf{0}
         &&\quad\text{ in }\Omega,
 
     \operatorname{div}\mathbf{u} &= 0
