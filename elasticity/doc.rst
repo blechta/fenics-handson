@@ -202,7 +202,7 @@ Within shell download by
         mpirun -n <np> python <script>.py
 
 
-.. only:: priv
+.. only:: pub
 
     Reference solution
     ------------------
