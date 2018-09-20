@@ -113,66 +113,82 @@ Within shell download by
 
 .. admonition:: Task 1
 
-   Discretize the equation in time and write variational formulation
-   of the problem.
+    Discretize the equation in time using the Crank-Nicolson
+    scheme and derive a variational formulation of the problem.
+    Consider discretization using P1/P1/P1 mixed element.
 
 
 .. admonition:: Task 2
 
-   Build mesh, prepare facet function marking
-   :math:`\Gamma_\mathrm{N}` and :math:`\Gamma_\mathrm{D}` and plot it to
-   check its correctness.
+    Build 2D mesh::
 
-   .. hint::
+        mesh = RectangleMesh(Point(x0, y0), Point(x1, y1), 100, 5, 'crossed')
 
-       You can get coordinates of :math:`\Gamma_\mathrm{D}` by something like
-       ``x0 = mesh.coordinates()[:, 0].min()`` for lego mesh. Analogically
-       for :math:`\Gamma_\mathrm{N}`.
+    Prepare facet function marking
+    :math:`\Gamma_\mathrm{N}` and :math:`\Gamma_\mathrm{D}` and plot it to
+    check its correctness.
+
+    .. hint::
+
+        You can get coordinates of :math:`\Gamma_\mathrm{D}` by something like
+        ``x0 = mesh.coordinates()[:, 0].min()`` for lego mesh. Analogically
+        for :math:`\Gamma_\mathrm{N}`.
 
 
 .. admonition:: Task 3
 
-   Define Cauchy stress and variational formulation of the problem.
+    Define Cauchy stress and variational formulation of the problem.
 
-   .. hint::
+    .. hint::
 
-       Get geometric dimension by ``gdim = mesh.geometry().dim()`` to be able
-       to write the code independently of the dimension.
+        Get geometric dimension by ``gdim = mesh.geometry().dim()`` to be able
+        to write the code independently of the dimension.
 
 
 .. admonition:: Task 4
 
-   Prepare a solver and write simple time-stepping loop.
+    Prepare a solver and write simple time-stepping loop.
+    Use time step :math:`\Delta t=\tfrac14`.
 
-   Prepare a solver by::
+    Prepare a solver by::
 
-      problem = NonlinearVariationalProblem(F, w, bcs=bcs, J=J)
-      solver = NonlinearVariationalSolver(problem)
-      solver.parameters['newton_solver']['relative_tolerance'] = 1e-6
-      solver.parameters['newton_solver']['linear_solver'] = 'mumps'
+        problem = NonlinearVariationalProblem(F, w, bcs=bcs, J=J)
+        solver = NonlinearVariationalSolver(problem)
+        solver.parameters['newton_solver']['relative_tolerance'] = 1e-6
+        solver.parameters['newton_solver']['linear_solver'] = 'mumps'
 
-   to increase the tolerance reasonably and employ
-   powerful sparse direct solver MUMPS.
+    to increase the tolerance reasonably and employ
+    powerful sparse direct solver MUMPS.
 
-   Prepare nice plotting of displacement by::
+    Prepare nice plotting of displacement by::
 
-      plot(u, mode="displacement")
+       plot(u, mode="displacement")
 
-   Manipulate the plot how shown in
-   :ref:`the Matplotlib note <unsteady-matplotlib>`.
+    Manipulate the plot how shown in
+    :ref:`the Matplotlib note <unsteady-matplotlib>`.
+
+
+.. admonition:: Task 4
+
+    Solve the compressible 2D problem.
+
+    Solve the incompressible 2D problem.
 
 
 .. admonition:: Task 5
 
-    Tune the code for getting a 3D solution in a reasonable time.
+    Solve the 3D compressible problem.
+    Use time step :math:`\Delta t=\tfrac12`.
+
+    Load mesh by::
+
+        mesh = Mesh('lego_beam.xml')
 
     Use the following optimization::
 
         # Limit quadrature degree
         dx = dx(degree=4)
         ds = ds(degree=4)
-
-    and P1/P1/P1 spaces.
 
     You can also try to run the 3D problem in parallel:
 
@@ -182,7 +198,7 @@ Within shell download by
         export MPLBACKEND=template
         export DOLFIN_NOPLOT=1
 
-        # Run he code in parallel
+        # Run the code on <np> processors
         mpirun -n <np> python <script>.py
 
 
