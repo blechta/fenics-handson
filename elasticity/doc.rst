@@ -202,6 +202,12 @@ Within shell download by
         mpirun -n <np> python <script>.py
 
 
+.. admonition:: Task 6
+
+    Plot computed displacement :math:`u` in Paraview
+    using ``Warp by vector`` filter.
+
+
 .. only:: pub
 
     Reference solution
