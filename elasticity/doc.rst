@@ -48,7 +48,7 @@ in space with data
 
     \Omega &=
         \begin{cases}
-            (0, 20) \times [0, 1]
+            (0, 20) \times (0, 1)
             & \text{in 2D} \newline
             \text{lego brick } 10 \times 2 \times 1H
             & \text{in 3D}
