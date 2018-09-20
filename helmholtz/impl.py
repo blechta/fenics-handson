@@ -45,7 +45,7 @@ def helmholtz_wellposed(n):
     eigensolver.parameters['spectral_transform'] = 'shift-and-invert'
     eigensolver.parameters['tolerance'] = 1e-6
     #eigensolver.parameters['verbose'] = True
-    eigensolver.solve(5) # Find 5 eigenpairs close to target
+    eigensolver.solve(5)  # Find 5 eigenpairs close to target
     eig = Function(V)
     eig_vec = eig.vector()
     space = []

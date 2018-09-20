@@ -34,7 +34,7 @@ chapter 7.2.
     derive non-homogeneous Helmholtz equation for :math:`u` using the Fourier
     method and try solving it using FEniCS with
 
-    * :math:`\Omega = [0,1]\times[0,1]`,
+    * :math:`\Omega = (0,1)\times(0,1)`,
     * :math:`\omega = \sqrt{5}\pi`,
     * :math:`f = x + y`.
 
@@ -122,7 +122,8 @@ latter part.
 .. admonition:: Task 4
 
     Write function which takes a tuple of functions and
-    :math:`L^2`-orthogonalizes them using Gramm-Schmidt algorithm.
+    :math:`L^2`-orthogonalizes them using `Gramm-Schmidt algorithm
+    <https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process>`_.
 
 
 .. admonition:: Task 5
