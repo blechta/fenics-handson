@@ -48,6 +48,14 @@ or use FEniCS outside of the tutorial classes. The easiest
 option for new FEniCS users on Ubuntu is to install using
 APT from FEniCS PPA.
 
+.. note::
+
+    This lecture material including the reference solutions
+    is verified to be compatible with:
+
+    * FEniCS 2017.2.0,
+    * FEniCS 2018.1.0.
+
 
 Ubuntu packages
 ^^^^^^^^^^^^^^^
