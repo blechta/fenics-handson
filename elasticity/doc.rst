@@ -39,7 +39,7 @@ where
 
     \mathbb{B} &= \mathbb{F}\,\mathbb{F}^\top,
 
-    T &= -p\mathbb{I} + \mu (\mathbb{B-I})
+    \mathbb{T} &= -p\mathbb{I} + \mu (\mathbb{B-I})
 
 using :math:`\theta`-scheme discretization in time and arbitrary discretization
 in space with data
