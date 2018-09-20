@@ -20,10 +20,10 @@ Find approximate solution to following non-linear system of PDEs
     \mathbf{u} = \mathbf{v} &= 0
         &&\quad\text{ on }\Gamma_\mathrm{D}\times(0, T),
 
-    \mathbb{T}\mathbf{n} &= \mathbf{g}
+    J \mathbb{T} \mathbb{F}^{-\top} \mathbf{n} &= \mathbf{g}
         &&\quad\text{ on }\Gamma_\mathrm{N}\times(0, T),
 
-    \mathbb{T}\mathbf{n} &= 0
+    J \mathbb{T} \mathbb{F}^{-\top} \mathbf{n} &= 0
         &&\quad\text{ on }\partial\Omega\backslash(\Gamma_\mathrm{D}\cup\Gamma_\mathrm{N})\times(0, T),
 
     \mathbf{u} = \mathbf{v} &= 0
