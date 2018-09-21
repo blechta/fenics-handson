@@ -68,7 +68,8 @@ is Euclidian distance between points :math:`\mathbf{p}`, :math:`\mathbf{q}`.
             mesh = UnitSquareMesh(10, 10, 'crossed')
 
             # Create boundary markers
-            boundary_parts = FacetFunction('size_t', mesh)
+            tdim = mesh.topology().dim()
+            boundary_parts = MeshFunction('size_t', mesh, tdim-1)
             left   = AutoSubDomain(lambda x: near(x[0], 0.0))
             right  = AutoSubDomain(lambda x: near(x[0], 1.0))
             bottom = AutoSubDomain(lambda x: near(x[1], 0.0))
