@@ -158,7 +158,7 @@ is Euclidian distance between points :math:`\mathbf{p}`, :math:`\mathbf{q}`.
            f.write(u, t)
 
 
-.. only:: priv
+.. only:: pub
 
     Reference solution
     ------------------

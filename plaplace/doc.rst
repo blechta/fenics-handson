@@ -96,7 +96,7 @@ Potential for p-Laplace equation
       Solution for :math:`p = 1.1,\,11`  has maximum around ``1.3E-7`` and
       ``0.41`` respectively.
 
-.. only:: priv
+.. only:: pub
 
     Reference solution
     ------------------
