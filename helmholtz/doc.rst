@@ -1,94 +1,95 @@
 Eigenfunctions of Laplacian and Helmholtz equation
 ==================================================
 
-.. todo::
-
-    Fix sheet and test reference solution!
-
-
-Wave equation with harmonic forcing
------------------------------------
+Wave equation with time-harmonic forcing
+----------------------------------------
 
 Let's have wave equation with special right-hand side
 
 .. math::
+    :label: wavespec
 
-   w_{tt} - \Delta w &= f\, e^{i\omega t}
-       &&\quad\text{ in }\Omega\times(0,T),
+    w_{tt} - \Delta w &= f\, e^{i\omega t}
+        &&\quad\text{ in }\Omega\times(0,T),
 
-                   w &= 0
-       &&\quad\text{ on }\partial\Omega\times(0,T),
+    w &= 0
+        &&\quad\text{ on }\partial\Omega\times(0,T)
 
-with :math:`f \in L^2(\Omega)`. Such a problem has a solution (in some proper
-sense; being unique when enriched by initial conditions), see [Evans]_,
-chapter 7.2.
+with :math:`f \in L^2(\Omega)`. Assuming ansatz
+
+.. math::
+
+    w(t, x) = u(x) e^{i\omega t}
+
+we observe that :math:`u` has to fulfill
+
+.. math::
+    :label: helmholtz1
+
+    -\Delta u - \omega^2 u &= f
+        &&\quad\text{ in }\Omega,
+
+    u &= 0
+        &&\quad\text{ on }\partial\Omega.
+
 
 .. admonition:: Task 1
 
-    Try seeking for a particular solution of this equation while
-    taking advantage of special structure of right-hand side. Assuming ansatz
+    Try solving :eq:`helmholtz1` in FEniCS with data
 
     .. math::
-        w := u\, e^{i\omega t}, \quad u\in H_0^1(\Omega)
+        :label: helmholtzdata
 
-    derive non-homogeneous Helmholtz equation for :math:`u` using the Fourier
-    method and try solving it using FEniCS with
+        \Omega &= (0,1)\times(0,1),
 
-    * :math:`\Omega = (0,1)\times(0,1)`,
-    * :math:`\omega = \sqrt{5}\pi`,
-    * :math:`f = x + y`.
+        \omega &= \sqrt{5}\pi,
+
+        f &= x + y
+
+    on series of refined meshes. Observe behavior
+    of solution energy :math:`\|\nabla u\|_2` with refinement.
+    Is there a convergence or not?
+
+
+Define eigenspace of Laplacian (with zero BC) corresponding
+to :math:`\omega^2` as
+
+.. math::
+
+    E_{\omega^2} := \biggl\{ u\in H_0^1(\Omega): -\Delta u = \omega^2 u \biggr\}.
+
+:math:`E_{\omega^2}\neq\{0\}` if and only if
+:math:`\omega^2` is an eigenvalue. Note that
+:math:`E_{\omega^2}` is finite-dimensional. Now define
+:math:`P_{\omega^2}` as :math:`L^2`-orthogonal projection
+onto :math:`E_{\omega^2}`. It is not difficult
+to check that the function
+
+.. math::
+    :label: wavespecsol
+
+    w(t, x) = \frac{t e^{i\omega t}}{2i\omega} (P_{\omega^2} f)(x)
+    + e^{i\omega t} u(x)
+
+solves :eq:`wavespec` provided :math:`u` fulfills
+
+.. math::
+    :label: helmholtz2
+
+    -\Delta u - \omega^2 u &= (1-P_{\omega^2}) f
+        &&\quad\text{ in }\Omega,
+
+    u &= 0
+        &&\quad\text{ on }\partial\Omega.
+
+Note that problem :eq:`helmholtz2` has a solution which is
+uniquely determined up to arbitrary function from :math:`E_{\omega^2}`.
 
 
 .. admonition:: Task 2
 
-    Plot solution energies against number of degrees of freedom.
-
-    .. hint::
-
-        Having list of number of degrees of freedom ``ndofs`` and list of
-        energies ``energies`` do::
-
-           import matplotlib.pyplot as plt
-           plt.plot(ndofs, energies, 'o-')
-           plt.show()
-
-    What does it mean? Is the problem well-posed?
-
-
-Helmholtz equation and eigenspaces of Laplacian
------------------------------------------------
-
-Define eigenspace of Laplacian (with zero BC) corresponding to :math:`\omega^2`
-
-.. math::
-
-   E_{\omega^2} = \{ u\in H_0^1(\Omega): -\Delta u = \omega^2 u \}.
-
-If :math:`E_{\omega^2}\neq{0}` then :math:`\omega^2` is eigenvalue. Then by
-testing the non-homogeneous Helmholtz equation (derived in previous section) by
-non-trivial :math:`v\in E_{\omega^2}` one can see that
-:math:`f\perp E_{\omega^2}` is required (**check it!**), otherwise the problem
-is ill-posed. Hence the assumed ansatz is generally wrong. In fact, the
-condition :math:`f\perp E_{\omega^2}` is sufficient condition for well-posedness
-of the problem, see [Evans]_, chapter 6.2.3.
-
-The resolution is to seek for a particular solution for :math:`f^\parallel` and
-:math:`f^\perp` (:math:`L^2`-projections of :math:`f` to :math:`E_{\omega^2}`
-and :math:`^\perp E_{\omega^2}` respectively) separately. As :math:`E_{\omega^2}`
-has finite dimension (due to the Fredholm theory), the former can be obtained by
-solving forced harmonic oscillator equation which is easily done in hand (once
-:math:`E_{\omega^2}` is known). This is equivalent to picking blowing-up ansatz
-:math:`w = u\, t\, e^{i t\omega},\, u\in H_0^1(\Omega)`. So let's focus to the
-latter part.
-
-.. todo::
-
-   Make the exposition above simpler.
-
-
-.. admonition:: Task 3
-
-    Use SLEPc eigensolver to find :math:`E_{\omega^2}`.
+    Construct basis of :math:`E_{\omega^2}` by numerically solving
+    the corresponding eigenproblem with data :eq:`helmholtzdata`.
 
     .. hint::
 
@@ -121,31 +122,63 @@ latter part.
 
 .. admonition:: Task 4
 
-    Write function which takes a tuple of functions and
-    :math:`L^2`-orthogonalizes them using `Gramm-Schmidt algorithm
-    <https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process>`_.
+    Implement projection :math:`P_{\omega^2}`. Use it to solve
+    problem :eq:`helmholtz2` with data :eq:`helmholtzdata`.
 
 
 .. admonition:: Task 5
 
-    Compute :math:`f^\perp` for :math:`f` from Task 1 and solve the
-    Helmholtz equation with :math:`f^\perp` on right-hand side. Again, plot
-    energies of solutions against number of degrees of freedom.
+    Construct the solution :math:`w(t, x)` of the wave
+    equations :eq:`wavespec` using formula :eq:`wavespecsol`.
+    Plot temporal evolution of its real and imaginary
+    part.
 
 
-    .. only:: priv
+Mesh generation by Gmsh
+-----------------------
 
-        .. note::
+.. admonition:: Task 6
 
-            *Lecturer note.* Student must not include eigenvectors corresponding
-            to other eigenvalues. SLEPc returns these after last targeted one. For
-            this case the dimension of :math:`E_{\omega^2}` is 2. Let\'s denote
-            this bunch of vectors by ``E``.
+    Modify a Gmsh demo to mesh a half ball
 
-            GS orthogonalization is called to tuple ``E+[f]``. This first
-            orthogonalizes eigenvectors themself (for sure -- SLEPc doc is not
-            conclusive about this) and then orthogonalizes ``f`` to
-            :math:`E_{\omega^2}`.
+    .. math::
+
+        \{(x,y,z), x^2 + y^2 + z^2 < 1,  y>0\}
+
+    using the following code:
+
+    .. code-block:: shell
+
+        wget https://gitlab.onelab.info/gmsh/gmsh/blob/ad0ab3d5c310e7048ffa6e032ccd4e8f0108aa12/demos/api/boolean.py
+        source /LOCAL/opt/gmsh-4.0.0/gmsh.conf
+        python3 boolean.py
+        meshio-convert -p -o xdmf-xml boolean.msh boolean.xdmf
+        paraview boolean.xdmf &
+
+        <edit> boolean.py
+
+        python3 boolean.py
+        meshio-convert -p -o xdmf-xml boolean.msh boolean.xdmf
+
+    If in a need peek into
+    ::
+
+    >>> import gmsh
+    >>> help(gmsh.model.occ.addSphere)
+
+
+.. admonition:: Task 7
+
+    Find :math:`E_{\omega^2}` with :math:`\omega^2 \approx 70`
+    on the half ball. Plot the eigenfunctions in Paraview.
+
+    .. hint::
+
+        Use ``Glyph`` filter, ``Sphere`` glyph type, decrease
+        the scale factor to ca. 0.025.
+
+        Use ``Clip`` filter. Drag the clip surface by mouse,
+        hit ``Alt+A`` to refresh.
 
 
 .. only:: priv
@@ -159,7 +192,3 @@ latter part.
         :download:`Download Code <impl.py>`
 
         .. literalinclude:: impl.py
-
-
-.. [Evans] Lawrence C. Evans. *Partial Differential Equations.* Second edition.
-           1998, 2010 AMS, Rhode Island.
