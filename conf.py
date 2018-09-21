@@ -48,8 +48,8 @@ tags.add('pub')
 def setup(app):
     # Fixes for typesetting math
     app.add_stylesheet('math.css')
-    # Hide on Github in the versions menu
-    app.add_stylesheet('hide-on-github.css')
+    ## Hide on Github in the versions menu
+    #app.add_stylesheet('hide-on-github.css')
     # Show/hide >>> button in Python snippets
     app.add_javascript('copybutton.js')
 
