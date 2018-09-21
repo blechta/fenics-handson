@@ -93,7 +93,26 @@ uniquely determined up to arbitrary function from :math:`E_{\omega^2}`.
 
     .. hint::
 
-        Having assembled matrices ``A``, ``B``, the eigenvectors solving
+        Having forms ``a``, ``m`` and boundary condition ``bc``
+        representing eigenvalue problem
+
+        .. math::
+
+            -\Delta u &= \lambda u
+                &&\quad\text{ in }\Omega,
+
+            u &= 0
+                &&\quad\text{ on }\partial\Omega.
+
+
+        assemble matrices ``A``, ``B`` using function
+        `assemble_system <dolfin.fem.assembling.assemble_system>`
+        ::
+
+            A = assemble_system(a, zero_form, bc)
+            B = assemble(m)
+
+        Then the eigenvectors solving
 
         .. math::
 
