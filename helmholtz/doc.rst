@@ -200,7 +200,7 @@ Mesh generation by Gmsh
         hit ``Alt+A`` to refresh.
 
 
-.. only:: priv
+.. only:: pub
 
     Reference solution
     ------------------
@@ -208,6 +208,6 @@ Mesh generation by Gmsh
     .. toggle-header::
         :header: **Show/Hide Code**
 
-        :download:`Download Code <impl.py>`
+        :download:`Download Code <eigen.py>`
 
-        .. literalinclude:: impl.py
+        .. literalinclude:: eigen.py
