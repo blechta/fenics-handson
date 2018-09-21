@@ -20,10 +20,9 @@ FEniCS hands-on tutorial
 
 .. toctree::
    :maxdepth: 1
-   :caption: Appendix
+   :caption: Extra material
 
    heatconv/doc
    plaplace/doc
-   sundry/doc
 
 .. todolist::

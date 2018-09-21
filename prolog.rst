@@ -125,3 +125,4 @@ Resources
 * `mshr API docs <https://bitbucket.org/fenics-project/mshr/wiki/API>`_
 * `Python docs <https://docs.python.org/3>`_
 * `FEniCS AllAnswered <https://www.allanswered.com/community/s/fenics-project/>`_
+`Periodic Table of Finite Elements <http://femtable.org/>`_
